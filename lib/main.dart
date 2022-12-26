@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:guettoolbox/ui/page/login.dart';
 
-import 'CAS.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,8 +25,11 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.blue,
+        useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      darkTheme: ThemeData.dark(),
+      home: const LoginPage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -101,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
               'You have pushed the button this many times:',
             ),
             Text(
-              CAS.encrypt("Guet@111111"),
+              _counter.toString(),
               style: Theme.of(context).textTheme.headline4,
             ),
           ],

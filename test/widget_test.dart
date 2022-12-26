@@ -7,13 +7,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:guettoolbox/CAS.dart';
+import 'package:guettoolbox/common/encrypt/cas.dart';
+import 'package:guettoolbox/common/encrypt/webvpn.dart';
 
 import 'package:guettoolbox/main.dart';
 
 void main() {
   print(CAS.encrypt("Guet@045612"));
-
+  print(WebVPN.encryptHost("bkjw.guet.edu.cn"));
+  print(WebVPN.encryptPassword("bkjw.guet.edu.cn"));
   // testWidgets('Counter increments smoke test', (WidgetTester tester) async {
   //   // Build our app and trigger a frame.
   //   await tester.pumpWidget(const MyApp());

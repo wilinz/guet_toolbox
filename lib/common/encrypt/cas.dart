@@ -1,11 +1,11 @@
 import 'dart:math' as math;
 
 class CAS {
-  static List<int> R = List<int>.generate(131, (index) => 0);
+  static final List<int> _R = List<int>.generate(131, (index) => 0);
 
-  static List<String> J = "0123456789abcdef".split("");
+  static final List<String> _J = "0123456789abcdef".split("");
 
-  static List<int> V = [
+  static final List<int> _V = [
     0,
     1,
     3,
@@ -25,33 +25,33 @@ class CAS {
     65535
   ].toList();
 
-  static bool Bool(int i2) {
+  static bool _Bool(int i2) {
     return i2 != 0;
   }
 
-  static int Number(bool b) {
+  static int _Number(bool b) {
     return b ? 1 : 0;
   }
 
-  static T vpn_get_obj<T>(List<T> ary, int index) {
+  static T _vpn_get_obj<T>(List<T> ary, int index) {
     return ary[index];
   }
 
-  static void vpn_set_obj<T>(List<T> ary, int index, T value) {
+  static void _vpn_set_obj<T>(List<T> ary, int index, T value) {
     while (index >= ary.length) {
       ary.add(value);
     }
     ary[index] = value;
   }
 
-  static void vpn_plus_assign_obj<T>(List<int> ary, int index, int value) {
+  static void _vpn_plus_assign_obj<T>(List<int> ary, int index, int value) {
     while (index >= ary.length) {
       ary.add(0);
     }
     ary[index] = ary[index] + value;
   }
 
-  static void vpn_shift_right_assign_obj<T>(List<int> ary, int index,
+  static void _vpn_shift_right_assign_obj<T>(List<int> ary, int index,
       int value) {
     while (index >= ary.length) {
       ary.add(0);
@@ -59,7 +59,7 @@ class CAS {
     ary[index] = ary[index] >> value;
   }
 
-  static String s(String e) {
+  static String _s(String e) {
     String str = "";
     for (int length = e.length - 1; length > -1; length--) {
       str = str + String.fromCharCode(e.codeUnitAt(length));
@@ -67,91 +67,91 @@ class CAS {
     return str;
   }
 
-  static String l(int e) {
+  static String _l(int e) {
     String str = "";
     for (int i2 = 0; i2 < 4; i2++) {
-      str = str + vpn_get_obj(J, e & 15);
+      str = str + _vpn_get_obj(_J, e & 15);
       e
     >>>= 4;
     }
-    return s(str);
+    return _s(str);
   }
 
-  static int h(IClass e) {
+  static int _h(_IClass e) {
     int size = e.digits.length - 1;
-    while (size > 0 && (vpn_get_obj(e.digits, size)) == 0) {
+    while (size > 0 && (_vpn_get_obj(e.digits, size)) == 0) {
       size--;
     }
     return size;
   }
 
-  static String u(IClass e) {
-    h(e);
+  static String _u(_IClass e) {
+    _h(e);
     String str = "";
-    for (int h0 = h(e); h0 > -1; h0--) {
-      str = str + l((vpn_get_obj(e.digits, h0)));
+    for (int h0 = _h(e); h0 > -1; h0--) {
+      str = str + _l((_vpn_get_obj(e.digits, h0)));
     }
     return str;
   }
 
-  static void b(List<int> e, int t, List<int> n, int a, int i2) {
+  static void _b(List<int> e, int t, List<int> n, int a, int i2) {
     int min = math.min(i2 + t, e.length);
     while (t < min) {
-      vpn_set_obj(n, a, vpn_get_obj(e, t));
+      _vpn_set_obj(n, a, _vpn_get_obj(e, t));
       t++;
       a++;
     }
   }
 
   /* JADX INFO: Access modifiers changed from: private */
-  static IClass T(IClass e, int t) {
+  static _IClass _T(_IClass e, int t) {
     int floor = (t / 16.0).floor();
-    IClass iVar = IClass();
+    _IClass iVar = _IClass();
     int i2 = 0;
-    b(e.digits, floor, iVar.digits, 0, e.digits.length - floor);
+    _b(e.digits, floor, iVar.digits, 0, e.digits.length - floor);
     int i3 = t % 16;
     int i4 = 16 - i3;
     int i5 = 1;
     while (i2 < iVar.digits.length - 1) {
-      vpn_set_obj(
+      _vpn_set_obj(
           iVar.digits,
           i2,
-          (((vpn_get_obj(iVar.digits, i2)) >>> i3) |
-          (((vpn_get_obj(iVar.digits, i5)) & (vpn_get_obj(V, i3))) << i4)));
+          (((_vpn_get_obj(iVar.digits, i2)) >>> i3) |
+          (((_vpn_get_obj(iVar.digits, i5)) & (_vpn_get_obj(_V, i3))) << i4)));
       i2++;
       i5++;
     }
-    vpn_shift_right_assign_obj(iVar.digits, iVar.digits.length - 1, i3);
+    _vpn_shift_right_assign_obj(iVar.digits, iVar.digits.length - 1, i3);
     iVar.isNeg = e.isNeg;
     return iVar;
   }
 
-  static IClass g(IClass e, IClass t) {
+  static _IClass _g(_IClass e, _IClass t) {
     if (e.isNeg != t.isNeg) {
       t.isNeg = !t.isNeg;
-      IClass f0 = f(e, t);
+      _IClass f0 = _f(e, t);
       t.isNeg = !t.isNeg;
       return f0;
     }
-    IClass iVar = new IClass();
+    _IClass iVar = new _IClass();
     int i2 = 0;
     for (int i3 = 0; i3 < e.digits.length; i3++) {
-      int intValue = vpn_get_obj(e.digits, i3).toInt() -
-          vpn_get_obj(t.digits, i3).toInt() +
+      int intValue = _vpn_get_obj(e.digits, i3).toInt() -
+          _vpn_get_obj(t.digits, i3).toInt() +
           i2;
-      vpn_set_obj(iVar.digits, i3, (intValue % 65536));
-      if (vpn_get_obj(iVar.digits, i3) < 0) {
-        vpn_plus_assign_obj(iVar.digits, i3, 65536);
+      _vpn_set_obj(iVar.digits, i3, (intValue % 65536));
+      if (_vpn_get_obj(iVar.digits, i3) < 0) {
+        _vpn_plus_assign_obj(iVar.digits, i3, 65536);
       }
       i2 = 0 - (intValue < 0 ? 1 : 0);
     }
     if (-1 == i2) {
       int i4 = 0;
       for (int i5 = 0; i5 < e.digits.length; i5++) {
-        int intValue2 = 0 - vpn_get_obj(iVar.digits, i5).toInt() + i4;
-        vpn_set_obj(iVar.digits, i5, intValue2 % 65536);
-        if (vpn_get_obj(iVar.digits, i5) < 0) {
-          vpn_plus_assign_obj(iVar.digits, i5, 65536);
+        int intValue2 = 0 - _vpn_get_obj(iVar.digits, i5).toInt() + i4;
+        _vpn_set_obj(iVar.digits, i5, intValue2 % 65536);
+        if (_vpn_get_obj(iVar.digits, i5) < 0) {
+          _vpn_plus_assign_obj(iVar.digits, i5, 65536);
         }
         i4 = 0 - (intValue2 < 0 ? 1 : 0);
       }
@@ -162,39 +162,39 @@ class CAS {
     return iVar;
   }
 
-  static IClass f(IClass e, IClass t) {
+  static _IClass _f(_IClass e, _IClass t) {
     if (e.isNeg != t.isNeg) {
       t.isNeg = !t.isNeg;
-      IClass g0 = g(e, t);
+      _IClass g0 = _g(e, t);
       t.isNeg = !t.isNeg;
       return g0;
     }
-    IClass iVar = new IClass();
+    _IClass iVar = new _IClass();
     int i2 = 0;
     for (int i3 = 0; i3 < e.digits.length; i3++) {
-      int intValue = (vpn_get_obj(e.digits, i3)).toInt() +
-          (vpn_get_obj(t.digits, i3)).toInt() +
+      int intValue = (_vpn_get_obj(e.digits, i3)).toInt() +
+          (_vpn_get_obj(t.digits, i3)).toInt() +
           i2;
-      vpn_set_obj(iVar.digits, i3, intValue % 65536);
+      _vpn_set_obj(iVar.digits, i3, intValue % 65536);
       i2 = intValue >= 65536 ? 1 : 0;
     }
     iVar.isNeg = e.isNeg;
     return iVar;
   }
 
-  static IClass x(IClass e, int t) {
-    IClass iVar = new IClass();
-    b(e.digits, t, iVar.digits, 0, iVar.digits.length - t);
+  static _IClass _x(_IClass e, int t) {
+    _IClass iVar = new _IClass();
+    _b(e.digits, t, iVar.digits, 0, iVar.digits.length - t);
     return iVar;
   }
 
-  static IClass O(IClass e, int t) {
-    IClass iVar = new IClass();
-    b(e.digits, 0, iVar.digits, 0, t);
+  static _IClass _O(_IClass e, int t) {
+    _IClass iVar = new _IClass();
+    _b(e.digits, 0, iVar.digits, 0, t);
     return iVar;
   }
 
-  static int k(IClass e, IClass t) {
+  static int _k(_IClass e, _IClass t) {
     if (e.isNeg != t.isNeg) {
       return 1 - ((e.isNeg ? 1 : 0) * 2);
     }
@@ -203,52 +203,52 @@ class CAS {
       if (size < 0) {
         return 0;
       }
-      if (vpn_get_obj(e.digits, size) != vpn_get_obj(t.digits, size)) {
+      if (_vpn_get_obj(e.digits, size) != _vpn_get_obj(t.digits, size)) {
         bool z = e.isNeg;
-        int intValue = (vpn_get_obj(e.digits, size));
-        int intValue2 = vpn_get_obj(t.digits, size);
+        int intValue = (_vpn_get_obj(e.digits, size));
+        int intValue2 = _vpn_get_obj(t.digits, size);
         if (z) {
           return 1 - ((intValue > intValue2 ? 1 : 0) * 2);
         }
-        return 1 - (Number(intValue < intValue2) * 2);
+        return 1 - (_Number(intValue < intValue2) * 2);
       }
       size--;
     }
   }
 
   /* JADX INFO: Access modifiers changed from: private */
-  static IClass E(IClass e, IClass t) {
-    IClass iVar = new IClass();
-    int h0 = h(e);
-    int h2 = h(t);
+  static _IClass _E(_IClass e, _IClass t) {
+    _IClass iVar = new _IClass();
+    int h0 = _h(e);
+    int h2 = _h(t);
     for (int i2 = 0; i2 <= h2; i2++) {
       int i3 = 0;
       int i4 = 0;
       int i5 = i2;
       while (i3 <= h0) {
-        int intValue = ((vpn_get_obj(iVar.digits, i5).toInt() +
-            (vpn_get_obj(e.digits, i3).toInt() * vpn_get_obj(t.digits, i2))
+        int intValue = ((_vpn_get_obj(iVar.digits, i5).toInt() +
+            (_vpn_get_obj(e.digits, i3).toInt() * _vpn_get_obj(t.digits, i2))
                 .toInt() +
             i4));
-        vpn_set_obj(iVar.digits, i5, (65535 & intValue.toInt()));
+        _vpn_set_obj(iVar.digits, i5, (65535 & intValue.toInt()));
         i4 = intValue.toInt() >>> 16;
         i3++;
         i5++;
       }
-      vpn_set_obj(iVar.digits, i2 + h0 + 1, i4);
+      _vpn_set_obj(iVar.digits, i2 + h0 + 1, i4);
     }
     iVar.isNeg = e.isNeg != t.isNeg;
     return iVar;
   }
 
-  static ForLClass get_for_L() {
-    var a = IClass(
+  static _ForLClass _get_for_L() {
+    var a = _IClass(
         digits: List<int>.generate(131, (index) => index < 2 ? 1 : 0),
         isNeg: false);
-    var b = IClass(
+    var b = _IClass(
         digits: List<int>.generate(131, (index) => 0),
         isNeg: false);
-    var c = IClass(
+    var c = _IClass(
         digits: [
           59313,
           4375,
@@ -383,7 +383,7 @@ class CAS {
           0
         ].toList(),
         isNeg: false);
-    var d = IClass(
+    var d = _IClass(
         digits: [
           59313,
           4375,
@@ -518,7 +518,7 @@ class CAS {
           0
         ].toList(),
         isNeg: false);
-    var e = IClass(
+    var e = _IClass(
         digits: [
           7469,
           13822,
@@ -653,13 +653,13 @@ class CAS {
           0
         ].toList(),
         isNeg: false);
-    var f = IClass(
+    var f = _IClass(
         digits: List<int>.generate(131, (index) => index == 65 ? 1 : 0),
         isNeg: false);
-    return ForLClass(a, b, c, 126, 16, ForLBarrettClass(d, 64, e, f));
+    return _ForLClass(a, b, c, 126, 16, _ForLBarrettClass(d, 64, e, f));
   }
 
-  static String L(ForLClass e, String t) {
+  static String _L(_ForLClass e, String t) {
     List<int> arrayList = List.empty(growable: true);
     int length = t.length;
     for (int i2 = 0; i2 < length; i2++) {
@@ -672,18 +672,18 @@ class CAS {
     var sb = "";
     int i3 = 0;
     while (i3 < size) {
-      IClass iVar = new IClass();
+      _IClass iVar = new _IClass();
       int i4 = 0;
       int i5 = i3;
       while (i5 < e.chunkSize + i3) {
         int i6 = i5 + 1;
-        vpn_set_obj(iVar.digits, i4, vpn_get_obj(arrayList, i5));
-        vpn_plus_assign_obj(iVar.digits, i4, (vpn_get_obj(arrayList, i6)) << 8);
+        _vpn_set_obj(iVar.digits, i4, _vpn_get_obj(arrayList, i5));
+        _vpn_plus_assign_obj(iVar.digits, i4, (_vpn_get_obj(arrayList, i6)) << 8);
         i4++;
         i5 = i6 + 1;
       }
       var a = e.barrett.powMod(iVar, e.e);
-      var b = u(a);
+      var b = _u(a);
       sb += (b);
       sb += (" ");
       i3 += e.chunkSize;
@@ -694,67 +694,67 @@ class CAS {
   }
 
   static String encrypt(String text) {
-    return L(get_for_L(), text);
+    return _L(_get_for_L(), text);
   }
 }
 
-class IClass {
-  List<int> digits = List<int>.from(CAS.R);
+class _IClass {
+  List<int> digits = List<int>.from(CAS._R);
   bool isNeg = false;
 
-  IClass({digits, isNeg}) {
+  _IClass({digits, isNeg}) {
     if (digits != null) this.digits = digits;
     if (isNeg != null) this.isNeg = isNeg;
   }
 }
 
-class ForLClass {
-  ForLBarrettClass barrett;
+class _ForLClass {
+  _ForLBarrettClass barrett;
   int chunkSize;
-  IClass d;
-  IClass e;
-  IClass m;
+  _IClass d;
+  _IClass e;
+  _IClass m;
   int radix;
 
-  ForLClass(this.e, this.d, this.m, this.chunkSize, this.radix, this.barrett);
+  _ForLClass(this.e, this.d, this.m, this.chunkSize, this.radix, this.barrett);
 }
 
-class ForLBarrettClass {
-  IClass bkplus1;
+class _ForLBarrettClass {
+  _IClass bkplus1;
   int k;
-  IClass modulus;
-  IClass mu;
+  _IClass modulus;
+  _IClass mu;
 
-  ForLBarrettClass(this.modulus, this.k, this.mu, this.bkplus1);
+  _ForLBarrettClass(this.modulus, this.k, this.mu, this.bkplus1);
 
-  IClass modulo(IClass e) {
-    IClass g = CAS.g(CAS.O(e, k + 1),
-        CAS.O(CAS.E(CAS.x(CAS.E(CAS.x(e, k - 1), mu), k + 1), modulus), k + 1));
+  _IClass modulo(_IClass e) {
+    _IClass g = CAS._g(CAS._O(e, k + 1),
+        CAS._O(CAS._E(CAS._x(CAS._E(CAS._x(e, k - 1), mu), k + 1), modulus), k + 1));
     if (g.isNeg) {
-      g = CAS.f(g, bkplus1);
+      g = CAS._f(g, bkplus1);
     }
-    int Number = CAS.Number(CAS.k(g, modulus) >= 0);
-    while (CAS.Bool(Number)) {
-      g = CAS.g(g, modulus);
-      Number = CAS.Number(CAS.k(g, modulus) >= 0);
+    int Number = CAS._Number(CAS._k(g, modulus) >= 0);
+    while (CAS._Bool(Number)) {
+      g = CAS._g(g, modulus);
+      Number = CAS._Number(CAS._k(g, modulus) >= 0);
     }
     return g;
   }
 
-  IClass multiplyMod(IClass e, IClass t) {
-    return modulo(CAS.E(e, t));
+  _IClass multiplyMod(_IClass e, _IClass t) {
+    return modulo(CAS._E(e, t));
   }
 
-  IClass powMod(final IClass e5, IClass t) {
+  _IClass powMod(final _IClass e5, _IClass t) {
     var e1 = e5;
-    IClass iVar = IClass();
-    CAS.vpn_set_obj(iVar.digits, 0, 1);
+    _IClass iVar = _IClass();
+    CAS._vpn_set_obj(iVar.digits, 0, 1);
     while (true) {
       if ((t.digits[0] & 1) != 0) {
         iVar = multiplyMod(iVar, e1);
       }
-      t = CAS.T(t, 1);
-      if (t.digits[0] == 0 && CAS.h(t) == 0) {
+      t = CAS._T(t, 1);
+      if (t.digits[0] == 0 && CAS._h(t) == 0) {
         return iVar;
       }
       e1 = multiplyMod(e1, e1);

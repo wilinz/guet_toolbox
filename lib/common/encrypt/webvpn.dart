@@ -1423,7 +1423,6 @@ class WebVPN {
       sb2.write(bytes2[i5].toUnsigned(8).toRadixString(16).padLeft(2, '0'));
     }
     for (int i6 = 0; i6 < length; i6++) {
-      var a=i6;
       sb2.write(bytes[i6].toUnsigned(8).toRadixString(16).padLeft(2, '0'));
     }
     return sb2.toString();

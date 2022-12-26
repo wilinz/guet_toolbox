@@ -1,8 +1,10 @@
 import 'package:guettoolbox/data/network.dart';
 
-extension StringExtension on String{
-  toWebVpnUrl(){
-    // var uri=Uri.parse(this);
-    // return "${AppNetwork().webVpnUrl}${uri.scheme}/${WebVPN.encryptHost(this.host)}/"
+import '../common/encrypt/webvpn.dart';
+
+extension UriExtension on Uri {
+  toWebVpnUrl() {
+    return Uri.parse(
+        "${AppNetwork.webVpnUrl}$scheme/${WebVPN.encryptHost(host)}/");
   }
 }

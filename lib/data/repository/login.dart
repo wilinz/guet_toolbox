@@ -1,67 +1,37 @@
-import 'package:dio/dio.dart';
-import 'package:guettoolbox/data/network.dart';
+import 'package:guettoolbox/common/key.dart';
+import 'package:guettoolbox/data/service/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginService {
-  static Future<String?> loginCAS(
-      String username, String password, String service) async {
-    Future<String?> first(
-        String username, String password, String service) async {
-      var data = {
-        "username": username,
-        "password": password,
-        "service": service,
-        "loginType": ""
-      };
-      var resp = await AppNetwork().dio.post(
-          "https://cas.guet.edu.cn/cas/v1/tickets",
-          options: Options(contentType: AppNetwork().typeUrlEncode),
-          data: data);
-      var location = resp.headers.value("Location");
-      resp.data.toString();
-      return location;
-    }
+class LoginRepository {
+  Future<SharedPreferences> get _sp async =>
+      await SharedPreferences.getInstance();
 
-    Future<String?> second(String url, String service) async {
-      var data = {"service": service};
-      var resp = await AppNetwork().dio.post(url,
-          options: Options(contentType: AppNetwork().typeUrlEncode),
-          data: data);
-      var body = resp.data.toString();
-      if (resp.statusCode != 200) {
-        return null;
-      }
-      return body;
-    }
-
-    var url = await first(username, password, service);
-    if (url == null) return null;
-    return await second(url, service);
+  Future<String?> get ticket async {
+    var sp = await _sp;
+    return sp.get(AppKey.ticket) as String?;
   }
 
-  Future<bool> loginWebVpn(String username, String password) async {
-
-    Future<bool> loginWebVpn1(String ticket) async {
-      var resp = await AppNetwork()
-          .dio
-          .get("${AppNetwork().webVpnUrl}login?cas_login=true&ticket=$ticket");
-      resp.data.toString();
-      return resp.statusCode == 200;
-    }
-
-    var ticket = await loginCAS(
-        username, password, "https://v.guet.edu.cn/login?cas_login=true");
-
-    if (ticket == null) return Future(() => false);
-    return loginWebVpn1(ticket);
+  Future<bool> setTicket(String value) async {
+    var sp = await _sp;
+    return sp.setString(AppKey.ticket, value);
   }
 
-}
+  Future<bool> loginAcademicAffairsSystem(
+      String username, String password) async {
+    if (!(await LoginService.loginWebVpn(username, password))) {
+      return Future(() => false);
+    }
+    var ticket =
+        await LoginService.loginAcademicAffairsSystem(username, password);
+    if (ticket != null) {
+      return setTicket(ticket);
+    }
+    return Future(() => false);
+  }
 
-class LogonFailedException implements Exception {
-  final String msg;
+  LoginRepository._create();
 
-  LogonFailedException(this.msg);
+  static final _instance = LoginRepository._create();
 
-  @override
-  String toString() => msg;
+  factory LoginRepository() => _instance;
 }

@@ -1,19 +1,24 @@
-import 'dart:html';
-import 'dart:io';
-
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:guettoolbox/util/ext.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AppNetwork {
-  var baseUrl = "";
-  var webVpnUrl = "";
-  var dio = Dio();
-  var typeUrlEncode = "application/x-www-form-urlencoded";
+  static const String baseUrl = "https://bkjw.guet.edu.cn/";
+  static const String webVpnUrl = "https://v.guet.edu.cn/";
+  static const String typeUrlEncode = "application/x-www-form-urlencoded";
+  static final String baseUrlInWebVpn =
+      Uri.parse(baseUrl).toWebVpnUrl().toString();
+  late Dio dio;
 
   AppNetwork._create() {
-    var cookieJar = CookieJar();
-    dio.interceptors.add(CookieManager(cookieJar));
+    dio = Dio(BaseOptions(baseUrl: baseUrlInWebVpn));
+    getApplicationSupportDirectory().then((value) {
+      var cookieJar =
+          PersistCookieJar(storage: FileStorage(value.path + "/cookies"));
+      dio.interceptors.add(CookieManager(cookieJar));
+    });
   }
 
   static final _instance = AppNetwork._create();

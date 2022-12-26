@@ -103,7 +103,6 @@ class CAS {
     }
   }
 
-  /* JADX INFO: Access modifiers changed from: private */
   static _IClass _T(_IClass e, int t) {
     int floor = (t / 16.0).floor();
     _IClass iVar = _IClass();

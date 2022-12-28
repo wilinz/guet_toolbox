@@ -25,9 +25,11 @@ class MainViewModel extends ChangeNotifier {
 
         var courses =
             value.where((e) => e.week == column && e.seq == row.toString());
-        var course = null;
+        Course? course = null;
         if (courses.length > 0) {
           course = courses.first;
+          course.croomno =
+              courses.map((e) => e.croomno).where((e) => e != null).toSet().toList().join(",");
         }
         return course;
       });

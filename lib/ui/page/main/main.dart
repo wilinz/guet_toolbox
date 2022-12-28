@@ -60,14 +60,16 @@ class _MainPageState extends State<_MainPage> {
                         itemCount: 7 * 5,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 7, //横轴三个子widget
-                            childAspectRatio: getChildAspectRatio(context) //宽高比为1时，子widget
+                            childAspectRatio:
+                                getChildAspectRatio(context) //宽高比为1时，子widget
                             ),
                         itemBuilder: (context, i) {
                           var child = null;
                           if (viewModel.courseList.length > i) {
                             var course = viewModel.courseList[i];
                             if (course != null) {
-                              child = Text(course.cname);
+                              child = Text((course.croomno ??
+                                  "") + "#" + course.cname + "@" + course.name);
                             }
                           }
                           return Container(
@@ -91,12 +93,12 @@ class _MainPageState extends State<_MainPage> {
     );
   }
 
-  double getChildAspectRatio(BuildContext context){
+  double getChildAspectRatio(BuildContext context) {
     // double cellWidth = ((MediaQuery.of(context).size.width - 1*8) / 7);
     // double desiredCellHeight = 200;
-    var h=(MediaQuery.of(context).size.height)/5;
-    var w=(MediaQuery.of(context).size.width)/7;
-    return w/h;
+    var h = (MediaQuery.of(context).size.height) / 5;
+    var w = (MediaQuery.of(context).size.width) / 7;
+    return w / h;
   }
 
   List<DropdownMenuItem<Object?>> createDropItemList(MainViewModel viewModel) {

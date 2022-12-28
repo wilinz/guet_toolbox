@@ -47,7 +47,7 @@ class Course {
   late final String name;
   late final String term;
   late final String courseid;
-  late final String? croomno;
+  String? croomno;
   late final String? comm;
   late final int startweek;
   late final int endweek;
@@ -68,7 +68,7 @@ class Course {
     ctype = json['ctype'];
     tname = json['tname'];
     examt = json['examt'];
-    dptname = null;
+    dptname = json['dptname'];
     dptno = json['dptno'];
     spname = json['spname'];
     spno = json['spno'];
@@ -79,11 +79,11 @@ class Course {
     name = json['name'];
     term = json['term'];
     courseid = json['courseid'];
-    croomno = null;
-    comm = null;
+    croomno = json['croomno'];
+    comm = json['comm'];
     startweek = json['startweek'];
     endweek = json['endweek'];
-    oddweek = null;
+    oddweek = json['oddweek'];
     week = json['week'];
     seq = json['seq'];
     maxcnt = json['maxcnt'];

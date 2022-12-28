@@ -14,7 +14,7 @@ class LoginService {
         "service": service,
         "loginType": ""
       };
-      var resp = await AppNetwork().dio.post(
+      var resp = await (await AppNetwork.getDio(followRedirects: true)).post(
           "https://cas.guet.edu.cn/cas/v1/tickets",
           options: Options(contentType: AppNetwork.typeUrlEncode),
           data: data);
@@ -59,7 +59,7 @@ class LoginService {
 
     Future<String> second(String url, String service) async {
       var data = {"service": service};
-      var resp = await AppNetwork().dio.post(url,
+      var resp = await (await AppNetwork.getDio(followRedirects: true)).post(url,
           options: Options(contentType: AppNetwork.typeUrlEncode), data: data);
       var body = resp.data;
       if (resp.statusCode != 200) {
@@ -75,8 +75,7 @@ class LoginService {
 
   static Future<bool> loginWebVpn(String username, String password) async {
     Future<bool> loginWebVpn1(String ticket) async {
-      var resp = await AppNetwork()
-          .dio
+      var resp = await (await AppNetwork.getDio(followRedirects: true))
           .get("${AppNetwork.webVpnUrl}login?cas_login=true&ticket=$ticket");
       resp.data.toString();
       return resp.statusCode == 200;
@@ -91,8 +90,7 @@ class LoginService {
   static Future<String?> loginAcademicAffairsSystem(
       String username, String password) async {
     Future<bool> login(String ticket) async {
-      var resp = await AppNetwork()
-          .dio
+      var resp = await (await AppNetwork.getDio(followRedirects: true))
           .get("${AppNetwork.baseUrlInWebVpn}?ticket=$ticket");
       resp.data.toString();
       if (resp.statusCode != 200) {

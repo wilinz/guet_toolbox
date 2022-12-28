@@ -40,13 +40,16 @@ class _MainPageState extends State<_MainPage> {
               children: [
                 DropdownButton(
                     items: createDropItemList(viewModel),
-                    hint: Text("选择学期"),
-                    value: selected,
+                    hint: Container(
+                        padding: EdgeInsets.all(8),
+                        child: Center(child: Text("请选择"))),
+                    value: viewModel.currentTerm?.term,
                     onChanged: (v) {
                       v as String;
                       viewModel.getCourseList(v);
                       setState(() {
-                        selected = v;
+                        viewModel.currentTerm =
+                            viewModel.termList.firstWhere((e) => e.term == v);
                       });
                     }),
                 Expanded(
@@ -68,8 +71,11 @@ class _MainPageState extends State<_MainPage> {
                           if (viewModel.courseList.length > i) {
                             var course = viewModel.courseList[i];
                             if (course != null) {
-                              child = Text((course.croomno ??
-                                  "") + "#" + course.cname + "@" + course.name);
+                              child = Text((course.croomno ?? "") +
+                                  "#" +
+                                  course.cname +
+                                  "@" +
+                                  course.name);
                             }
                           }
                           return Container(
@@ -102,18 +108,20 @@ class _MainPageState extends State<_MainPage> {
   }
 
   List<DropdownMenuItem<Object?>> createDropItemList(MainViewModel viewModel) {
-    if (viewModel.termList.isEmpty) {
-      return [
-        DropdownMenuItem(
-          child: Text("null"),
-          value: "null",
-        )
-      ];
-    }
+    // if (viewModel.termList.isEmpty) {
+    //   return [
+    //     DropdownMenuItem(
+    //       child: Text("null"),
+    //       value: "null",
+    //     )
+    //   ];
+    // }
     return List.generate(viewModel.termList.length, (index) {
       var item = viewModel.termList[index];
       return DropdownMenuItem(
-        child: Text(item.termname),
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: Center(child: Text(item.termname))),
         value: item.term,
       );
     });

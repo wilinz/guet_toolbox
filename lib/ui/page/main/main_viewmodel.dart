@@ -1,18 +1,37 @@
 import 'package:flutter/cupertino.dart';
 import 'package:guettoolbox/data/repository/course.dart';
+import 'package:guettoolbox/util/datetime.dart';
 
 import '../../../data/model/course.dart';
 import '../../../data/model/term.dart';
 
 class MainViewModel extends ChangeNotifier {
   List<Term> termList = List.empty();
+  Term? _currentTerm;
+
+  Term? get currentTerm => _currentTerm;
+
+  set currentTerm(Term? value) {
+    _currentTerm = value;
+    notifyListeners();
+  }
+
   List<Course?> courseList = List.empty();
 
   Future<List<Term>> getTermList() {
-    return CourseRepository().getTermList().then((value) {
-      termList = value;
+    return CourseRepository().getTermList().then((terms) async {
+      termList = terms;
+      currentTerm = terms.firstWhere((term) {
+        var start = DateTimeUtil.parseDate(term.startdate);
+        var end = DateTimeUtil.parseDate(term.enddate);
+        var today = DateTime.now();
+        return today.isAfter(start) && today.isBefore(end);
+      });
+      if (currentTerm != null) {
+        await getCourseList(currentTerm!.term);
+      }
       notifyListeners();
-      return value;
+      return terms;
     });
   }
 
@@ -28,8 +47,12 @@ class MainViewModel extends ChangeNotifier {
         Course? course = null;
         if (courses.length > 0) {
           course = courses.first;
-          course.croomno =
-              courses.map((e) => e.croomno).where((e) => e != null).toSet().toList().join(",");
+          course.croomno = courses
+              .map((e) => e.croomno)
+              .where((e) => e != null)
+              .toSet()
+              .toList()
+              .join(",");
         }
         return course;
       });

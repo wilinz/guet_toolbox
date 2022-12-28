@@ -25,9 +25,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   project.set_dart_entrypoint_arguments(std::move(command_line_arguments));
 
   FlutterWindow window(project);
-  Win32Window::Point origin(10, 10);
-  Win32Window::Size size(1280, 720);
-  if (!window.CreateAndShow(L"guettoolbox", origin, size)) {
+  int scrWidth  = GetSystemMetrics(SM_CXSCREEN);
+  int scrHeight = GetSystemMetrics(SM_CYSCREEN);
+
+  int w=1280;
+  int h=720;
+  Win32Window::Point origin(scrWidth/2-w/2, scrHeight/2-h/2);
+  Win32Window::Size size(w, h);
+  if (!window.CreateAndShow(L"Guet Toolbox", origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);

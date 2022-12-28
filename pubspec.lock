@@ -64,6 +64,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.0"
+  dio_logger:
+    dependency: "direct main"
+    description:
+      name: dio_logger
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.0.8+8"
   dio_proxy_plugin:
     dependency: "direct main"
     description:

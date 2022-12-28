@@ -13,9 +13,17 @@ import 'package:guettoolbox/common/encrypt/webvpn.dart';
 import 'package:guettoolbox/main.dart';
 
 void main() {
-  print(CAS.encrypt("Guet@045612"));
-  print(WebVPN.encryptHost("bkjw.guet.edu.cn"));
-  print(WebVPN.encryptPassword("bkjw.guet.edu.cn"));
+  for (var i = 0; i < 35; i++) {
+    var column = (i + 1) % 7;
+    column = column == 0 ? 7 : column;
+
+    var row = i ~/ 7 + 1;
+
+    print("$i => $row, $column");
+  }
+  // print(CAS.encrypt("Guet@045612"));
+  // print(WebVPN.encryptHost("bkjw.guet.edu.cn"));
+  // print(WebVPN.encryptPassword("bkjw.guet.edu.cn"));
   // testWidgets('Counter increments smoke test', (WidgetTester tester) async {
   //   // Build our app and trigger a frame.
   //   await tester.pumpWidget(const MyApp());

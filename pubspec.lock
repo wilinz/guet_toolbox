@@ -64,6 +64,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.0"
+  dio_proxy_plugin:
+    dependency: "direct main"
+    description:
+      name: dio_proxy_plugin
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.3"
   fake_async:
     dependency: transitive
     description:

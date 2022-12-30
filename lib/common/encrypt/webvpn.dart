@@ -1,7 +1,5 @@
 import 'dart:core';
-import 'dart:ffi';
 import 'dart:typed_data';
-import 'package:sprintf/sprintf.dart' as fmt;
 
 class WebVPN {
   static final List _Ke = [

@@ -115,7 +115,7 @@ class LoginInterceptor extends Interceptor {
         var password = sp.getString(AppKey.password);
         if (username != null && password != null) {
           try {
-            await LoginRepository()
+            var login=await LoginRepository()
                 .loginAcademicAffairsSystem(username, password);
             var newResp = await dio.setFollowRedirects(false).fetch(response.requestOptions);
             return newResp;

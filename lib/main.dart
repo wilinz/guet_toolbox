@@ -1,8 +1,43 @@
+import 'dart:io';
 
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:flutter/material.dart';
 import 'package:guettoolbox/ui/route.dart';
+import 'package:logger/logger.dart';
+import 'package:sqflite/sqflite_dev.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Init ffi loader if needed.
+
+  var packageName = "com.wilinz.guettoolbox.guettoolbox";
+  // var inMemoryDatabasePath = await getApplicationSupportDirectory();
+
+  String dppath = 'demo.db';
+  Database db;
+  if (Platform.isWindows || Platform.isLinux) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+    dppath = await databaseFactory.getDatabasesPath();
+  }
+  db = await databaseFactory.openDatabase(dppath);
+  // Logger().d(dppath);
+
+  await db.execute('''
+ CREATE TABLE IF NOT EXISTS  Product(
+      id INTEGER PRIMARY KEY,
+      title TEXT
+  )  ;
+  ''');
+  await db.insert('Product', <String, Object?>{'title': 'Product 1'});
+  await db.insert('Product', <String, Object?>{'title': 'Product 1'});
+
+  var result = await db.query('Product');
+  print(result);
+  // prints [{id: 1, title: Product 1}, {id: 2, title: Product 1}]
+  await db.close();
   runApp(const MyApp());
 }
 

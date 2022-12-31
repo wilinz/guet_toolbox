@@ -1,43 +1,73 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:flutter/material.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:logger/logger.dart';
-import 'package:sqflite/sqflite_dev.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqlite3/open.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   initDB();
   runApp(const MyApp());
 }
 
 initDB() async {
   if (kIsWeb) return;
-  // WidgetsFlutterBinding.ensureInitialized()
-  String dpPath = 'demo.db';
+  String dpPath = 'demo_encrypt.db';
+  DatabaseFactory myDatabaseFactory = databaseFactory;
   if (Platform.isWindows || Platform.isLinux) {
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
-    dpPath = await databaseFactory.getDatabasesPath();
+    myDatabaseFactory = createDatabaseFactoryFfi(ffiInit: ffiInit);
+    var appSupportDir = await getApplicationSupportDirectory();
+    var dir = join(appSupportDir.path, "databases");
+    dpPath = join(dir, dpPath);
+    Logger().d(dpPath);
   }
-  Database db = await databaseFactory.openDatabase(dpPath);
 
-  // await db.execute('''
-  // CREATE TABLE IF NOT EXISTS  Product(
-  //      id INTEGER PRIMARY KEY,
-  //      title TEXT
-  //  )  ;
-  //  ''');
-  // await db.insert('Product', <String, Object?>{'title': 'Product 1'});
-  // await db.insert('Product', <String, Object?>{'title': 'Product 1'});
-  //
-  // var result = await db.query('Product');
-  // print(result);
-  // // prints [{id: 1, title: Product 1}, {id: 2, title: Product 1}]
-  // await db.close();
+  final db = await myDatabaseFactory.openDatabase(
+    dpPath,
+    options: OpenDatabaseOptions(
+      version: 1,
+      onConfigure: (db) async {
+        // This is the part where we pass the "password"
+        await db.rawQuery("PRAGMA KEY='1234'");
+      },
+      onCreate: (db, version) async {
+        db.execute('''
+  CREATE TABLE IF NOT EXISTS  Product(
+       id INTEGER PRIMARY KEY,
+       title TEXT
+   )  ;
+   ''');
+      },
+    ),
+  );
+  await db.insert('Product', <String, Object?>{'title': 'Product 1'});
+  await db.insert('Product', <String, Object?>{'title': 'Product 1'});
+
+  var result = await db.query('Product');
+  print(result);
+  // prints [{id: 1, title: Product 1}, {id: 2, title: Product 1}]
+  await db.close();
+}
+
+void ffiInit() {
+  open.overrideForAll(sqlcipherOpen);
+}
+
+DynamicLibrary sqlcipherOpen() {
+  if (Platform.isLinux) {
+    return DynamicLibrary.open('libsqlcipher.so');
+  } else {
+    //isWindows
+    DynamicLibrary.open('data/flutter_assets/dll/libcrypto-1_1-x64.dll');
+    return DynamicLibrary.open('data/flutter_assets/dll/sqlcipher.dll');
+  }
 }
 
 class MyApp extends StatelessWidget {

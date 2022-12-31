@@ -62,7 +62,7 @@ class AppNetwork {
       if (!kIsWeb) {
         var dir = await getApplicationSupportDirectory();
         cookieJar =
-            PersistCookieJar(storage: FileStorage(join(dir.path, "/cookies")));
+            PersistCookieJar(storage: FileStorage(join(dir.path, "cookies")));
       } else {
         cookieJar = CookieJar();
       }

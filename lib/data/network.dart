@@ -7,6 +7,7 @@ import 'package:guettoolbox/common/key.dart';
 import 'package:guettoolbox/data/repository/login.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:guettoolbox/util/ext.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio_logger/dio_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -57,9 +58,15 @@ class AppNetwork {
         validateStatus: (int? status) =>
             status != null && status >= 200 && status < 400,
       ));
-      var dir = await getApplicationSupportDirectory();
-      var cookieJar =
-          PersistCookieJar(storage: FileStorage(dir.path + "/cookies"));
+      CookieJar cookieJar;
+      if (!kIsWeb) {
+        var dir = await getApplicationSupportDirectory();
+        cookieJar =
+            PersistCookieJar(storage: FileStorage(join(dir.path, "/cookies")));
+      } else {
+        cookieJar = CookieJar();
+      }
+
       dio.interceptors.add(CookieManager(cookieJar));
       if (!kReleaseMode) {
         //获取系统代理
@@ -115,9 +122,11 @@ class LoginInterceptor extends Interceptor {
         var password = sp.getString(AppKey.password);
         if (username != null && password != null) {
           try {
-            var login=await LoginRepository()
+            var login = await LoginRepository()
                 .loginAcademicAffairsSystem(username, password);
-            var newResp = await dio.setFollowRedirects(false).fetch(response.requestOptions);
+            var newResp = await dio
+                .setFollowRedirects(false)
+                .fetch(response.requestOptions);
             return newResp;
           } catch (e) {
             print(e);

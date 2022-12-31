@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/material.dart';
@@ -8,37 +9,35 @@ import 'package:logger/logger.dart';
 import 'package:sqflite/sqflite_dev.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  // Init ffi loader if needed.
+void main() {
+  initDB();
+  runApp(const MyApp());
+}
 
-  var packageName = "com.wilinz.guettoolbox.guettoolbox";
-  // var inMemoryDatabasePath = await getApplicationSupportDirectory();
-
-  String dppath = 'demo.db';
-  Database db;
+initDB() async {
+  if (kIsWeb) return;
+  // WidgetsFlutterBinding.ensureInitialized()
+  String dpPath = 'demo.db';
   if (Platform.isWindows || Platform.isLinux) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
-    dppath = await databaseFactory.getDatabasesPath();
+    dpPath = await databaseFactory.getDatabasesPath();
   }
-  db = await databaseFactory.openDatabase(dppath);
-  // Logger().d(dppath);
+  Database db = await databaseFactory.openDatabase(dpPath);
 
-  await db.execute('''
- CREATE TABLE IF NOT EXISTS  Product(
-      id INTEGER PRIMARY KEY,
-      title TEXT
-  )  ;
-  ''');
-  await db.insert('Product', <String, Object?>{'title': 'Product 1'});
-  await db.insert('Product', <String, Object?>{'title': 'Product 1'});
-
-  var result = await db.query('Product');
-  print(result);
-  // prints [{id: 1, title: Product 1}, {id: 2, title: Product 1}]
-  await db.close();
-  runApp(const MyApp());
+  // await db.execute('''
+  // CREATE TABLE IF NOT EXISTS  Product(
+  //      id INTEGER PRIMARY KEY,
+  //      title TEXT
+  //  )  ;
+  //  ''');
+  // await db.insert('Product', <String, Object?>{'title': 'Product 1'});
+  // await db.insert('Product', <String, Object?>{'title': 'Product 1'});
+  //
+  // var result = await db.query('Product');
+  // print(result);
+  // // prints [{id: 1, title: Product 1}, {id: 2, title: Product 1}]
+  // await db.close();
 }
 
 class MyApp extends StatelessWidget {

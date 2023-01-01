@@ -42,3 +42,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/.cookies/ie0_ps1/.index
+/dll/libssl-1_1-x64.dll
+/.cookies/ie0_ps1/v.guet.edu.cn

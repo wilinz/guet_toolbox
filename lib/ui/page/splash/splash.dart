@@ -36,7 +36,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    t = Timer(Duration(milliseconds: 500), () {
+    t = Timer(Duration(milliseconds: 250), () {
       LoginRepository().ticket.then((ticket) {
         var route = ticket == null ? AppRoute.loginPage : AppRoute.mainPage;
         Navigator.pushReplacementNamed(context, route);

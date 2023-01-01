@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:guettoolbox/data/model/course.dart';
+import 'package:guettoolbox/data/model/term.dart';
 import 'package:guettoolbox/data/repository/course.dart';
 import 'package:guettoolbox/util/datetime.dart';
 
-import '../../../data/model/course.dart';
-import '../../../data/model/term.dart';
-
-class MainViewModel extends ChangeNotifier {
+class ScheduleViewModel extends ChangeNotifier {
   List<Term> termList = List.empty();
   Term? _currentTerm;
 

@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:guettoolbox/db/setup.dart';
 import 'package:guettoolbox/ui/route.dart';
+import 'package:logger/logger.dart';
 
-void main() {
+import 'db/database.dart';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  setupDatabases();
+  final _database = MyEncryptedDatabase();
+  _database.into(_database.notes).insert(NotesCompanion.insert(content: "sb"));
+  var r = await _database.select(_database.notes).get();
+  Logger().d(r);
   runApp(const MyApp());
 }
 

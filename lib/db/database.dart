@@ -1,18 +1,13 @@
-import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
-import 'package:logger/logger.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
-
+import 'package:drift/wasm.dart';
+import 'package:sqlite3/wasm.dart';
 part 'database.g.dart';
 
 // This database is kep simple on purpose, this example only demonstrates how to
 // use drift with an encrypted database.
 // For advanced drift features, see the other examples in this project.
-
-const _encryptionPassword = 'drift.example.unsafe_password';
 
 class Notes extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -37,36 +32,19 @@ class MyEncryptedDatabase extends _$MyEncryptedDatabase {
 
 QueryExecutor _openDatabase() {
   return LazyDatabase(() async {
-    final path = (Platform.isMacOS || Platform.isIOS)
-        ? await getApplicationDocumentsDirectory()
-        : await getApplicationSupportDirectory();
-
-    final dbFile = p.join(path.path, 'databases', 'app.db');
-    Logger().d(dbFile);
-    return NativeDatabase(
-      File(dbFile),
-      setup: (db) {
-        // Check that we're actually running with SQLCipher by quering the
-        // cipher_version pragma.
-        final result = db.select('pragma cipher_version');
-        if (result.isEmpty) {
-          throw UnsupportedError(
-            'this database needs to run with sqlcipher, but that library is '
-            'not available!',
-          );
-        }else{
-          Logger().d("数据库已加密");
-        }
-
-        // Then, apply the key to encrypt the database. Unfortunately, this
-        // pragma doesn't seem to support prepared statements so we inline the
-        // key.
-        final escapedKey = _encryptionPassword.replaceAll("'", "''");
-        db.execute("pragma key = '$escapedKey'");
-
-        // Test that the key is correct by selecting from a table
-        db.execute('select count(*) from sqlite_master');
-      },
+    // Load wasm bundle
+    final response = await Dio().getUri(Uri.parse('sqlite3.wasm'),options: Options(
+        responseType:ResponseType.bytes
+    ));
+    // Create a virtual file system backed by IndexedDb with everything in
+    // `/drift/my_app/` being persisted.
+    final fs = await IndexedDbFileSystem.open(dbName: 'my_app');
+    final sqlite3 = await WasmSqlite3.load(
+      response.data,
+      SqliteEnvironment(fileSystem: fs),
     );
+
+    // Then, open a database inside that persisted folder.
+    return WasmDatabase(sqlite3: sqlite3, path: '/drift/my_app/app.db');
   });
 }

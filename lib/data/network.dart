@@ -1,4 +1,6 @@
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/adapter_browser.dart';
+import 'package:dio/browser_imp.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_proxy_plugin/dio_proxy_plugin.dart';
@@ -7,6 +9,7 @@ import 'package:guettoolbox/common/key.dart';
 import 'package:guettoolbox/data/repository/login.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:guettoolbox/util/ext.dart';
+import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio_logger/dio_logger.dart';
@@ -51,23 +54,28 @@ class AppNetwork {
 
   static Future<AppNetwork> getInstance() async {
     if (_instance == null) {
-      var dio = Dio(BaseOptions(
+      final option = BaseOptions(
         baseUrl: baseUrlInWebVpn,
         headers: {"User-Agent": userAgent},
         followRedirects: false,
         validateStatus: (int? status) =>
             status != null && status >= 200 && status < 400,
-      ));
-      CookieJar cookieJar;
-      if (!kIsWeb) {
-        var dir = await getApplicationSupportDirectory();
-        cookieJar =
-            PersistCookieJar(storage: FileStorage(join(dir.path, "cookies")));
+      );
+      Dio dio;
+      if (kIsWeb) {
+        dio = DioForBrowser(option);
+        var adapter = BrowserHttpClientAdapter();
+        // This property will automatically set cookies
+        adapter.withCredentials = true;
+        dio.httpClientAdapter = adapter;
       } else {
-        cookieJar = CookieJar();
+        dio = Dio(option);
+        var dir = await getApplicationSupportDirectory();
+        final cookieJar =
+        PersistCookieJar(storage: FileStorage(join(dir.path, "cookies")));
+        dio.interceptors.add(CookieManager(cookieJar));
       }
 
-      dio.interceptors.add(CookieManager(cookieJar));
       if (!kReleaseMode) {
         //获取系统代理
         //设置dio proxy
@@ -76,6 +84,9 @@ class AppNetwork {
         // dio.httpClientAdapter = httpProxyAdapter;
       }
       dio.interceptors.add(MyInterceptor());
+      if (kIsWeb) {
+        dio.interceptors.add(WebProxyInterceptor());
+      }
       dio.interceptors.add(LoginInterceptor(dio));
       dio.interceptors.add(dioLoggerInterceptor);
       _instance = AppNetwork._create();
@@ -92,6 +103,34 @@ class UnauthorizedException implements Exception {
 
   @override
   String toString() => msg;
+}
+
+class WebProxyInterceptor extends Interceptor {
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    if (kIsWeb) {
+      final newOption = options.copyWith(baseUrl: "http://127.0.0.1:9999/");
+      newOption.path = "/proxy";
+      newOption
+        ..queryParameters.clear()
+        ..queryParameters["url"] = options.uri.toString();
+      _replaceHeader(newOption, ["Referer", "User-Agent"]);
+      handler.next(newOption);
+      return;
+    }
+    handler.next(options);
+  }
+
+  void _replaceHeader(RequestOptions newOption, List<String> keys) {
+    keys.forEach((key) {
+      var referer = newOption.headers[key];
+      Logger().d(referer);
+      if (referer != null) {
+        newOption.headers["X-$key"] = referer.toString();
+        newOption.headers.remove(key);
+      }
+    });
+  }
 }
 
 class LoginInterceptor extends Interceptor {

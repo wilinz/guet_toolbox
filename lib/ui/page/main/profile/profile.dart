@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guettoolbox/ui/route.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -22,7 +23,9 @@ class _ProfilePageState extends State<_ProfilePage>
   Widget build(BuildContext context) {
     super.build(context);
     return Column(
-      children: [ElevatedButton(onPressed: () {}, child: Text("选课"))],
+      children: [ElevatedButton(onPressed: () {
+        Navigator.of(context).pushNamed(AppRoute.loginPage);
+      }, child: Text("选课"))],
     );
   }
 

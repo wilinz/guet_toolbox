@@ -11,6 +11,11 @@ apt install libssl-dev
 ```
 
 Flutter 生成代码
-```powershell
+```shell
    flutter pub run build_runner build
+```
+
+Web运行在指定端口
+```shell
+flutter run -d chrome --web-port 8888  --web-hostname 0.0.0.0
 ```

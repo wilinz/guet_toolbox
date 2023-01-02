@@ -1,7 +1,10 @@
+import 'dart:convert';
+import 'package:html/parser.dart' show parse;
 import 'package:dio/dio.dart';
 import 'package:guettoolbox/common/encrypt/cas.dart';
 import 'package:guettoolbox/data/model/login.dart';
 import 'package:guettoolbox/data/network.dart';
+import 'package:logger/logger.dart';
 
 class LoginService {
   static Future<String> loginCAS(
@@ -16,12 +19,14 @@ class LoginService {
       };
       var resp = await (await AppNetwork.getDio(followRedirects: true)).post(
           "https://cas.guet.edu.cn/cas/v1/tickets",
-          options: Options(contentType: AppNetwork.typeUrlEncode),
+          options: Options(
+              contentType: AppNetwork.typeUrlEncode,
+              responseType: ResponseType.plain),
           data: data);
       var location = resp.headers.value("Location");
       var respData = resp.data;
       if (resp.statusCode != 201) {
-        var loginResp = LoginCasResponse.fromJson(respData);
+        var loginResp = LoginCasResponse.fromJson(jsonDecode(respData));
         var loginResult = loginResp.data;
         var title = "登录失败";
         var message = "密码错误";
@@ -51,6 +56,11 @@ class LoginService {
         throw LogonFailedException("$title: $message");
       }
       if (location == null) {
+        var document = parse(respData);
+        final form = document.body?.getElementsByTagName("form").first;
+        location = form?.attributes["action"];
+      }
+      if (location == null) {
         throw LogonFailedException(
             "登录失败, 响应头 Location 为null，状态码：${resp.statusCode}");
       }
@@ -59,8 +69,10 @@ class LoginService {
 
     Future<String> second(String url, String service) async {
       var data = {"service": service};
-      var resp = await (await AppNetwork.getDio(followRedirects: true)).post(url,
-          options: Options(contentType: AppNetwork.typeUrlEncode), data: data);
+      var resp = await (await AppNetwork.getDio(followRedirects: true)).post(
+          url,
+          options: Options(contentType: AppNetwork.typeUrlEncode),
+          data: data);
       var body = resp.data;
       if (resp.statusCode != 200) {
         throw LogonFailedException(

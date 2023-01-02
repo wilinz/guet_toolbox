@@ -51,9 +51,11 @@ QueryExecutor _openDatabase() {
         final result = db.select('pragma cipher_version');
         if (result.isEmpty) {
           throw UnsupportedError(
-            'This database needs to run with SQLCipher, but that library is '
+            'this database needs to run with sqlcipher, but that library is '
             'not available!',
           );
+        }else{
+          Logger().d("数据库已加密");
         }
 
         // Then, apply the key to encrypt the database. Unfortunately, this

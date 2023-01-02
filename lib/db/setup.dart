@@ -4,5 +4,6 @@ import 'package:sqlite3/open.dart';
 
 setupDatabases() {
   open
-    ..overrideFor(OperatingSystem.android, openCipherOnAndroid);
+    ..overrideFor(OperatingSystem.android, openCipherOnAndroid)
+    ..overrideFor(OperatingSystem.iOS, DynamicLibrary.process);
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:guettoolbox/data/model/course.dart';
-import 'package:guettoolbox/data/model/term.dart';
+import 'package:guettoolbox/data/model/course_response.dart';
+import 'package:guettoolbox/data/model/term_response.dart';
 import 'package:guettoolbox/data/repository/course.dart';
 import 'package:guettoolbox/util/datetime.dart';
 

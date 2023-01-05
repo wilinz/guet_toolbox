@@ -19,3 +19,9 @@ Web运行在指定端口
 ```shell
 flutter run -d chrome --web-port 8888  --web-hostname 0.0.0.0
 ```
+
+Json to dart:
+```shell
+#会覆盖，修改原json名为"_"开头可忽略此文件，避免覆盖
+flutter pub run json5_model --src=lib/data/model/json  --dist=lib/data/model
+```

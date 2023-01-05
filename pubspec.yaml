@@ -49,6 +49,7 @@ dependencies:
 #  sqlcipher_flutter_libs: ^0.5.1
   sqlite3: ^1.8.0
   html: ^0.15.1
+  json_annotation: ^4.7.0
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +63,11 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   drift_dev: ^2.4.0
   build_runner: ^2.3.3
+#  json_model: ^1.0.0
+  json5_model:
+    git:
+      url: https://github.com/wilinz/json5_model.git
+  json_serializable: ^6.5.4
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

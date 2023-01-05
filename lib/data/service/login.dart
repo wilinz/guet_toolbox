@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'package:guettoolbox/data/model/index.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:dio/dio.dart';
 import 'package:guettoolbox/common/encrypt/cas.dart';
-import 'package:guettoolbox/data/model/login.dart';
 import 'package:guettoolbox/data/network.dart';
 
 class LoginService {

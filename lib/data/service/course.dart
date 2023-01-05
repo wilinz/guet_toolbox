@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:guettoolbox/data/model/course.dart';
+import 'package:guettoolbox/data/model/course_response.dart';
 
 import '../model/template.dart';
 import '../network.dart';

@@ -1,7 +1,8 @@
-import 'package:guettoolbox/data/model/term.dart';
+
+import 'package:guettoolbox/data/model/course_response.dart';
 import 'package:guettoolbox/data/service/term.dart';
 
-import '../model/course.dart';
+import '../model/term_response.dart';
 import '../service/course.dart';
 
 class CourseRepository {

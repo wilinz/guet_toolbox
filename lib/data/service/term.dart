@@ -5,12 +5,10 @@ import 'package:guettoolbox/data/network.dart';
 
 import '../model/term_response.dart';
 
-
 class TermService {
   static Future<List<Term>> getTermList() async {
-    var resp = await (await AppNetwork.getDio()).get("comm/getlabarrangeterm");
-    var respData = ResponseTemplate<List<Term>,Term>.fromJson(
-        resp.data, (e) => Term.fromJson(e));
-    return Future(() => respData.data);
+    final resp = await (await AppNetwork.getDio()).get("comm/getlabarrangeterm");
+    final respData = TermResponse.fromJson(resp.data);
+    return respData.data;
   }
 }

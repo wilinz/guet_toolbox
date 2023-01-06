@@ -23,7 +23,7 @@ Map<String, dynamic> _$CourseResponseToJson(CourseResponse instance) =>
       'data': instance.data.map((e) => e.toJson()).toList(),
     };
 
-Course _$DataFromJson(Map<String, dynamic> json) => Course(
+Course _$CourseFromJson(Map<String, dynamic> json) => Course(
       id: json['id'] as int? ?? 0,
       ctype: json['ctype'] as String? ?? '',
       tname: json['tname'] as String? ?? '',
@@ -56,7 +56,7 @@ Course _$DataFromJson(Map<String, dynamic> json) => Course(
       hours: json['hours'] as int? ?? 0,
     );
 
-Map<String, dynamic> _$DataToJson(Course instance) => <String, dynamic>{
+Map<String, dynamic> _$CourseToJson(Course instance) => <String, dynamic>{
       'id': instance.id,
       'ctype': instance.ctype,
       'tname': instance.tname,

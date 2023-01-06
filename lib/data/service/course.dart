@@ -6,11 +6,27 @@ import '../network.dart';
 
 class CourseService {
   static Future<List<Course>> getCourseList(String term) async {
-    var resp = await (await AppNetwork.getDio()).get(
-        "student/getstutable?vpn-12-o2-bkjw.guet.edu.cn&_dc=1671744659558&page=1&start=0&limit=25",
-        queryParameters: {"term": term});
-    var respData = ResponseTemplate<List<Course>, Course>.fromJson(
-        resp.data, (e) => Course.fromJson(e));
-    return Future(() => respData.data);
+    final resp = await (await AppNetwork.getDio())
+        .get("student/getstutable", queryParameters: {"term": term});
+    final respData = CourseResponse.fromJson(resp.data);
+    return respData.data;
+  }
+
+  static Future<String> getPlan(
+    String term,
+    String grade,
+    String dptno,
+    String spno,
+  ) async {
+    final resp = await (await AppNetwork.getDio()).get("student/GetPlan",
+        queryParameters: {
+          "term": term,
+          "grade": grade,
+          "dptno": dptno,
+          "spno": spno,
+          "stype": "正常"
+        },
+        options: Options(responseType: ResponseType.plain));
+    return resp.data;
   }
 }

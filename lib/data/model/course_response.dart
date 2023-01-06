@@ -116,9 +116,9 @@ class Course {
   @JsonKey(name: "hours", defaultValue: 0)
   int hours;
 
-  factory Course.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
+  factory Course.fromJson(Map<String, dynamic> json) => _$CourseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DataToJson(this);
+  Map<String, dynamic> toJson() => _$CourseToJson(this);
 }
 
 

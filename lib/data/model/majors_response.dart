@@ -1,10 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'majors_code_response.g.dart';
+part 'majors_response.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class MajorsCodeResponse {
-  MajorsCodeResponse(
+class MajorsResponse {
+  MajorsResponse(
       {required this.success,
       required this.total,
       required this.data});
@@ -14,16 +14,16 @@ class MajorsCodeResponse {
   @JsonKey(name: "total", defaultValue: 0)
   int total;
   @JsonKey(name: "data", defaultValue: [])
-  List<Data> data;
+  List<Major> data;
 
-  factory MajorsCodeResponse.fromJson(Map<String, dynamic> json) => _$MajorsCodeResponseFromJson(json);
+  factory MajorsResponse.fromJson(Map<String, dynamic> json) => _$MajorsResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$MajorsCodeResponseToJson(this);
+  Map<String, dynamic> toJson() => _$MajorsResponseToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class Data {
-  Data(
+class Major {
+  Major(
       {required this.spno,
       required this.spname,
       this.engname,
@@ -62,9 +62,9 @@ class Data {
   @JsonKey(name: "used")
   int? used;
 
-  factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
+  factory Major.fromJson(Map<String, dynamic> json) => _$MajorFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DataToJson(this);
+  Map<String, dynamic> toJson() => _$MajorToJson(this);
 }
 
 

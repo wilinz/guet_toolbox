@@ -1,29 +1,29 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'majors_code_response.dart';
+part of 'majors_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-MajorsCodeResponse _$MajorsCodeResponseFromJson(Map<String, dynamic> json) =>
-    MajorsCodeResponse(
+MajorsResponse _$MajorsResponseFromJson(Map<String, dynamic> json) =>
+    MajorsResponse(
       success: json['success'] as bool? ?? false,
       total: json['total'] as int? ?? 0,
       data: (json['data'] as List<dynamic>?)
-              ?.map((e) => Data.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => Major.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
     );
 
-Map<String, dynamic> _$MajorsCodeResponseToJson(MajorsCodeResponse instance) =>
+Map<String, dynamic> _$MajorsResponseToJson(MajorsResponse instance) =>
     <String, dynamic>{
       'success': instance.success,
       'total': instance.total,
       'data': instance.data.map((e) => e.toJson()).toList(),
     };
 
-Data _$DataFromJson(Map<String, dynamic> json) => Data(
+Major _$MajorFromJson(Map<String, dynamic> json) => Major(
       spno: json['spno'] as String? ?? '',
       spname: json['spname'] as String? ?? '',
       engname: json['engname'] as String?,
@@ -38,7 +38,7 @@ Data _$DataFromJson(Map<String, dynamic> json) => Data(
       used: json['used'] as int?,
     );
 
-Map<String, dynamic> _$DataToJson(Data instance) => <String, dynamic>{
+Map<String, dynamic> _$MajorToJson(Major instance) => <String, dynamic>{
       'spno': instance.spno,
       'spname': instance.spname,
       'engname': instance.engname,

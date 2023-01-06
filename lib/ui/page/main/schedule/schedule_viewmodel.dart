@@ -18,7 +18,7 @@ class ScheduleViewModel extends ChangeNotifier {
   List<Course?> courseList = List.empty();
 
   Future<List<Term>> getTermList() {
-    return CourseRepository().getTermList().then((terms) async {
+    return CourseRepository.getInstance().getTermList().then((terms) async {
       termList = terms;
       currentTerm = terms.firstWhere((term) {
         var start = DateTimeUtil.parseDate(term.startdate);
@@ -35,7 +35,7 @@ class ScheduleViewModel extends ChangeNotifier {
   }
 
   Future<List<Course>> getCourseList(String term) {
-    return CourseRepository().getCourseList(term).then((value) {
+    return CourseRepository.getInstance().getCourseList(term).then((value) {
       courseList = List<Course?>.generate(35, (i) {
         var column = (i + 1) % 7;
         if (column == 0) column = 7;

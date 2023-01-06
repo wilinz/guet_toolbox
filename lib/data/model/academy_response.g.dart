@@ -11,7 +11,7 @@ AcademyResponse _$AcademyResponseFromJson(Map<String, dynamic> json) =>
       success: json['success'] as bool? ?? false,
       total: json['total'] as int? ?? 0,
       data: (json['data'] as List<dynamic>?)
-              ?.map((e) => Data.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => Academy.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
     );
@@ -23,7 +23,7 @@ Map<String, dynamic> _$AcademyResponseToJson(AcademyResponse instance) =>
       'data': instance.data.map((e) => e.toJson()).toList(),
     };
 
-Data _$DataFromJson(Map<String, dynamic> json) => Data(
+Academy _$AcademyFromJson(Map<String, dynamic> json) => Academy(
       dptno: json['dptno'] as String? ?? '',
       dptname: json['dptname'] as String? ?? '',
       engname: json['engname'] as String?,
@@ -35,7 +35,7 @@ Data _$DataFromJson(Map<String, dynamic> json) => Data(
       used: json['used'] as int? ?? 0,
     );
 
-Map<String, dynamic> _$DataToJson(Data instance) => <String, dynamic>{
+Map<String, dynamic> _$AcademyToJson(Academy instance) => <String, dynamic>{
       'dptno': instance.dptno,
       'dptname': instance.dptname,
       'engname': instance.engname,

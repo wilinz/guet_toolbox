@@ -14,7 +14,7 @@ class AcademyResponse {
   @JsonKey(name: "total", defaultValue: 0)
   int total;
   @JsonKey(name: "data", defaultValue: [])
-  List<Data> data;
+  List<Academy> data;
 
   factory AcademyResponse.fromJson(Map<String, dynamic> json) => _$AcademyResponseFromJson(json);
 
@@ -22,8 +22,8 @@ class AcademyResponse {
 }
 
 @JsonSerializable(explicitToJson: true)
-class Data {
-  Data(
+class Academy {
+  Academy(
       {required this.dptno,
       required this.dptname,
       this.engname,
@@ -53,9 +53,10 @@ class Data {
   @JsonKey(name: "used", defaultValue: 0)
   int used;
 
-  factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
+  factory Academy.fromJson(Map<String, dynamic> json) => _$AcademyFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DataToJson(this);
+  Map<String, dynamic> toJson() => _$AcademyToJson(this);
+
 }
 
 

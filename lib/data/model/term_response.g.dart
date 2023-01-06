@@ -22,7 +22,7 @@ Map<String, dynamic> _$TermResponseToJson(TermResponse instance) =>
       'data': instance.data.map((e) => e.toJson()).toList(),
     };
 
-Term _$DataFromJson(Map<String, dynamic> json) => Term(
+Term _$TermFromJson(Map<String, dynamic> json) => Term(
       term: json['term'] as String? ?? '',
       startdate: json['startdate'] as String? ?? '',
       enddate: json['enddate'] as String? ?? '',
@@ -32,7 +32,7 @@ Term _$DataFromJson(Map<String, dynamic> json) => Term(
       comm: json['comm'],
     );
 
-Map<String, dynamic> _$DataToJson(Term instance) => <String, dynamic>{
+Map<String, dynamic> _$TermToJson(Term instance) => <String, dynamic>{
       'term': instance.term,
       'startdate': instance.startdate,
       'enddate': instance.enddate,

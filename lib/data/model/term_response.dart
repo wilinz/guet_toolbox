@@ -47,9 +47,9 @@ class Term {
   @JsonKey(name: "comm")
   dynamic comm;
 
-  factory Term.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
+  factory Term.fromJson(Map<String, dynamic> json) => _$TermFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DataToJson(this);
+  Map<String, dynamic> toJson() => _$TermToJson(this);
 }
 
 

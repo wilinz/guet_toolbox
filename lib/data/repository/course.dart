@@ -1,4 +1,3 @@
-
 import 'package:guettoolbox/data/model/course_response.dart';
 import 'package:guettoolbox/data/service/term.dart';
 
@@ -8,11 +7,21 @@ import '../service/course.dart';
 class CourseRepository {
   Future<List<Term>> getTermList() => TermService.getTermList();
 
-  Future<List<Course>> getCourseList(String term) => CourseService.getCourseList(term);
+  Future<List<Course>> getCourseList(String term) =>
+      CourseService.getCourseList(term);
 
-  CourseRepository._create();
+  Future<String> getPlan(
+    String term,
+    String grade,
+    String dptno,
+    String spno,
+  ) async {
+    return CourseService.getPlan(term, grade, dptno, spno);
+  }
 
-  static final _instance = CourseRepository._create();
+  CourseRepository._();
 
-  factory CourseRepository() => _instance;
+  static CourseRepository? _instance;
+
+  factory CourseRepository.getInstance() => _instance ??= CourseRepository._();
 }

@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:guettoolbox/data/model/index.dart';
+import 'package:guettoolbox/data/model/login_cas_response.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:dio/dio.dart';
 import 'package:guettoolbox/common/encrypt/cas.dart';

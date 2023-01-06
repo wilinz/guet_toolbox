@@ -25,8 +25,6 @@ class _SchedulePage extends StatefulWidget {
 
 class _SchedulePageState extends State<_SchedulePage>
     with AutomaticKeepAliveClientMixin {
-  String? selected = null;
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -112,14 +110,6 @@ class _SchedulePageState extends State<_SchedulePage>
 
   List<DropdownMenuItem<Object?>> createDropItemList(
       ScheduleViewModel viewModel) {
-    // if (viewModel.termList.isEmpty) {
-    //   return [
-    //     DropdownMenuItem(
-    //       child: Text("null"),
-    //       value: "null",
-    //     )
-    //   ];
-    // }
     return List.generate(viewModel.termList.length, (index) {
       var item = viewModel.termList[index];
       return DropdownMenuItem(

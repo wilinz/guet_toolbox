@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:guettoolbox/data/model/course_response.dart';
+import 'package:guettoolbox/data/model/index.dart';
+import 'package:guettoolbox/data/model/plan_course_detail_response.dart';
+import 'package:guettoolbox/data/model/plan_course_response.dart';
 
 import '../model/template.dart';
 import '../network.dart';
@@ -12,7 +15,7 @@ class CourseService {
     return respData.data;
   }
 
-  static Future<String> getPlan(
+  static Future<List<PlanCourse>> getPlan(
     String term,
     String grade,
     String dptno,
@@ -25,8 +28,19 @@ class CourseService {
           "dptno": dptno,
           "spno": spno,
           "stype": "正常"
-        },
-        options: Options(responseType: ResponseType.plain));
-    return resp.data;
+        });
+    final data = PlanCourseResponse.fromJson(resp.data).data;
+    return data;
+  }
+
+  static Future<List<PlanCourseDetail>> getPlanCourseDetail(String id, String courseid) async {
+    final resp = await (await AppNetwork.getDio())
+        .get("student/GetPlanCno", queryParameters: {
+      "id": id,
+      "courseid": courseid,
+      // "term": term,
+    });
+    final data = PlanCourseDetailResponse.fromJson(resp.data);
+    return data.data;
   }
 }

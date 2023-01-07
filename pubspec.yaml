@@ -50,6 +50,7 @@ dependencies:
   sqlite3: ^1.8.0
   html: ^0.15.1
   json_annotation: ^4.7.0
+  dropdown_textfield: ^1.0.7
 
 dev_dependencies:
   flutter_test:

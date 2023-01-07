@@ -1,4 +1,5 @@
 import 'package:guettoolbox/data/model/course_response.dart';
+import 'package:guettoolbox/data/model/plan_course_response.dart';
 import 'package:guettoolbox/data/service/term.dart';
 
 import '../model/term_response.dart';
@@ -10,7 +11,7 @@ class CourseRepository {
   Future<List<Course>> getCourseList(String term) =>
       CourseService.getCourseList(term);
 
-  Future<String> getPlan(
+  Future<List<PlanCourse>> getPlan(
     String term,
     String grade,
     String dptno,

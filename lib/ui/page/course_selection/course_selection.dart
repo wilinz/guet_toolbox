@@ -1,4 +1,6 @@
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:guettoolbox/data/model/plan_course_detail_response.dart';
 import 'package:guettoolbox/ui/page/course_selection/course_selection_vm.dart';
 import 'package:provider/provider.dart';
 
@@ -22,8 +24,15 @@ class _CourseSelectionPage extends StatefulWidget {
 }
 
 class _CourseSelectionPageState extends State<_CourseSelectionPage> {
+  var text = "";
 
-  var text="";
+  var isNetworkOnly = false;
+
+  final networkFilter = (PlanCourseDetail e) {
+    return e.cname!.contains("网络");
+  };
+
+  // var isB
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +48,7 @@ class _CourseSelectionPageState extends State<_CourseSelectionPage> {
                 // 主轴(水平)方向间距
                 runSpacing: 4.0,
                 // 纵轴（垂直）方向间距
-                alignment: WrapAlignment.center,
+                alignment: WrapAlignment.start,
                 //沿主轴方向居中
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: <Widget>[
@@ -55,26 +64,90 @@ class _CourseSelectionPageState extends State<_CourseSelectionPage> {
                   ),
                   buildTermDropdownButton(viewModel),
                   buildAcademyDropdownButton(viewModel),
-                  buildMajorDropdownButton(viewModel),
+                  buildMajorDropDownTextField(viewModel),
                   ElevatedButton(
                       onPressed: () {
                         viewModel.getPlan(
                             term: viewModel.currentTerm!.term,
                             grade: viewModel.studentInfo!.grade,
                             dptno: viewModel.currentAcademy!.dptno,
-                            spno: viewModel.currentMajor!.spno).then((value) {
-                              setState(() {
-                                text=value;
-                              });
-                        });
+                            spno: viewModel.currentMajor!.spno);
                       },
-                      child: Text("查询"))
+                      child: Text("查询")),
+                  ElevatedButton(
+                      onPressed: () {
+                        viewModel.getPlan(
+                            term: viewModel.currentTerm!.term,
+                            grade: viewModel.studentInfo!.grade,
+                            dptno: viewModel.currentAcademy!.dptno,
+                            spno: viewModel.currentMajor!.spno,
+                            networkCourseOnly: true);
+                      },
+                      child: Text("仅查询网课"))
                 ]),
-            Expanded(child: SingleChildScrollView(
-              child: SelectableText(text),
-            ))
-
-
+            Wrap(
+                spacing: 8.0,
+                // 主轴(水平)方向间距
+                runSpacing: 4.0,
+                // 纵轴（垂直）方向间距
+                alignment: WrapAlignment.start,
+                //沿主轴方向居中
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: 4,
+                  ),
+                  CheckboxListTile(
+                      title: Text("只看网络"),
+                      controlAffinity: ListTileControlAffinity.leading,
+                      value: isNetworkOnly,
+                      onChanged: (v) {
+                        setState(() {
+                          isNetworkOnly = v!;
+                          if (isNetworkOnly) {
+                            viewModel.filter(networkFilter);
+                          } else {
+                            viewModel.undoFilter(networkFilter);
+                          }
+                          viewModel.notify();
+                        });
+                      }),
+                  CheckboxListTile(
+                      title: Text("只看网络"),
+                      controlAffinity: ListTileControlAffinity.leading,
+                      value: isNetworkOnly,
+                      onChanged: (v) {
+                        setState(() {
+                          isNetworkOnly = v!;
+                          if (isNetworkOnly) {
+                            viewModel.filter(networkFilter);
+                          } else {
+                            viewModel.undoFilter(networkFilter);
+                          }
+                          viewModel.notify();
+                        });
+                      })
+                ]),
+            Expanded(
+                child: ListView.builder(
+                    itemCount: viewModel.details.length,
+                    itemBuilder: (c, i) {
+                      final item = viewModel.details[i];
+                      return Container(
+                          margin: EdgeInsets.all(8),
+                          child: SelectableText(
+                              "${item.sctcnt}/${item.maxstu}: ${item.tname}: ${item.cname}: ${item.xf}: ${item.name}"));
+                    })),
+            // Expanded(
+            //     child: ListView.builder(
+            //         itemCount: viewModel.list.length,
+            //         itemBuilder: (c, i) {
+            //           final item = viewModel.list[i];
+            //           return Container(
+            //               margin: EdgeInsets.all(8),
+            //               child: SelectableText(
+            //                   item));
+            //         })),
           ],
         );
       }),
@@ -103,6 +176,33 @@ class _CourseSelectionPageState extends State<_CourseSelectionPage> {
         value: t.term,
       );
     }).toList();
+  }
+
+  DropDownTextField buildMajorDropDownTextField(CourseSelectionViewModel viewModel) {
+    return DropDownTextField(
+      // initialValue: "name4",
+      listSpace: 20,
+      listPadding: ListPadding(top: 20),
+      enableSearch: true,
+      // validator: (value) {
+      //   if (value == null) {
+      //     return "Required field";
+      //   } else {
+      //     return null;
+      //   }
+      // },
+      dropDownList: viewModel.major.map((major) {
+        return DropDownValueModel(
+            name: major.spno + " " + major.spname, value: major);
+      }).toList(),
+      // listTextStyle: const TextStyle(color: Colors.red),
+
+      dropDownItemCount: viewModel.major.length,
+      onChanged: (val) {
+        val as DropDownValueModel;
+        viewModel.currentMajor = val.value;
+      },
+    );
   }
 
   DropdownButton<String> buildAcademyDropdownButton(

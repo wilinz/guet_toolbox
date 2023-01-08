@@ -1,1 +1,1 @@
-export 'plan_course_detail_response.dart' show PlanCourseDetailResponse; 
+export 'pedagogical_evaluation_data.dart' show PedagogicalEvaluationData; 

@@ -1,0 +1,15 @@
+// post
+// student/temsterm
+{
+  "success": true,
+  "total": 0,
+  "data": {
+    "term": "2022-2023_1",
+    "startdate": null,
+    "enddate": null,
+    "weeknum": null,
+    "termname": null,
+    "schoolyear": null,
+    "comm": null
+  }
+}

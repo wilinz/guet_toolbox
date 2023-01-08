@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           useMaterial3: true,
         ),
-        darkTheme: ThemeData.dark(),
+        darkTheme: ThemeData.dark(useMaterial3: true),
         routes: AppRoute.routes,
         debugShowCheckedModeBanner: false,
         navigatorKey: AppRoute.navigatorKey,

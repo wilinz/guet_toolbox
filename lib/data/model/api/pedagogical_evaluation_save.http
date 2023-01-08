@@ -1,0 +1,79 @@
+POST student/SaveJxpgJg
+
+term=2022-2023_1
+&courseno=2210227
+&stid=2200000000
+&cname=形势与政策1
+&name=崔永红
+&teacherno=21113011
+&courseid=BG0000178X0
+&lb=1
+&chk=0
+&can=true
+&userid=
+&bz=good!
+&score=93.1
+
+POST student/JxpgJg
+
+term:
+2022-2023_1
+courseno:
+2210771
+teacherno:
+170010
+
+# response:
+{
+    "success": true,
+    "total": 0,
+    "data": {
+        "term": "2022-2023_1",
+        "stid": "2200000000",
+        "teacherno": "21113011",
+        "courseno": "2210227",
+        "courseid": "BG0000178X0",
+        "score": 93,
+        "chk": 0,
+        "lb": 1,
+        "bz": "good!"
+    }
+}
+
+#提交
+
+POST
+student/SaveJxpgJg/1
+
+term:
+2022-2023_1
+courseno:
+2210227
+stid:
+2200000000
+cname:
+形势与政策1
+name:
+崔永红
+teacherno:
+21113011
+courseid:
+BG0000178X0
+lb:
+1
+chk:
+0
+can:
+true
+userid:
+bz:
+good!
+score:
+93.1
+
+#resp:
+{
+    "success": true,
+    "msg": "操作成功",
+    "data": "2210227"
+}

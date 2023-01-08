@@ -112,21 +112,21 @@ class _CourseSelectionPageState extends State<_CourseSelectionPage> {
                           viewModel.notify();
                         });
                       }),
-                  CheckboxListTile(
-                      title: Text("只看网络"),
-                      controlAffinity: ListTileControlAffinity.leading,
-                      value: isNetworkOnly,
-                      onChanged: (v) {
-                        setState(() {
-                          isNetworkOnly = v!;
-                          if (isNetworkOnly) {
-                            viewModel.filter(networkFilter);
-                          } else {
-                            viewModel.undoFilter(networkFilter);
-                          }
-                          viewModel.notify();
-                        });
-                      })
+                  // CheckboxListTile(
+                  //     title: Text("只看网络"),
+                  //     controlAffinity: ListTileControlAffinity.leading,
+                  //     value: isNetworkOnly,
+                  //     onChanged: (v) {
+                  //       setState(() {
+                  //         isNetworkOnly = v!;
+                  //         if (isNetworkOnly) {
+                  //           viewModel.filter(networkFilter);
+                  //         } else {
+                  //           viewModel.undoFilter(networkFilter);
+                  //         }
+                  //         viewModel.notify();
+                  //       });
+                  //     })
                 ]),
             Expanded(
                 child: ListView.builder(

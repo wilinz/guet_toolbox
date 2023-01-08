@@ -22,19 +22,30 @@ class _ProfilePageState extends State<_ProfilePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
-      children: [
-        ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(AppRoute.loginPage);
-            },
-            child: Text("登录")),
-        ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(AppRoute.courseSelectionPage);
-            },
-            child: Text("选课"))
-      ],
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("个人主页"),
+      ),
+      body: Column(
+        children: [
+          ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(AppRoute.loginPage);
+              },
+              child: Text("登录")),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(AppRoute.courseSelectionPage);
+              },
+              child: Text("选课")),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(AppRoute.pedagogicalEvaluationPage);
+              },
+              child: Text("评教"))
+        ],
+      ),
     );
   }
 

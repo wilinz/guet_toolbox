@@ -20,12 +20,16 @@ class ScheduleViewModel extends ChangeNotifier {
   Future<List<Term>> getTermList() {
     return CourseRepository.getInstance().getTermList().then((terms) async {
       termList = terms;
-      currentTerm = terms.firstWhere((term) {
-        var start = DateTimeUtil.parseDate(term.startdate);
-        var end = DateTimeUtil.parseDate(term.enddate);
-        var today = DateTime.now();
-        return today.isAfter(start) && today.isBefore(end);
-      });
+      try {
+        currentTerm = terms.firstWhere((term) {
+                var start = DateTimeUtil.parseDate(term.startdate);
+                var end = DateTimeUtil.parseDate(term.enddate);
+                var today = DateTime.now();
+                return today.isAfter(start) && today.isBefore(end);
+              });
+      } catch (e) {
+        print(e);
+      }
       if (currentTerm != null) {
         await getCourseList(currentTerm!.term);
       }

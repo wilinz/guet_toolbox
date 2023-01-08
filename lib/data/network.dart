@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -110,6 +112,7 @@ class LoginInterceptor extends Interceptor {
   Future<Response> _onResponse(
       Response response, ResponseInterceptorHandler handler) async {
     // Location: /login
+    print(jsonEncode(response.data));
     var h = response.headers.value("Location");
     print("head: ${h}");
     if (h != null) {

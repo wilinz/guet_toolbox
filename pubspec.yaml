@@ -51,6 +51,7 @@ dependencies:
   html: ^0.15.1
   json_annotation: ^4.7.0
   dropdown_textfield: ^1.0.7
+  common_utils: ^2.1.0
 
 dev_dependencies:
   flutter_test:

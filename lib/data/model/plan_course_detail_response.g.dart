@@ -27,13 +27,13 @@ Map<String, dynamic> _$PlanCourseDetailResponseToJson(
 
 PlanCourseDetail _$PlanCourseDetailFromJson(Map<String, dynamic> json) =>
     PlanCourseDetail(
-      id: json['id'],
+      id: json['id'] as String?,
       term: json['term'] as String? ?? '',
       courseid: json['courseid'] as String? ?? '',
-      cname: json['cname'],
+      cname: json['cname'] as String?,
       spno: json['spno'] as String? ?? '',
       grade: json['grade'] as String? ?? '',
-      tname: json['tname'],
+      tname: json['tname'] as String?,
       xf: json['xf'] as String? ?? '',
       scted: json['scted'] as int? ?? 0,
       courseno: json['courseno'] as String? ?? '',

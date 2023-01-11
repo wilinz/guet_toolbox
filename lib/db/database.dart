@@ -32,19 +32,18 @@ class MyEncryptedDatabase extends _$MyEncryptedDatabase {
 
 QueryExecutor _openDatabase() {
   return LazyDatabase(() async {
-    // Load wasm bundle
+    // 加载 sqlite3.wasm
     final response = await Dio().getUri(Uri.parse('sqlite3.wasm'),options: Options(
         responseType:ResponseType.bytes
     ));
-    // Create a virtual file system backed by IndexedDb with everything in
-    // `/drift/my_app/` being persisted.
+    // 创建一个由 IndexedDb 支持的虚拟文件系统
     final fs = await IndexedDbFileSystem.open(dbName: 'my_app');
     final sqlite3 = await WasmSqlite3.load(
       response.data,
       SqliteEnvironment(fileSystem: fs),
     );
 
-    // Then, open a database inside that persisted folder.
-    return WasmDatabase(sqlite3: sqlite3, path: '/drift/my_app/app.db');
+    // 然后，在该文件夹中打开一个数据库。
+    return WasmDatabase(sqlite3: sqlite3, path: 'app.db');
   });
 }

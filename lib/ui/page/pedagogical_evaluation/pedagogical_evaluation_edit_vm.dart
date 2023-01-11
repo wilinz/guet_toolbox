@@ -67,11 +67,11 @@ class PedagogicalEvaluationEditViewModel extends ChangeNotifier {
   }
 
   num calculateTheScore() {
-    var average = questions.map((e) => e.score ?? 0).average();
+    var average =
+        questions.where((e) => e.score != null).map((e) => e.score!).average();
     average = double.parse(
         NumUtil.getNumByValueDouble(average.toDouble(), 1)!.toStringAsFixed(1));
     data?.score = average;
-    notifyListeners();
     return average;
   }
 

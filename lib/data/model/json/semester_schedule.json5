@@ -1,0 +1,78 @@
+//[
+  {
+    "id": 649837,
+    "type": "TE",
+    "typename": "经济与管理",
+    "examType": "考查",
+    "collegeName": "null",
+    "collegeNo": "00",
+    "majorName": "通识教育",//4
+    "majorNo": "000000",//5
+    "grade": "2022",//6
+    "name": "经济与社会：如何用决策思维洞察生活（网络）",//3
+    "courseNo": "2213016",//10
+    "teacherNo": "320001",//7
+    "teacher": "马玉婕",//8
+    "term": "2022-2023_1",//1
+    "courseId": "TE0000621X0",//2
+
+    "maximumSelectable": 500,//11
+    "selected": 499,//12
+    "credits": 1.00,
+
+    "isLab": false,
+    "labId": "2022142142",//13
+
+    "batch": 1,//16
+    "assistantNo": "2250000",//20
+
+    "lessons": [
+      {
+        "classroom": "教室",//9
+        "comment": "备注",
+        "experiment":"智能相关APP的设计及创作-1",//14
+        "classroomAlias": "人工智能基础实验室",//15
+        "classroomId": "229101",
+        "starWeek": 5,//17
+        "endWeek": 5,//17
+        "oddWeek": false,
+        "weekday": 7,//18
+        "section": 5 //19
+      }
+    ],
+
+  }
+//  {
+//    "term": "2022-2023_1",//1
+//    "labid": "2022142142",//13
+//    "itemname": "智能相关APP的设计及创作-1",//14
+//    "courseid": "BJ3301002X0",//2
+//    "cname": "专业导论（双语教学）",//3
+//    "spno": "080717T",//4
+//    "spname": "人工智能",//5
+//    "grade": "2022",//6
+//    "teacherno": "2250000",//7
+//    "name": "丁数学",//8
+//    "srname": "人工智能基础实验室",//15
+//    "srdd": "实训楼（右）216室",//9
+//    "xh": "20221421421",//10.课号
+//    //批次.16
+//    "bno": 1,
+//    //人数//11
+//    "persons": 80,
+//    //周次.17
+//    "zc": 12,
+//    //星期.18
+//    "xq": 2,
+//    //节次.19
+//    "jc": 3,
+//    "jc1": 0,
+//    "assistantno": "2250000",//20
+//    "teachers": null,
+//    "comm": "",
+//    "courseno": null,
+//    "stusct": 77,//12
+//    "srid": "229101",
+//    "spnos": null
+//  }
+//]

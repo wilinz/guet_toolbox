@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'package:guettoolbox/common/encrypt/cas_new.dart';
 import 'package:guettoolbox/data/model/login_cas_response.dart';
+import 'package:guettoolbox/util/js.dart';
+import 'package:guettoolbox/util/list.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:dio/dio.dart';
 import 'package:guettoolbox/common/encrypt/cas.dart';
@@ -114,6 +117,54 @@ class LoginService {
     var ticket = await loginCAS(username, password, "https://bkjw.guet.edu.cn");
     await login(ticket);
     return Future(() => ticket);
+  }
+
+  static Future<String> loginNewCas(
+      String username, String password, String service) async {
+    final resp = await (await AppNetwork.getDio(followRedirects: false))
+        .get("https://cas.guet.edu.cn/cas/login", queryParameters: {
+      "service": service //"https://v.guet.edu.cn/login?cas_login=true"
+    });
+    final doc = parse(resp.data);
+    final aesKey = doc.getElementById("pwdEncryptSalt")?.attributes["value"];
+    final execution = doc.getElementById("execution")!.attributes["value"];
+
+    bool needCaptcha = false;
+    final needCaptchaScript = doc
+        .getElementsByTagName("script")
+        .firstWhereOrNull((e) => e.text.contains("needCaptcha"));
+
+    if (needCaptchaScript != null) {
+      final variables =
+          getVariableByJavaScript(needCaptchaScript.text, ["needCaptcha"]);
+      if (variables["needCaptcha"] == "\"true\"") {
+        needCaptcha = true;
+      }
+    }
+
+    ///authserver/getCaptcha.htl?1673386753560=
+
+    final resp1 = await (await AppNetwork.getDio(followRedirects: false))
+        .post("https://cas.guet.edu.cn/authserver/login",
+            queryParameters: {"service": service},
+            options: Options(contentType: AppNetwork.typeUrlEncode),
+            data: {
+              "username": username,
+              "password": encryptPassword(password, aesKey!),
+              "captcha": "",
+              "_eventId": "submit",
+              "cllt": "userNameLogin",
+              "dllt": "generalLogin",
+              "lt": "",
+              "execution": execution
+            });
+
+    if (resp1.statusCode != 302) throw LogonFailedException("登录失败");
+
+    final ticketUrl = resp1.headers.value("location");
+    if (ticketUrl == null) throw LogonFailedException("登录失败");
+    final ticket = Uri.parse(ticketUrl).queryParameters["ticket"];
+    return ticket!;
   }
 }
 

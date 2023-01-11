@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guettoolbox/db/setup.dart';
 import 'package:guettoolbox/ui/route.dart';
+import 'package:guettoolbox/ui/widget.dart';
 import 'package:logger/logger.dart';
 
 import 'db/database.dart';
@@ -13,6 +14,7 @@ Future<void> main() async {
   var r = await _database.select(_database.notes).get();
   Logger().d(r);
   runApp(const MyApp());
+  // runApp(const AutocompleteExampleApp());
 }
 
 class MyApp extends StatelessWidget {

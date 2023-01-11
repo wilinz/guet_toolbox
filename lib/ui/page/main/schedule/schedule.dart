@@ -72,11 +72,11 @@ class _SchedulePageState extends State<_SchedulePage>
                           if (viewModel.courseList.length > i) {
                             var course = viewModel.courseList[i];
                             if (course != null) {
-                              child = Text((course.croomno ?? "") +
+                              child = Text((course.lessons.map((e) => e.classroom).toSet().toList()).toString() +
                                   "#" +
-                                  course.cname +
+                                  course.name +
                                   "@" +
-                                  course.name);
+                                  course.teacher);
                             }
                           }
                           return Container(

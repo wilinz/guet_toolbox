@@ -1,1 +1,1 @@
-export 'pedagogical_evaluation_data.dart' show PedagogicalEvaluationData; 
+export 'semester_schedule.dart' show SemesterSchedule; 

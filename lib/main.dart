@@ -7,10 +7,15 @@ import 'package:logger/logger.dart';
 import 'db/database.dart';
 
 Future<void> main() async {
+  //确保组件树初始化
   WidgetsFlutterBinding.ensureInitialized();
+  //覆盖数据库打开方法
   setupDatabases();
+  //创建数据库
   final _database = MyEncryptedDatabase();
+  //操作数据库
   _database.into(_database.notes).insert(NotesCompanion.insert(content: "sb"));
+  //查询
   var r = await _database.select(_database.notes).get();
   Logger().d(r);
   runApp(const MyApp());

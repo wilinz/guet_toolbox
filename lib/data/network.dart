@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/adapter_browser.dart';
@@ -154,7 +155,7 @@ class LoginInterceptor extends Interceptor {
     print(jsonEncode(response.data));
     var h = response.headers.value("Location");
     print("head: ${h}");
-    if (h != null) {
+    if (h != null && false) {
       var uri = Uri.parse(h);
       var path = uri.path;
       if ((path.endsWith("/login") || path.endsWith("/Login")) &&
@@ -166,6 +167,7 @@ class LoginInterceptor extends Interceptor {
           try {
             var login = await LoginRepository()
                 .loginAcademicAffairsSystem(username, password);
+            await Future.delayed(Duration(milliseconds: 500));
             var newResp = await dio
                 .setFollowRedirects(false)
                 .fetch(response.requestOptions);

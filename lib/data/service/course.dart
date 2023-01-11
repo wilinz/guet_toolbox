@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:guettoolbox/data/model/course_lab_response.dart';
 import 'package:guettoolbox/data/model/course_response.dart';
-import 'package:guettoolbox/data/model/index.dart';
 import 'package:guettoolbox/data/model/plan_course_detail_response.dart';
 import 'package:guettoolbox/data/model/plan_course_response.dart';
 
@@ -12,6 +12,13 @@ class CourseService {
     final resp = await (await AppNetwork.getDio())
         .get("student/getstutable", queryParameters: {"term": term});
     final respData = CourseResponse.fromJson(resp.data);
+    return respData.data;
+  }
+
+  static Future<List<CourseLab>> getCourseLabList(String term) async {
+    final resp = await (await AppNetwork.getDio())
+        .get("student/getlabtable", queryParameters: {"term": term});
+    final respData = CourseLabResponse.fromJson(resp.data);
     return respData.data;
   }
 

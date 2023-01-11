@@ -10,6 +10,8 @@ import 'package:guettoolbox/data/repository/course.dart';
 import 'package:guettoolbox/data/repository/majors.dart';
 import 'package:guettoolbox/data/service/course.dart';
 import 'package:guettoolbox/data/service/student_info.dart';
+import 'package:guettoolbox/util/list.dart';
+import 'package:lpinyin/lpinyin.dart';
 
 typedef Filter<T> = bool Function(T value);
 
@@ -21,25 +23,25 @@ class CourseSelectionViewModel extends ChangeNotifier {
   List<Major> major = [];
   List<PlanCourse> planCourses = [];
 
-  Set<Filter<PlanCourseDetail>> filterGroup = {};
+  Map<String, Filter<PlanCourseDetail>> filterGroup = {};
 
-  filter(Filter<PlanCourseDetail> filter) {
-    filterGroup.add(filter);
+  filter(String key, Filter<PlanCourseDetail> filter) {
+    filterGroup[key] = filter;
     _filter();
   }
 
   void _filter() {
     details = detailsBackup.where((e) {
       bool result = true;
-      filterGroup.forEach((f) {
+      filterGroup.forEach((k, f) {
         result = result & f(e);
       });
       return result;
     }).toList();
   }
 
-  undoFilter(Filter<PlanCourseDetail> filter) {
-    filterGroup.remove(filter);
+  undoFilter(String key) {
+    filterGroup.remove(key);
     _filter();
   }
 
@@ -72,6 +74,9 @@ class CourseSelectionViewModel extends ChangeNotifier {
 
   Future<List<Major>> getMajors() async {
     return MajorsRepository.getInstance().getMajors().then((value) {
+      value.sort((a, b) {
+        return a.shortPinyin.compareTo(b.shortPinyin);
+      });
       major = value;
       notifyListeners();
       return value;
@@ -97,6 +102,7 @@ class CourseSelectionViewModel extends ChangeNotifier {
   Future<StudentInfo> getStudentInfo() async {
     return StudioInfoService.get().then((value) {
       studentInfo = value;
+      currentTerm = terms.firstWhereOrNull((e) => e.term == value.term);
       notifyListeners();
       return value;
     });

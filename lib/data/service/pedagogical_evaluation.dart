@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:guettoolbox/data/model/common_response.dart';
-import 'package:guettoolbox/data/model/index.dart';
+import 'package:guettoolbox/data/model/pedagogical_evaluation_data.dart';
 import 'package:guettoolbox/data/model/pedagogical_evaluation_questions_response.dart';
 import 'package:guettoolbox/data/model/pedagogical_evaluation_response.dart';
 import 'package:guettoolbox/data/model/pedagogical_evaluation_questions_save_request.dart';

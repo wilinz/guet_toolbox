@@ -1,13 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:lpinyin/lpinyin.dart';
 
 part 'majors_response.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class MajorsResponse {
   MajorsResponse(
-      {required this.success,
-      required this.total,
-      required this.data});
+      {required this.success, required this.total, required this.data});
 
   @JsonKey(name: "success", defaultValue: false)
   bool success;
@@ -16,7 +15,8 @@ class MajorsResponse {
   @JsonKey(name: "data", defaultValue: [])
   List<Major> data;
 
-  factory MajorsResponse.fromJson(Map<String, dynamic> json) => _$MajorsResponseFromJson(json);
+  factory MajorsResponse.fromJson(Map<String, dynamic> json) =>
+      _$MajorsResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$MajorsResponseToJson(this);
 }
@@ -35,7 +35,14 @@ class Major {
       this.comm,
       this.major,
       this.code,
-      this.used});
+      this.used}) {
+    shortPinyin = PinyinHelper.getShortPinyin(spname).toLowerCase();
+    firstPinyin = shortPinyin[0].toUpperCase();
+    final code = firstPinyin.codeUnits.first;
+    if (code < 65 || code > 90) {
+      firstPinyin = "#";
+    }
+  }
 
   @JsonKey(name: "spno", defaultValue: "")
   String spno;
@@ -62,9 +69,13 @@ class Major {
   @JsonKey(name: "used")
   int? used;
 
+  @JsonKey(ignore: true)
+  String shortPinyin = "";
+
+  @JsonKey(ignore: true)
+  String firstPinyin = "";
+
   factory Major.fromJson(Map<String, dynamic> json) => _$MajorFromJson(json);
 
   Map<String, dynamic> toJson() => _$MajorToJson(this);
 }
-
-

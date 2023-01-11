@@ -139,7 +139,12 @@ class _LoginPageState extends State<LoginPage> {
         .login(_usernameController.text, _passwordController.text)
         .then((value) {
       _loginMessage(context, value ? "登录成功" : "登录失败");
-      Navigator.pushReplacementNamed(context, AppRoute.mainPage);
+      final navigator = Navigator.of(context);
+      if (navigator.canPop()) {
+        navigator.pop();
+      } else {
+        Navigator.pushReplacementNamed(context, AppRoute.mainPage);
+      }
       return value;
     }).onError((error, stackTrace) {
       _loginMessage(context, error.toString());

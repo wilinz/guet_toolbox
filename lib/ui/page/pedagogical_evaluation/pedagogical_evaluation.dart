@@ -35,63 +35,71 @@ class _PedagogicalEvaluationPageState
       body: Consumer<PedagogicalEvaluationViewModel>(
           builder: (context, viewModel, child) {
         return Container(
-          padding: EdgeInsets.all(16),
+          // padding: EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Wrap(
-                  spacing: 8.0,
-                  // 主轴(水平)方向间距
-                  runSpacing: 4.0,
-                  // 纵轴（垂直）方向间距
-                  alignment: WrapAlignment.start,
-                  //沿主轴方向居中
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: <Widget>[
-                    buildTermDropdownButton(viewModel),
-                    ElevatedButton(
-                        onPressed: () {
-                          viewModel.getList(viewModel.currentTerm!.term);
-                        },
-                        child: Text("查询")),
-                  ]),
+              Container(
+                margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                child: Wrap(
+                    spacing: 8.0,
+                    // 主轴(水平)方向间距
+                    runSpacing: 4.0,
+                    // 纵轴（垂直）方向间距
+                    alignment: WrapAlignment.start,
+                    //沿主轴方向居中
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: <Widget>[
+                      buildTermDropdownButton(viewModel),
+                      ElevatedButton(
+                          onPressed: () {
+                            viewModel.getList(viewModel.currentTerm!.term);
+                          },
+                          child: Text("查询")),
+                    ]),
+              ),
               Expanded(
                   child: ListView.builder(
+                      padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
                       itemCount: viewModel.pedagogicalEvaluations.length,
                       itemBuilder: (context, index) {
                         final item = viewModel.pedagogicalEvaluations[index];
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                                AppRoute.pedagogicalEvaluationEditPage,
-                                arguments: item);
-                          },
-                          child: Card(
-                            child: Container(
-                                padding: EdgeInsets.all(16),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                              item.courseno + " " + item.cname),
-                                          Text(item.name)
-                                        ],
+                        return Container(
+                          margin: EdgeInsets.only(top: 4, bottom: 4),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                  AppRoute.pedagogicalEvaluationEditPage,
+                                  arguments: item);
+                            },
+                            child: Card(
+                              child: Container(
+                                  padding: EdgeInsets.all(16),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(item.courseno +
+                                                " " +
+                                                item.cname),
+                                            Text(item.name)
+                                          ],
+                                        ),
+                                        flex: 1,
                                       ),
-                                      flex: 1,
-                                    ),
-                                    Text(
-                                      item.chk == 0 ? "点击评教" : "已评教",
-                                      style: TextStyle(
-                                          color: item.chk == 0
-                                              ? Colors.green
-                                              : Colors.red),
-                                    )
-                                  ],
-                                )),
+                                      Text(
+                                        item.chk == 0 ? "点击评教" : "已评教",
+                                        style: TextStyle(
+                                            color: item.chk == 0
+                                                ? Colors.green
+                                                : Colors.red),
+                                      )
+                                    ],
+                                  )),
+                            ),
                           ),
                         );
                       }))

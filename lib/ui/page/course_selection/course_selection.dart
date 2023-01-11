@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:easy_autocomplete/easy_autocomplete.dart';
 import 'package:flutter/material.dart';
 import 'package:guettoolbox/data/model/majors_response.dart';
 import 'package:guettoolbox/data/model/plan_course_detail_response.dart';

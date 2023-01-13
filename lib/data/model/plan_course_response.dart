@@ -1,3 +1,4 @@
+import 'package:guettoolbox/data/model/plan_course_detail_response.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'plan_course_response.g.dart';
@@ -5,9 +6,7 @@ part 'plan_course_response.g.dart';
 @JsonSerializable(explicitToJson: true)
 class PlanCourseResponse {
   PlanCourseResponse(
-      {required this.success,
-      required this.total,
-      required this.data});
+      {required this.success, required this.total, required this.data});
 
   @JsonKey(name: "success", defaultValue: false)
   bool success;
@@ -16,7 +15,8 @@ class PlanCourseResponse {
   @JsonKey(name: "data", defaultValue: [])
   List<PlanCourse> data;
 
-  factory PlanCourseResponse.fromJson(Map<String, dynamic> json) => _$PlanCourseResponseFromJson(json);
+  factory PlanCourseResponse.fromJson(Map<String, dynamic> json) =>
+      _$PlanCourseResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$PlanCourseResponseToJson(this);
 }
@@ -79,10 +79,14 @@ class PlanCourse {
   dynamic ap;
   @JsonKey(name: "xm")
   dynamic xm;
+  @JsonKey(ignore: true)
+  List<PlanCourseDetail> details = [];
 
-  factory PlanCourse.fromJson(Map<String, dynamic> json) => _$PlanCourseFromJson(json);
+  @JsonKey(ignore: true)
+  bool isExpand = false;
+
+  factory PlanCourse.fromJson(Map<String, dynamic> json) =>
+      _$PlanCourseFromJson(json);
 
   Map<String, dynamic> toJson() => _$PlanCourseToJson(this);
 }
-
-

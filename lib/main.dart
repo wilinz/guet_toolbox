@@ -22,6 +22,13 @@ Future<void> main() async {
   // runApp(const AutocompleteExampleApp());
 }
 
+showSnackBar(BuildContext context, String msg, int milliseconds) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(msg),
+      // action: SnackBarAction(label: '撤销', onPressed: Null),
+      duration: Duration(milliseconds: milliseconds)));
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

@@ -8,6 +8,8 @@ import 'package:dio_proxy_plugin/dio_proxy_plugin.dart';
 import 'package:flutter/foundation.dart';
 import 'package:guettoolbox/common/key.dart';
 import 'package:guettoolbox/data/repository/login.dart';
+import 'package:guettoolbox/data/service/login.dart';
+import 'package:guettoolbox/main.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:guettoolbox/util/ext.dart';
 import 'package:path/path.dart';
@@ -114,9 +116,11 @@ class LoginInterceptor extends Interceptor {
       Response response, ResponseInterceptorHandler handler) async {
     // Location: /login
     print(jsonEncode(response.data));
-    var h = response.headers.value("Location");
+    var h = response.headers.value("location");
+    final contentType = response.headers.value("content-type");
+    print("content-type: $contentType");
     print("head: ${h}");
-    if (h != null && false) {
+    if (h != null) {
       var uri = Uri.parse(h);
       var path = uri.path;
       if ((path.endsWith("/login") || path.endsWith("/Login")) &&
@@ -125,18 +129,25 @@ class LoginInterceptor extends Interceptor {
         var username = sp.getString(AppKey.username);
         var password = sp.getString(AppKey.password);
         if (username != null && password != null) {
-          try {
-            var login = await LoginRepository()
-                .loginAcademicAffairsSystem(username, password);
-            await Future.delayed(Duration(milliseconds: 500));
-            var newResp = await dio
-                .setFollowRedirects(false)
-                .fetch(response.requestOptions);
-            return newResp;
-          } catch (e) {
-            print(e);
-            if (AppRoute.currentPage != AppRoute.loginPage) {
-              AppRoute.navigatorKey.currentState?.pushNamed(AppRoute.loginPage);
+          for (var i = 0; i < 5; i++) {
+            try {
+              var success = await LoginRepository()
+                  .loginAcademicAffairsSystem(username, password);
+              if (!success) throw LogonFailedException("登录失败");
+              await Future.delayed(Duration(milliseconds: 500));
+              var newResp = await dio
+                  .setFollowRedirects(false)
+                  .fetch(response.requestOptions);
+              if (newResp.headers.value("content-type")?.contains("application/json") != true) {
+                throw LogonFailedException("登录失败");
+              }
+              return newResp;
+            } catch (e) {
+              print(e);
+              if (i == 4 && AppRoute.currentPage != AppRoute.loginPage) {
+                AppRoute.navigatorKey.currentState
+                    ?.pushNamed(AppRoute.loginPage);
+              }
             }
           }
         }

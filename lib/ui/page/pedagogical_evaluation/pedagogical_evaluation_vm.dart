@@ -19,6 +19,7 @@ class PedagogicalEvaluationViewModel extends ChangeNotifier {
   Future<List<Term>> getTermList() {
     return CourseRepository.getInstance().getTermList().then((value) {
       terms = value;
+      currentTerm = CourseRepository.getInstance().getCurrentTerm(terms, false);
       notifyListeners();
       return value;
     });

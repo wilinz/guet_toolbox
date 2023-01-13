@@ -46,7 +46,7 @@ QueryExecutor _openDatabase() {
         : await getApplicationSupportDirectory();
 
     //这是数据库文件。
-    final dbFile = p.join(path.path, 'databases', 'app.db');
+    final dbFile = p.join(path.path, 'databases', 'app1.db');
 
     Logger().d(dbFile);
     return NativeDatabase(

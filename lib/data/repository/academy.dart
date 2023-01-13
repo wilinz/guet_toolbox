@@ -4,11 +4,15 @@ import 'package:guettoolbox/data/service/academy.dart';
 import 'package:guettoolbox/data/service/majors.dart';
 
 class AcademyRepository {
+  List<Academy> academyCache = [];
+
   Future<List<Academy>> getAcademy() async {
+    if (academyCache.isNotEmpty) return academyCache;
     final data = await AcademyService.get();
     data.sort((i, j) {
       return int.parse(i.dptno).compareTo(int.parse(j.dptno));
     });
+    academyCache = data;
     return data;
   }
 

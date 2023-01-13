@@ -27,13 +27,23 @@ SemesterSchedule _$SemesterScheduleFromJson(Map<String, dynamic> json) =>
       selected: json['selected'] as int? ?? 0,
       credits: (json['credits'] as num?)?.toDouble() ?? 0.0,
       isLab: json['isLab'] as bool? ?? false,
-      labId: json['labId'] as String? ?? '',
-      batch: json['batch'] as int,
+      labLessonId: json['labLessonId'] as String? ?? '',
+      batch: json['batch'] as int? ?? 0,
       assistantNo: json['assistantNo'] as String? ?? '',
-      lessons: (json['lessons'] as List<dynamic>?)
-              ?.map((e) => Lessons.fromJson(e as Map<String, dynamic>))
+      startWeek: json['startWeek'] as int? ?? 0,
+      endWeek: json['endWeek'] as int? ?? 0,
+      oddWeek: json['oddWeek'] as bool? ?? false,
+      weekday: json['weekday'] as int? ?? 0,
+      section: json['section'] as int? ?? 0,
+      experiment: json['experiment'] as String? ?? '',
+      classroom: json['classroom'] as String? ?? '',
+      classrooms: (json['classrooms'] as List<dynamic>?)
+              ?.map((e) => Classroom.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
+      classroomAlias: json['classroomAlias'] as String? ?? '',
+      classroomId: json['classroomId'] as String? ?? '',
+      comment: json['comment'] as String? ?? '',
     );
 
 Map<String, dynamic> _$SemesterScheduleToJson(SemesterSchedule instance) =>
@@ -57,34 +67,30 @@ Map<String, dynamic> _$SemesterScheduleToJson(SemesterSchedule instance) =>
       'selected': instance.selected,
       'credits': instance.credits,
       'isLab': instance.isLab,
-      'labId': instance.labId,
+      'labLessonId': instance.labLessonId,
       'batch': instance.batch,
       'assistantNo': instance.assistantNo,
-      'lessons': instance.lessons.map((e) => e.toJson()).toList(),
-    };
-
-Lessons _$LessonsFromJson(Map<String, dynamic> json) => Lessons(
-      starWeek: json['batch'] as int? ?? 0,
-      endWeek: json['endWeek'] as int? ?? 0,
-      oddWeek: json['oddWeek'] as bool? ?? false,
-      weekday: json['weekday'] as int? ?? 0,
-      section: json['section'] as int? ?? 0,
-      experiment: json['experiment'] as String? ?? '',
-      classroom: json['classroom'] as String? ?? '',
-      classroomAlias: json['classroomAlias'] as String? ?? '',
-      classroomId: json['classroomId'] as String? ?? '',
-      comment: json['comment'] as String? ?? '',
-    );
-
-Map<String, dynamic> _$LessonsToJson(Lessons instance) => <String, dynamic>{
       'comment': instance.comment,
       'experiment': instance.experiment,
       'classroom': instance.classroom,
+      'classrooms': instance.classrooms.map((e) => e.toJson()).toList(),
       'classroomAlias': instance.classroomAlias,
       'classroomId': instance.classroomId,
-      'batch': instance.starWeek,
+      'startWeek': instance.startWeek,
       'endWeek': instance.endWeek,
       'oddWeek': instance.oddWeek,
       'weekday': instance.weekday,
       'section': instance.section,
+    };
+
+Classroom _$ClassroomFromJson(Map<String, dynamic> json) => Classroom(
+      json['startWeek'] as int? ?? 0,
+      json['endWeek'] as int? ?? 0,
+      json['room'] as String? ?? '',
+    );
+
+Map<String, dynamic> _$ClassroomToJson(Classroom instance) => <String, dynamic>{
+      'startWeek': instance.startWeek,
+      'endWeek': instance.endWeek,
+      'room': instance.room,
     };

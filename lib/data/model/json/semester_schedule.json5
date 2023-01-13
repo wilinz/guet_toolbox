@@ -1,47 +1,66 @@
 //[
-  {
-    "id": 649837,
-    "type": "TE",
-    "typename": "经济与管理",
-    "examType": "考查",
-    "collegeName": "null",
-    "collegeNo": "00",
-    "majorName": "通识教育",//4
-    "majorNo": "000000",//5
-    "grade": "2022",//6
-    "name": "经济与社会：如何用决策思维洞察生活（网络）",//3
-    "courseNo": "2213016",//10
-    "teacherNo": "320001",//7
-    "teacher": "马玉婕",//8
-    "term": "2022-2023_1",//1
-    "courseId": "TE0000621X0",//2
+{
+  "id": 649837,
+  "type": "TE",
+  "typename": "经济与管理",
+  "examType": "考查",
+  "collegeName": "null",
+  "collegeNo": "00",
+  "majorName": "通识教育",
+  //4
+  "majorNo": "000000",
+  //5
+  "grade": "2022",
+  //6
+  "name": "经济与社会：如何用决策思维洞察生活（网络）",
+  //3
+  "courseNo": "2213016",
+  //10
+  "teacherNo": "320001",
+  //7
+  "teacher": "马玉婕",
+  //8
+  "term": "2022-2023_1",
+  //1
+  "courseId": "TE0000621X0",
+  //2
 
-    "maximumSelectable": 500,//11
-    "selected": 499,//12
-    "credits": 1.00,
+  "maximumSelectable": 500,
+  //11
+  "selected": 499,
+  //12
+  "credits": 1.00,
+  "isLab": false,
+  "labId": "2022142142",
+  //13
 
-    "isLab": false,
-    "labId": "2022142142",//13
+  "batch": 1,
+  //16
+  "assistantNo": "2250000",
+  //20
 
-    "batch": 1,//16
-    "assistantNo": "2250000",//20
-
-    "lessons": [
-      {
-        "classroom": "教室",//9
-        "comment": "备注",
-        "experiment":"智能相关APP的设计及创作-1",//14
-        "classroomAlias": "人工智能基础实验室",//15
-        "classroomId": "229101",
-        "starWeek": 5,//17
-        "endWeek": 5,//17
-        "oddWeek": false,
-        "weekday": 7,//18
-        "section": 5 //19
-      }
-    ],
-
-  }
+  "lessons": [
+    {
+      "classroom": "教室",
+      //9
+      "comment": "备注",
+      "experiment": "智能相关APP的设计及创作-1",
+      //14
+      "classroomAlias": "人工智能基础实验室",
+      //15
+      "classroomId": "229101",
+      "starWeek": 5,
+      //17
+      "endWeek": 5,
+      //17
+      "oddWeek": false,
+      "weekday": 7,
+      //18
+      "section": 5
+      //19
+    }
+  ],
+}
 //  {
 //    "term": "2022-2023_1",//1
 //    "labid": "2022142142",//13

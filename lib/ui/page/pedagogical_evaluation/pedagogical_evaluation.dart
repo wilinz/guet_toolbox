@@ -139,6 +139,8 @@ class _PedagogicalEvaluationPageState
     super.initState();
     var vm =
         Provider.of<PedagogicalEvaluationViewModel>(context, listen: false);
-    vm.getTermList();
+    vm.getTermList().then((value){
+      vm.getList(vm.currentTerm!.term);
+    });
   }
 }

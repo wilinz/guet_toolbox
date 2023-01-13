@@ -54,6 +54,10 @@ dependencies:
   lpinyin: ^2.0.3
   auto_size_text: ^3.0.0
   encrypt: ^5.0.1
+  freezed_annotation: ^2.2.0
+  json5: ^0.8.0
+  kt_dart: ^1.0.0
+  pull_to_refresh: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +76,7 @@ dev_dependencies:
     git:
       url: https://github.com/wilinz/json5_model.git
   json_serializable: ^6.5.4
+  freezed: ^2.3.2
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

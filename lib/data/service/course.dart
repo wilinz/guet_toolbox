@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:guettoolbox/data/model/common_response.dart';
 import 'package:guettoolbox/data/model/course_lab_response.dart';
 import 'package:guettoolbox/data/model/course_response.dart';
 import 'package:guettoolbox/data/model/plan_course_detail_response.dart';
@@ -40,7 +41,8 @@ class CourseService {
     return data;
   }
 
-  static Future<List<PlanCourseDetail>> getPlanCourseDetail(String id, String courseid) async {
+  static Future<List<PlanCourseDetail>> getPlanCourseDetail(
+      String id, String courseid) async {
     final resp = await (await AppNetwork.getDio())
         .get("student/GetPlanCno", queryParameters: {
       "id": id,
@@ -50,4 +52,23 @@ class CourseService {
     final data = PlanCourseDetailResponse.fromJson(resp.data);
     return data.data;
   }
+
+  static Future<CommonResponse> select(
+      PlanCourseDetail planCourseDetail) async {
+    final resp = await (await AppNetwork.getDio()).post("student/SctSave",
+        data: planCourseDetail.toJson(),
+        options: Options(contentType: AppNetwork.typeUrlEncode));
+    final data = CommonResponse.fromJson(resp.data);
+    return data;
+  }
+
+  static Future<CommonResponse> unselect(
+      PlanCourseDetail planCourseDetail) async {
+    final resp = await (await AppNetwork.getDio()).post("student/UnSct",
+        data: planCourseDetail.toJson(),
+        options: Options(contentType: AppNetwork.typeUrlEncode));
+    final data = CommonResponse.fromJson(resp.data);
+    return data;
+  }
+
 }

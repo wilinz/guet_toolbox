@@ -1,6 +1,10 @@
+import 'dart:math';
+
+import 'package:common_utils/common_utils.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:guettoolbox/data/model/course_lab_response.dart';
 import 'package:guettoolbox/data/model/course_response.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:guettoolbox/util/list.dart';
 
 part 'semester_schedule.g.dart';
 
@@ -26,10 +30,20 @@ class SemesterSchedule {
       required this.selected,
       required this.credits,
       required this.isLab,
-      required this.labId,
+      required this.labLessonId,
       required this.batch,
       required this.assistantNo,
-      required this.lessons});
+      required this.startWeek,
+      required this.endWeek,
+      required this.oddWeek,
+      required this.weekday,
+      required this.section,
+      required this.experiment,
+      required this.classroom,
+      required this.classrooms,
+      required this.classroomAlias,
+      required this.classroomId,
+      required this.comment});
 
   @JsonKey(name: "id", defaultValue: 0)
   int id;
@@ -61,7 +75,6 @@ class SemesterSchedule {
   String term;
   @JsonKey(name: "courseId", defaultValue: "")
   String courseId;
-
   @JsonKey(name: "maximumSelectable", defaultValue: 0)
   int maximumSelectable;
   @JsonKey(name: "selected", defaultValue: 0)
@@ -70,21 +83,43 @@ class SemesterSchedule {
   double credits;
   @JsonKey(name: "isLab", defaultValue: false)
   bool isLab;
-  @JsonKey(name: "labId", defaultValue: "")
-  String labId;
+  @JsonKey(name: "labLessonId", defaultValue: "")
+  String labLessonId;
+  @JsonKey(name: "batch", defaultValue: 0)
   int batch;
   @JsonKey(name: "assistantNo", defaultValue: "")
   String assistantNo;
-  @JsonKey(name: "lessons", defaultValue: [])
-  List<Lessons> lessons;
+  @JsonKey(name: "comment", defaultValue: "")
+  String comment;
+  @JsonKey(name: "experiment", defaultValue: "")
+  String experiment;
+  @JsonKey(name: "classroom", defaultValue: "")
+  String classroom;
+  @JsonKey(name: "classrooms", defaultValue: [])
+  List<Classroom> classrooms;
+  @JsonKey(name: "classroomAlias", defaultValue: "")
+  String classroomAlias;
+  @JsonKey(name: "classroomId", defaultValue: "")
+  String classroomId;
+  @JsonKey(name: "startWeek", defaultValue: 0)
+  int startWeek;
+  @JsonKey(name: "endWeek", defaultValue: 0)
+  int endWeek;
+  @JsonKey(name: "oddWeek", defaultValue: false)
+  bool oddWeek;
+  @JsonKey(name: "weekday", defaultValue: 0)
+  int weekday;
+  @JsonKey(name: "section", defaultValue: 0)
+  int section;
 
-  factory SemesterSchedule.fromCourse(Course course, List<Lessons> lessons) {
+  factory SemesterSchedule.fromCourse(
+      Course course, List<Classroom> classrooms) {
     return SemesterSchedule(
         id: course.id,
         type: course.ctype,
         typename: course.tname,
         examType: course.examt,
-        collegeName: course.dptname??"",
+        collegeName: course.dptname ?? "",
         collegeNo: course.dptno,
         majorName: course.spname,
         majorNo: course.spno,
@@ -99,14 +134,24 @@ class SemesterSchedule {
         selected: course.sctcnt,
         credits: course.xf,
         isLab: false,
-        labId: "",
+        labLessonId: "",
         batch: 0,
         assistantNo: "",
-        lessons: lessons);
+        startWeek: course.startweek,
+        endWeek: course.endweek,
+        oddWeek: course.oddweek ?? false,
+        weekday: course.week,
+        section: int.parse(course.seq),
+        experiment: "",
+        classroom: course.croomno ?? "",
+        classrooms: classrooms,
+        classroomAlias: "",
+        classroomId: "",
+        comment: course.comm ?? "");
   }
 
   factory SemesterSchedule.fromLabCourse(
-      CourseLab course, List<Lessons> lessons) {
+      CourseLab course, List<Classroom> classrooms) {
     return SemesterSchedule(
         id: 0,
         type: "",
@@ -118,7 +163,7 @@ class SemesterSchedule {
         majorNo: course.spno,
         grade: course.grade,
         name: course.cname,
-        courseNo: course.xh,
+        courseNo: course.labid,
         teacherNo: course.teacherno,
         teacher: course.name,
         term: course.term,
@@ -127,10 +172,20 @@ class SemesterSchedule {
         selected: course.stusct,
         credits: 0,
         isLab: true,
-        labId: course.labid,
+        labLessonId: course.xh,
         batch: course.bno,
         assistantNo: course.assistantno,
-        lessons: lessons);
+        startWeek: course.zc,
+        endWeek: course.zc,
+        oddWeek: false,
+        weekday: course.xq,
+        section: course.jc,
+        experiment: course.itemname,
+        classroom: course.srdd,
+        classrooms: classrooms,
+        classroomAlias: course.srname,
+        classroomId: course.srid,
+        comment: course.comm ?? "");
   }
 
   factory SemesterSchedule.fromJson(Map<String, dynamic> json) =>
@@ -141,85 +196,97 @@ class SemesterSchedule {
 
 List<SemesterSchedule> generateSemesterSchedule(
     List<Course> courses, List<CourseLab> labs) {
-  final courseNoList = courses.map((e) => e.courseno).toSet().toList();
-  final list1 = courseNoList.map((courseNo) {
-    final courseList = courses.where((e) => e.courseno == courseNo).toList();
-    final lessons = courseList
-        .map((lesson) => Lessons(
-            starWeek: lesson.startweek,
-            endWeek: lesson.endweek,
-            oddWeek: lesson.oddweek ?? false,
-            weekday: lesson.week,
-            section: int.parse(lesson.seq),
-            experiment: "",
-            classroom: lesson.croomno ?? "",
-            classroomAlias: "",
-            classroomId: "",
-            comment: lesson.comm ?? ""))
-        .toList();
-    return SemesterSchedule.fromCourse(courseList.first, lessons);
+  List<Course> courseGroup = [];
+  List<CourseLab> labCourseGroup = [];
+  Map<String,List<Classroom>> classrooms = {};
+  final list1 = courses.map((e) {
+    final last = () => courseGroup.first;
+    if (courseGroup.isEmpty ||
+        !(last().courseno == e.courseno &&
+            e.week == last().week &&
+            e.seq == last().seq)) {
+      courseGroup = courses
+          .where((e1) =>
+              e.courseno == e1.courseno && e.week == e1.week && e.seq == e1.seq)
+          .toList();
+      final classrooms0 = courseGroup
+          .where((e) => !TextUtil.isEmpty(e.croomno))
+          .map((e) => Classroom(e.startweek, e.endweek, e.croomno!))
+          .toSet()
+          .toList();
+      classrooms = groupAndMerge(classrooms0);
+    }
+    return SemesterSchedule.fromCourse(e, classrooms.values.expand((e) => e).toList());
   });
-
-  final labCourseNoList = labs.map((e) => e.xh).toSet().toList();
-  final list2 = labCourseNoList.map((labCourseNo) {
-    final labCourseList = labs.where((e) => e.xh == labCourseNo).toList();
-    final lessons = labCourseList
-        .map((lesson) => Lessons(
-            starWeek: lesson.zc,
-            endWeek: lesson.zc,
-            oddWeek: false,
-            weekday: lesson.xq,
-            section: lesson.jc,
-            experiment: lesson.itemname,
-            classroom: lesson.srdd,
-            classroomAlias: lesson.srname,
-            classroomId: lesson.srid,
-            comment: lesson.comm??""))
-        .toList();
-    return SemesterSchedule.fromLabCourse(labCourseList.first, lessons);
+  final list2 = labs.map((e) {
+    final last = () => labCourseGroup.first;
+    if (labCourseGroup.isEmpty ||
+        !(last().labid == e.labid && e.xq == last().xq && e.jc == last().jc)) {
+      labCourseGroup = labs
+          .where((e1) => e.srdd == e1.srdd && e.xq == e1.xq && e.jc == e1.jc)
+          .toList();
+      final classrooms0 = labCourseGroup
+          .where((e) => !TextUtil.isEmpty(e.srdd))
+          .map((e) => Classroom(e.zc, e.zc, e.srdd))
+          .toSet()
+          .toList();
+      classrooms = groupAndMerge(classrooms0);
+    }
+    return SemesterSchedule.fromLabCourse(e, classrooms.values.expand((e) => e).toList());
   });
   return [...list1, ...list2];
 }
 
 @JsonSerializable(explicitToJson: true)
-class Lessons {
-  Lessons({
-    required this.starWeek,
-    required this.endWeek,
-    required this.oddWeek,
-    required this.weekday,
-    required this.section,
-    required this.experiment,
-    required this.classroom,
-    required this.classroomAlias,
-    required this.classroomId,
-    required this.comment,
-  });
-
-  @JsonKey(name: "comment", defaultValue: "")
-  String comment;
-  @JsonKey(name: "experiment", defaultValue: "")
-  String experiment;
-  @JsonKey(name: "classroom", defaultValue: "")
-  String classroom;
-  @JsonKey(name: "classroomAlias", defaultValue: "")
-  String classroomAlias;
-  @JsonKey(name: "classroomId", defaultValue: "")
-  String classroomId;
-  @JsonKey(name: "batch", defaultValue: 0)
-  @JsonKey(name: "starWeek", defaultValue: 0)
-  int starWeek;
+class Classroom {
+  @JsonKey(name: "startWeek", defaultValue: 0)
+  int startWeek;
   @JsonKey(name: "endWeek", defaultValue: 0)
   int endWeek;
-  @JsonKey(name: "oddWeek", defaultValue: false)
-  bool oddWeek;
-  @JsonKey(name: "weekday", defaultValue: 0)
-  int weekday;
-  @JsonKey(name: "section", defaultValue: 0)
-  int section;
+  @JsonKey(name: "room", defaultValue: "")
+  String room;
 
-  factory Lessons.fromJson(Map<String, dynamic> json) =>
-      _$LessonsFromJson(json);
+  Classroom(this.startWeek, this.endWeek, this.room);
 
-  Map<String, dynamic> toJson() => _$LessonsToJson(this);
+  factory Classroom.fromJson(Map<String, dynamic> json) =>
+      _$ClassroomFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ClassroomToJson(this);
+}
+
+Map<String, List<Classroom>> groupAndMerge(List<Classroom> classrooms) {
+  Map<String, List<Classroom>> groupedClassrooms = classrooms.groupBy((c) => c.room);
+  Map<String, List<Classroom>> mergedClassrooms = {};
+  for (List<Classroom> group in groupedClassrooms.values) {
+    Classroom? merged = null;
+    for (Classroom classroom in group) {
+      if (merged == null) {
+        merged = classroom;
+      } else if (classroom.startWeek <= merged.endWeek + 1) {
+        merged = merge(merged, classroom);
+      } else {
+        if (!mergedClassrooms.containsKey(merged.room)) {
+          mergedClassrooms[merged.room] = [];
+        }
+        mergedClassrooms[merged.room]?.add(merged);
+        merged = classroom;
+      }
+    }
+    if(merged != null) {
+      if (!mergedClassrooms.containsKey(merged.room)) {
+        mergedClassrooms[merged.room] = [];
+      }
+      mergedClassrooms[merged.room]?.add(merged);
+    }
+  }
+  return mergedClassrooms;
+}
+
+
+Classroom merge(Classroom a, Classroom b) {
+  return Classroom(
+    min(a.startWeek, b.startWeek),
+    max(a.endWeek, b.endWeek),
+    a.room,
+  );
 }

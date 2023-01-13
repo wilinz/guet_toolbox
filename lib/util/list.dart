@@ -12,6 +12,19 @@ extension ListExtension<E> on Iterable<E> {
     } catch (e) {}
     return null;
   }
+
+  Map<K, List<E>> groupBy<K>(K Function(E) key) {
+    var map = <K, List<E>>{};
+    for (E item in this) {
+      var keyValue = key(item);
+      if (!map.containsKey(keyValue)) {
+        map[keyValue] = <E>[];
+      }
+      map[keyValue]?.add(item);
+    }
+    return map;
+  }
+
 }
 
 extension NumListExtension on Iterable<num> {
@@ -25,3 +38,5 @@ extension NumListExtension on Iterable<num> {
 
   num average() => this.sum() / this.length;
 }
+
+

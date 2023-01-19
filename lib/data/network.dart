@@ -57,8 +57,6 @@ class AppNetwork {
 
   get dio => _dio.setFollowRedirects(false);
 
-  late CookieJar cookieJar;
-
   static Future<AppNetwork> getInstance() async {
     if (_instance == null) {
       final option = BaseOptions(
@@ -98,7 +96,6 @@ class AppNetwork {
       dio.interceptors.add(dioLoggerInterceptor);
       _instance = AppNetwork._create();
       _instance!._dio = dio;
-      _instance!.cookieJar = cookieJar;
     }
     return Future(() => _instance!);
   }

@@ -730,13 +730,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "7.0.0"
-  sqlcipher_flutter_libs:
-    dependency: "direct main"
-    description:
-      name: sqlcipher_flutter_libs
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.5.4"
   sqlite3:
     dependency: "direct main"
     description:

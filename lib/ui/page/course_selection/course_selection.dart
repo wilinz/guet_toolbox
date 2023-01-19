@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:guettoolbox/data/model/majors_response.dart';
 import 'package:guettoolbox/data/model/plan_course_response.dart';
+import 'package:guettoolbox/data/service/course.dart';
 import 'package:guettoolbox/main.dart';
 import 'package:guettoolbox/ui/page/course_selection/course_selection_vm.dart';
 import 'package:guettoolbox/util/list.dart';
@@ -357,7 +358,7 @@ class _CourseSelectionPageState extends State<_CourseSelectionPage> {
     return viewModel.terms.map((t) {
       return DropdownMenuItem(
         child: Container(
-            padding: EdgeInsets.all(8), child: Center(child: Text(t.termname))),
+            padding: EdgeInsets.all(8), child: Center(child: Text(t.termName))),
         value: t.term,
       );
     }).toList();
@@ -455,12 +456,18 @@ class _CourseSelectionPageState extends State<_CourseSelectionPage> {
   void initState() {
     super.initState();
     var vm = Provider.of<CourseSelectionViewModel>(context, listen: false);
-    Future.wait([
-      vm.getTermList(),
-      vm.getAcademy(),
-      vm.getMajors(),
-    ]).then((value) {
-      vm.getStudentInfo();
+    CourseService.selectPage().then((value) {
+      print(value);
+
+      Future.wait([
+        vm.getTermList(),
+        vm.getAcademy(),
+        vm.getMajors(),
+      ]).then((value) {
+        vm.getStudentInfo();
+      });
+      return value;
     });
+
   }
 }

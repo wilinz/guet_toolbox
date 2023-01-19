@@ -54,6 +54,8 @@ class AppNetwork {
 
   get dio => _dio.setFollowRedirects(false);
 
+  late CookieJar cookieJar;
+
   static Future<AppNetwork> getInstance() async {
     if (_instance == null) {
       var dio = Dio(BaseOptions(
@@ -78,13 +80,14 @@ class AppNetwork {
         //设置dio proxy
         var httpProxyAdapter =
             HttpProxyAdapter(ipAddr: "127.0.0.1", port: 8888);
-        // dio.httpClientAdapter = httpProxyAdapter;
+        dio.httpClientAdapter = httpProxyAdapter;
       }
       dio.interceptors.add(MyInterceptor());
       dio.interceptors.add(LoginInterceptor(dio));
       dio.interceptors.add(dioLoggerInterceptor);
       _instance = AppNetwork._create();
       _instance!._dio = dio;
+      _instance!.cookieJar = cookieJar;
     }
     return Future(() => _instance!);
   }
@@ -138,7 +141,10 @@ class LoginInterceptor extends Interceptor {
               var newResp = await dio
                   .setFollowRedirects(false)
                   .fetch(response.requestOptions);
-              if (newResp.headers.value("content-type")?.contains("application/json") != true) {
+              if (newResp.headers
+                      .value("content-type")
+                      ?.contains("application/json") !=
+                  true) {
                 throw LogonFailedException("登录失败");
               }
               return newResp;

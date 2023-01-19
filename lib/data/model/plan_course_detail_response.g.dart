@@ -45,7 +45,7 @@ PlanCourseDetail _$PlanCourseDetailFromJson(Map<String, dynamic> json) =>
       lot: json['lot'] as int? ?? 0,
       ap: json['ap'] as String? ?? '',
       xm: json['xm'],
-    );
+    )..stype = json['stype'] as String? ?? '正常';
 
 Map<String, dynamic> _$PlanCourseDetailToJson(PlanCourseDetail instance) =>
     <String, dynamic>{
@@ -67,4 +67,5 @@ Map<String, dynamic> _$PlanCourseDetailToJson(PlanCourseDetail instance) =>
       'lot': instance.lot,
       'ap': instance.ap,
       'xm': instance.xm,
+      'stype': instance.stype,
     };

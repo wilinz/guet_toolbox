@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:guettoolbox/data/model/template.dart';
+import 'package:guettoolbox/data/model/term/term_response.dart';
 import 'package:guettoolbox/data/network.dart';
 
-import '../model/term_response.dart';
 
 class TermService {
   static Future<List<Term>> getTermList() async {

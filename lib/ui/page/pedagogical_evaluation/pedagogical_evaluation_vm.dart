@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:guettoolbox/data/model/pedagogical_evaluation_response.dart';
-import 'package:guettoolbox/data/model/term_response.dart';
+import 'package:guettoolbox/data/model/term/term_response.dart';
 import 'package:guettoolbox/data/repository/course.dart';
 import 'package:guettoolbox/data/repository/pedagogical_evaluation.dart';
 

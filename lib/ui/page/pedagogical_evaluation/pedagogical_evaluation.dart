@@ -128,7 +128,7 @@ class _PedagogicalEvaluationPageState
     return viewModel.terms.map((t) {
       return DropdownMenuItem(
         child: Container(
-            padding: EdgeInsets.all(8), child: Center(child: Text(t.termname))),
+            padding: EdgeInsets.all(8), child: Center(child: Text(t.termName))),
         value: t.term,
       );
     }).toList();

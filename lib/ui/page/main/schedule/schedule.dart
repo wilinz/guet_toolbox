@@ -26,42 +26,23 @@ class _SchedulePage extends StatefulWidget {
 
 class _SchedulePageState extends State<_SchedulePage>
     with AutomaticKeepAliveClientMixin {
-  var weekList = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+  var weekdayList = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 
-  var dateList = [];
-  var currentWeekIndex = 0;
 
   @override
   void initState() {
     super.initState();
 
+
     var vm = Provider.of<ScheduleViewModel>(context, listen: false);
-    vm.getData();
+    vm.getWeekday(DateTime.now());
+    vm.toToday();
 
-    var monday = 1;
-    var mondayTime = DateTime.now();
-
-    //获取本周星期一是几号
-    while (mondayTime.weekday != monday) {
-      mondayTime = mondayTime.subtract(new Duration(days: 1));
-    }
-
-    mondayTime.year; //2020 年
-    mondayTime.month; //6(这里和js中的月份有区别，js中是从0开始，dart则从1开始，我们无需再进行加一处理) 月
-    mondayTime.day; //6 日
-    // nowTime.hour ;//6 时
-    // nowTime.minute ;//6 分
-    // nowTime.second ;//6 秒
-    for (int i = 0; i < 7; i++) {
-      dateList.add(
-          mondayTime.month.toString() + "/" + (mondayTime.day + i).toString());
-      if ((mondayTime.day + i) == DateTime.now().day) {
-        setState(() {
-          currentWeekIndex = i + 1;
-        });
-      }
-    }
     // print('Recent monday '+DateTime.now().day.toString());
+  }
+
+  _getDateString(DateTime dateTime) {
+    return "${dateTime.year}/${dateTime.month}/${dateTime.day}";
   }
 
   @override
@@ -71,15 +52,28 @@ class _SchedulePageState extends State<_SchedulePage>
         Consumer<ScheduleViewModel>(builder: (context, viewModel, child) {
       return Scaffold(
         appBar: AppBar(
-          title: Text("主页"),
-          actions: [buildTermIconButton(context, viewModel)],
+          title: Text(
+              "${_getDateString(viewModel.scheduleDatetime?.dateTime ?? DateTime.now())} 第${viewModel.scheduleDatetime?.week ?? 1}周"),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  viewModel.toPreviousWeek();
+                },
+                icon: Icon(Icons.navigate_before)),
+            IconButton(
+                onPressed: () {
+                  viewModel.toNextWeek();
+                },
+                icon: Icon(Icons.navigate_next)),
+            buildTermIconButton(context, viewModel),
+          ],
         ),
         body: Center(
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 400),
             child: Column(
               children: [
-                buildWeekGridView(),
+                buildWeekGridView(viewModel),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Row(
@@ -109,7 +103,7 @@ class _SchedulePageState extends State<_SchedulePage>
     return IconButton(
         onPressed: () async {
           if (viewModel.termList.isEmpty)
-            viewModel.getData();
+            viewModel.getTerms();
           else
             showDialog(
                 context: context,
@@ -121,10 +115,10 @@ class _SchedulePageState extends State<_SchedulePage>
                         onPressed: () {
                           Navigator.of(context).pop();
                           viewModel.currentTerm = term;
-                          viewModel.getCourseList(term.term);
+                          viewModel.toTerm(term);
                         },
                         child: Text(
-                          term.termname,
+                          term.termName,
                         ),
                       );
                     }).toList(),
@@ -230,7 +224,7 @@ class _SchedulePageState extends State<_SchedulePage>
         });
   }
 
-  GridView buildWeekGridView() {
+  GridView buildWeekGridView(ScheduleViewModel vm) {
     return GridView.builder(
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
@@ -239,9 +233,7 @@ class _SchedulePageState extends State<_SchedulePage>
             crossAxisCount: 8, childAspectRatio: 1 / 1),
         itemBuilder: (BuildContext context, int index) {
           return Container(
-            color: index == this.currentWeekIndex
-                ? Color(0xf7f7f7)
-                : null,
+            color: index == vm.currentWeekdayIndex ? Color(0xf7f7f7) : null,
             child: Center(
               child: index == 0
                   ? Column(
@@ -255,17 +247,17 @@ class _SchedulePageState extends State<_SchedulePage>
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(weekList[index - 1],
+                        Text(weekdayList[index - 1],
                             style: TextStyle(
                                 fontSize: 14,
-                                color: index == currentWeekIndex
+                                color: index == vm.weekday
                                     ? Colors.lightBlue
                                     : null)),
                         // SpaceWidget(height: 5),
-                        Text(dateList[index - 1],
+                        Text(vm.dateList[index - 1],
                             style: TextStyle(
                                 fontSize: 12,
-                                color: index == currentWeekIndex
+                                color: index == vm.weekday
                                     ? Colors.lightBlue
                                     : null)),
                       ],
@@ -299,7 +291,7 @@ class _SchedulePageState extends State<_SchedulePage>
       return DropdownMenuItem(
         child: Container(
             padding: EdgeInsets.all(8),
-            child: Center(child: Text(item.termname))),
+            child: Center(child: Text(item.termName))),
         value: item.term,
       );
     });

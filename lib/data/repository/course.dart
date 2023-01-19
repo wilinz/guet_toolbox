@@ -4,32 +4,28 @@ import 'package:guettoolbox/data/model/course_response.dart';
 import 'package:guettoolbox/data/model/plan_course_detail_response.dart';
 import 'package:guettoolbox/data/model/plan_course_response.dart';
 import 'package:guettoolbox/data/model/semester_schedule.dart';
+import 'package:guettoolbox/data/model/term/term_response.dart';
 import 'package:guettoolbox/data/network.dart';
 import 'package:guettoolbox/data/service/term.dart';
 import 'package:guettoolbox/util/datetime.dart';
 import 'package:guettoolbox/util/list.dart';
 
 import '../model/common_response.dart';
-import '../model/term_response.dart';
 import '../service/course.dart';
 
 class CourseRepository {
   Term getCurrentTerm(List<Term> terms, bool holidayForward) {
     final now = DateTime.now();
-    final term = terms.firstWhereOrNull((e) =>
-        DateTimeUtil.parseDate(e.startdate).isBefore(now) &&
-        DateTimeUtil.parseDate(e.enddate).isAfter(now));
+    final term = terms.firstWhereOrNull(
+        (e) => e.startDate.isBefore(now) && e.endDate.isAfter(now));
     if (term == null) {
       final sortedList = List.of(terms)
-        ..sort((a, b) => DateTimeUtil.parseDate(a.startdate)
-            .compareTo(DateTimeUtil.parseDate(b.startdate)));
+        ..sort((a, b) => a.startDate.compareTo(b.startDate));
       if (holidayForward) {
-        final nextTerm = sortedList
-            .firstWhere((e) => DateTimeUtil.parseDate(e.enddate).isAfter(now));
+        final nextTerm = sortedList.firstWhere((e) => e.endDate.isAfter(now));
         return nextTerm;
       }
-      final lastTerm = sortedList
-          .lastWhere((e) => DateTimeUtil.parseDate(e.enddate).isBefore(now));
+      final lastTerm = sortedList.lastWhere((e) => e.endDate.isBefore(now));
       return lastTerm;
     }
     return term;
@@ -43,6 +39,18 @@ class CourseRepository {
       lastFiveYears.add(currentYear - i);
     }
     return lastFiveYears;
+  }
+
+  int getWeek(Term term, DateTime dateTime) {
+    int week;
+    if (dateTime.isAfter(term.startDate) && dateTime.isBefore(term.endDate)) {
+      week = dateTime.difference(term.startDate).inDays ~/ 7 +1;
+    } else if (dateTime.isBefore(term.startDate)) {
+      week = 0;
+    } else {
+      week = term.weekNum;
+    }
+    return week;
   }
 
   Future<CommonResponse> select(PlanCourseDetail planCourseDetail) async {

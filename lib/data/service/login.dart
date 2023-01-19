@@ -19,8 +19,12 @@ class LoginService {
         "service": service,
         "loginType": ""
       };
-      var resp = await (await AppNetwork.getDio(followRedirects: true)).post(
-          "https://cas.guet.edu.cn/cas/v1/tickets",
+
+      final Uri uri = Uri.parse("https://cas.guet.edu.cn/cas/v1/tickets");
+      // final cookieJar = (await AppNetwork.getInstance()).cookieJar;
+      // cookieJar.delete(uri);
+      var resp = await (await AppNetwork.getDio(followRedirects: true)).postUri(
+          uri,
           options: Options(
               contentType: AppNetwork.typeUrlEncode,
               responseType: ResponseType.plain),
@@ -89,8 +93,12 @@ class LoginService {
 
   static Future<bool> loginWebVpn(String username, String password) async {
     Future<bool> loginWebVpn1(String ticket) async {
-      var resp = await (await AppNetwork.getDio(followRedirects: true))
-          .get("${AppNetwork.webVpnUrl}login?cas_login=true&ticket=$ticket");
+      final Uri uri = Uri.parse(
+          "${AppNetwork.webVpnUrl}login?cas_login=true&ticket=$ticket");
+      // final cookieJar = (await AppNetwork.getInstance()).cookieJar;
+      // cookieJar.delete(uri);
+      var resp =
+          await (await AppNetwork.getDio(followRedirects: true)).getUri(uri);
       resp.data.toString();
       return resp.statusCode == 200;
     }
@@ -116,7 +124,9 @@ class LoginService {
 
     var ticket = await loginCAS(username, password, "https://bkjw.guet.edu.cn");
     await login(ticket);
-    return Future(() => ticket);
+    final str = await loginJwSystem(ticket);
+    print(str);
+    return ticket;
   }
 
   static Future<String> loginNewCas(
@@ -165,6 +175,12 @@ class LoginService {
     if (ticketUrl == null) throw LogonFailedException("登录失败");
     final ticket = Uri.parse(ticketUrl).queryParameters["ticket"];
     return ticket!;
+  }
+
+  static Future<String> loginJwSystem(String ticket) async {
+    final resp = await (await AppNetwork.getDio())
+        .get("Login/MainDesktop?ticket=$ticket");
+    return resp.data;
   }
 }
 

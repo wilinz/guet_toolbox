@@ -79,10 +79,54 @@ class PlanCourseDetail {
   String ap;
   @JsonKey(name: "xm")
   dynamic xm;
+  @JsonKey(name: "stype", defaultValue: "正常")
+  String stype="正常";
 
   factory PlanCourseDetail.fromJson(Map<String, dynamic> json) => _$PlanCourseDetailFromJson(json);
 
   Map<String, dynamic> toJson() => _$PlanCourseDetailToJson(this);
+
+  PlanCourseDetail copyWith({
+    String? id,
+    String? term,
+    String? courseid,
+    String? cname,
+    String? spno,
+    String? grade,
+    String? tname,
+    String? xf,
+    int? scted,
+    String? courseno,
+    String? name,
+    int? maxstu,
+    int? sctcnt,
+    dynamic? stid,
+    String? comm,
+    int? lot,
+    String? ap,
+    dynamic? xm,
+  }) {
+    return PlanCourseDetail(
+      id: id ?? this.id,
+      term: term ?? this.term,
+      courseid: courseid ?? this.courseid,
+      cname: cname ?? this.cname,
+      spno: spno ?? this.spno,
+      grade: grade ?? this.grade,
+      tname: tname ?? this.tname,
+      xf: xf ?? this.xf,
+      scted: scted ?? this.scted,
+      courseno: courseno ?? this.courseno,
+      name: name ?? this.name,
+      maxstu: maxstu ?? this.maxstu,
+      sctcnt: sctcnt ?? this.sctcnt,
+      stid: stid ?? this.stid,
+      comm: comm ?? this.comm,
+      lot: lot ?? this.lot,
+      ap: ap ?? this.ap,
+      xm: xm ?? this.xm,
+    );
+  }
 }
 
 

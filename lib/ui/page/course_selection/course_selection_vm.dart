@@ -5,7 +5,7 @@ import 'package:guettoolbox/data/model/majors_response.dart';
 import 'package:guettoolbox/data/model/plan_course_detail_response.dart';
 import 'package:guettoolbox/data/model/plan_course_response.dart';
 import 'package:guettoolbox/data/model/student_info.dart';
-import 'package:guettoolbox/data/model/term_response.dart';
+import 'package:guettoolbox/data/model/term/term_response.dart';
 import 'package:guettoolbox/data/repository/academy.dart';
 import 'package:guettoolbox/data/repository/course.dart';
 import 'package:guettoolbox/data/repository/majors.dart';
@@ -122,11 +122,11 @@ class CourseSelectionViewModel extends ChangeNotifier {
   }
 
   Future<CommonResponse> select(PlanCourseDetail planCourseDetail) async {
-    return CourseRepository.getInstance().select(planCourseDetail);
+    return CourseRepository.getInstance().select(planCourseDetail.copyWith(term: currentTerm!.term));
   }
 
   Future<CommonResponse> unselect(PlanCourseDetail planCourseDetail) async {
-    return CourseRepository.getInstance().unselect(planCourseDetail);
+    return CourseRepository.getInstance().unselect(planCourseDetail.copyWith(term: currentTerm!.term));
   }
 
   Future<List<PlanCourseDetail>> getDetail(PlanCourse planCourse) {

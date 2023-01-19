@@ -53,6 +53,12 @@ class CourseService {
     return data.data;
   }
 
+  static Future<String> selectPage() async {
+  //   Student/StuSct
+    final resp = await (await AppNetwork.getDio()).get("Student/StuSct");
+    return resp.data;
+  }
+
   static Future<CommonResponse> select(
       PlanCourseDetail planCourseDetail) async {
     final resp = await (await AppNetwork.getDio()).post("student/SctSave",

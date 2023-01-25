@@ -34,7 +34,7 @@ flutter pub run json5_model --src=lib/data/model/json  --dist=lib/data/model
 windows构建msix证书生成
 ```shell
 #替换方括号中内容并去掉方括号
-msixherocli.exe newcert --directory ./certs --name [name] --password [password] --subject CN=[name] --validUntil "2054/1/25 23:01:34"
+msixherocli.exe newcert --directory ./certs --name testname --password password --subject CN=testname --validUntil "2054/1/25 23:01:34"
 ```
 windows构建msix
 ```shell
@@ -43,5 +43,18 @@ flutter pub run msix:create
 #debug
 flutter pub run msix:create --debug
 #创建自签名msix安装程序
-flutter pub run msix:create -c ./certs/certname.pfx -p password
+flutter pub run msix:create -c ./certs/testname.pfx -p password
+```
+windows打包安装器
+```shell
+choco install innosetup
+```
+
+```shell
+curl -o https://raw.githubusercontent.com/jrsoftware/issrc/main/Files/Languages/Unofficial/ChineseSimplified.isl
+```
+
+windows打包
+```shell
+iscc innosetup/setup.iss
 ```

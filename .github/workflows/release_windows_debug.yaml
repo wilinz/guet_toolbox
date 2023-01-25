@@ -10,8 +10,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Check OpenSSL
-        run: choco install openssl
+      - name: Install OpenSSL and InnoSetup and zip
+        run: |
+          choco install openssl --no-progress
+          choco install innosetup --no-progress
+          choco install zip --no-progress
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -21,13 +24,20 @@ jobs:
       - name: Build for Windows
         run: flutter build windows --debug
 
-      - name: Package as MSIX
-        run: |
-          flutter pub run msix:create --debug
-          n
+      - name: Package as exe
+        run: iscc innosetup/setup-debug.iss
 
-      - name: Upload MSIX artifact
+      - name: Upload to artifact
         uses: actions/upload-artifact@v2
         with:
-          name: guettoolbox-debug.msix
-          path: build/windows/runner/Debug/guettoolbox.msix
+          name: guet-toolbox-debug.exe
+          path: innosetup/output/debug/guet-toolbox.exe
+
+      - name: Package as zip
+        run: zip -r build/windows/runner/guet-toolbox-debug.zip build/windows/runner/Debug
+
+      - name: Upload to artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: guet-toolbox-debug.zip
+          path: build/windows/runner/guet-toolbox-debug.zip

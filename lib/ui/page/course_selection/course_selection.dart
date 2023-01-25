@@ -111,7 +111,7 @@ class _CourseSelectionPageState extends State<_CourseSelectionPage> {
                         if (!item.isExpand && item.details.isEmpty) {
                           showSnackBar(context, "第${i + 1}个课程正在加载", 500);
                           viewModel.getDetail(item).then((value) {
-                            showSnackBar(context, "第${i + 1}个课程加载成功", 500);
+                            // showSnackBar(context, "第${i + 1}个课程加载成功", 500);
                           }).onError((error, stackTrace) {
                             showSnackBar(context, "第${i + 1}个课程加载失败", 500);
                           });

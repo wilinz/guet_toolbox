@@ -6,7 +6,7 @@ part 'term_response.g.dart';
 part 'term_response.freezed.dart';
 
 @freezed
-abstract class TermResponse with _$TermResponse {
+class TermResponse with _$TermResponse {
   @JsonSerializable(explicitToJson: true)
   const factory TermResponse({
     @JsonKey(name: "success", defaultValue: false) @Default(false) bool success,
@@ -23,7 +23,7 @@ _parseDateTime(v) => DateTimeUtil.parseDate(v);
 _parseStringToInt(v) => int.parse(v);
 
 @freezed
-abstract class Term with _$Term {
+class Term with _$Term {
   @JsonSerializable(explicitToJson: true)
   const factory Term({
     @JsonKey(name: "term", defaultValue: "") @Default("") String term,

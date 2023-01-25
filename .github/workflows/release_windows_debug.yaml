@@ -31,7 +31,9 @@ jobs:
         run: flutter build windows --debug
 
       - name: Package as MSIX
-        run: flutter pub run msix:create --debug
+        run: |
+          flutter pub run msix:create --debug
+          y
 
       - name: Upload MSIX artifact
         uses: actions/upload-artifact@v2

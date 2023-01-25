@@ -8,19 +8,17 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.REPO_TOKEN }}
+        uses: actions/checkout@v3
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v1
         with:
           channel: stable
 
-#      - name: Setup Visual Studio
-#        uses: microsoft/setup-visualstudio@v1
-#        with:
-#          vs-version: '2022'
+      #      - name: Setup Visual Studio
+      #        uses: microsoft/setup-visualstudio@v1
+      #        with:
+      #          vs-version: '2022'
 
       - name: Check OpenSSL
         run: |

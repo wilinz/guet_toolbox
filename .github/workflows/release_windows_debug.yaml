@@ -10,6 +10,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Check OpenSSL
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+          choco install openssl
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -20,8 +25,7 @@ jobs:
       #        with:
       #          vs-version: '2022'
 
-      - name: Check OpenSSL
-        run: winget install openssl
+
 
       - name: Build for Windows
         run: flutter build windows --debug

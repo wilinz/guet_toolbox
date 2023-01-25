@@ -80,7 +80,7 @@ class AppNetwork {
         //设置dio proxy
         var httpProxyAdapter =
             HttpProxyAdapter(ipAddr: "127.0.0.1", port: 8888);
-        dio.httpClientAdapter = httpProxyAdapter;
+        // dio.httpClientAdapter = httpProxyAdapter;
       }
       dio.interceptors.add(MyInterceptor());
       dio.interceptors.add(LoginInterceptor(dio));

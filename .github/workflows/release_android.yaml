@@ -22,11 +22,19 @@ jobs:
       - name: Build for Android
         run: flutter build apk --split-per-abi --release
 
-      - name: Upload to artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: guet-toolbox
-          path: build/app/outputs/flutter-apk/*-release.apk
+      - name: Upload files
+        run: |
+          for file in $(ls build/app/outputs/flutter-apk/*-release.apk); do
+          filename="${file##*/}"
+          echo "Uploading ${filename}"
+          actions/upload-artifact@v2 --name "${filename}" --path "${file}"
+          done
+
+#      - name: Upload to artifact
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: guet-toolbox
+#          path: build/app/outputs/flutter-apk/*-release.apk
 
 #      - name: Package as zip
 #        run: |

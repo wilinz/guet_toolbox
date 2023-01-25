@@ -1,4 +1,4 @@
-name: Release Windows Debug
+name: Release Windows
 
 on:
   workflow_dispatch:

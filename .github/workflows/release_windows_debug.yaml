@@ -34,10 +34,13 @@ jobs:
           path: innosetup/output/debug/guet-toolbox.exe
 
       - name: Package as zip
-        run: zip -r build/windows/runner/guet-toolbox-debug.zip build/windows/runner/Debug
+        run: |
+          cd build/windows/runner
+          zip -q -r -j ./guet-toolbox-windows-debug.zip Debug
+          cd ../../../
 
       - name: Upload to artifact
         uses: actions/upload-artifact@v2
         with:
-          name: guet-toolbox-debug.zip
-          path: build/windows/runner/guet-toolbox-debug.zip
+          name: guet-toolbox-windows-debug.zip
+          path: build/windows/runner/guet-toolbox-windows-debug.zip

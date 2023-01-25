@@ -25,3 +25,23 @@ Json to dart:
 #会覆盖，修改原json名为"_"开头可忽略此文件，避免覆盖
 flutter pub run json5_model --src=lib/data/model/json  --dist=lib/data/model
 ```
+
+```shell
+#windows sdk路径
+"C:\Program Files (x86)\Windows Kits\10\bin\<version>\x64"
+```
+
+windows构建msix证书生成
+```shell
+#替换方括号中内容并去掉方括号
+msixherocli.exe newcert --directory ./certs --name [name] --password [password] --subject CN=[name] --validUntil "2054/1/25 23:01:34"
+```
+windows构建msix
+```shell
+#release
+flutter pub run msix:create
+#debug
+flutter pub run msix:create --debug
+#创建自签名msix安装程序
+flutter pub run msix:create -c ./certs/certname.pfx -p password
+```

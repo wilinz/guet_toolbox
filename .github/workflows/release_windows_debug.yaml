@@ -1,0 +1,42 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: stable
+
+      - name: Setup Visual Studio
+        uses: microsoft/setup-visualstudio@v1
+        with:
+          vs-version: '2022'
+
+      - name: Check OpenSSL
+        run: |
+          if ! openssl version; then
+          echo "OpenSSL is not installed, installing it now..."
+          winget install -e --id OpenSSL.Light
+          fi
+
+      - name: Build for Windows
+        run: flutter build windows --debug
+
+      - name: Package as MSIX
+        run: flutter pub run msix:create --debug
+
+      - name: Upload MSIX artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: guettoolbox-debug.msix
+          path: build/windows/runner/Debug/guettoolbox.msix

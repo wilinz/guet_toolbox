@@ -23,7 +23,6 @@ jobs:
         run: flutter build apk --split-per-abi --release
 
       - name: Upload files
-        uses: actions/upload-artifact@v3
         run: |
           for file in $(ls build/app/outputs/flutter-apk/*-release.apk); do
           filename="${file##*/}"

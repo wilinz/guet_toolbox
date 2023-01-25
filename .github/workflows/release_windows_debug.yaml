@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up Flutter
-        uses: subosito/flutter-action@v1
+        uses: subosito/flutter-action@v2
         with:
           channel: stable
 
@@ -21,11 +21,7 @@ jobs:
       #          vs-version: '2022'
 
       - name: Check OpenSSL
-        run: |
-          if ! openssl version; then
-          echo "OpenSSL is not installed, installing it now..."
-          winget install -e --id OpenSSL.Light
-          fi
+        run: winget install openssl
 
       - name: Build for Windows
         run: flutter build windows --debug

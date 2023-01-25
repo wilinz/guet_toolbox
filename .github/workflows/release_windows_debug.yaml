@@ -12,7 +12,7 @@ jobs:
 
       - name: Check OpenSSL
         run: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+#          Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
           choco install openssl
 
       - name: Set up Flutter
@@ -33,7 +33,7 @@ jobs:
       - name: Package as MSIX
         run: |
           flutter pub run msix:create --debug
-          y
+          n
 
       - name: Upload MSIX artifact
         uses: actions/upload-artifact@v2

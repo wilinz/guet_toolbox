@@ -28,8 +28,9 @@ jobs:
           for file in $(ls build/app/outputs/flutter-apk/*-release.apk); do
           filename="${file##*/}"
           echo "Uploading ${filename}"
-          actions/upload-artifact@v3 --name "${filename}" --path "${file}"
+          run:  actions/upload-artifact@v3 --name "${filename}" --path "${file}"
           done
+
 
 #      - name: Upload to artifact
 #        uses: actions/upload-artifact@v3

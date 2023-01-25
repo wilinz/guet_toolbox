@@ -37,7 +37,7 @@ jobs:
       - name: Upload armeabi-v7a to artifact
         uses: actions/upload-artifact@v3
         with:
-          name: app-x86_64-release.apk
+          name: app-armeabi-v7a-release.apk
           path: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
 
 #      - name: Package as zip

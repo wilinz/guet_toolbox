@@ -35,9 +35,9 @@ jobs:
 
       - name: Package as zip
         run: |
-          cd build/windows/runner
-          zip -q -r -j ./guet-toolbox-windows-debug.zip Debug
-          cd ../../../
+          cd build/windows/runner/Debug
+          zip -q -r ../guet-toolbox-windows-debug.zip ./*
+          cd ../../../../
 
       - name: Upload to artifact
         uses: actions/upload-artifact@v2

@@ -22,20 +22,23 @@ jobs:
       - name: Build for Android
         run: flutter build apk --split-per-abi --release
 
-      - name: Upload files
-        run: |
-          for file in $(ls build/app/outputs/flutter-apk/*-release.apk); do
-          filename="${file##*/}"
-          echo "Uploading ${filename}"
-          run:  actions/upload-artifact@v3 --name "${filename}" --path "${file}"
-          done
+      - name: Upload x86_64 to artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-x86_64-release.apk
+          path: build/app/outputs/flutter-apk/app-x86_64-release.apk
 
+      - name: Upload arm64-v8a to artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-arm64-v8a-release.apk
+          path: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
 
-#      - name: Upload to artifact
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: guet-toolbox
-#          path: build/app/outputs/flutter-apk/*-release.apk
+      - name: Upload armeabi-v7a to artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-x86_64-release.apk
+          path: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
 
 #      - name: Package as zip
 #        run: |

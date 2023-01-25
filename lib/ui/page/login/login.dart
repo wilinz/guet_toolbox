@@ -6,18 +6,30 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'login_viewmodel.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<LoginViewModel>(
+        create: (context) => LoginViewModel(), child: _LoginPage());
+  }
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPage extends StatefulWidget {
+  const _LoginPage({Key? key}) : super(key: key);
+
+  @override
+  State<_LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<_LoginPage> {
   final TextEditingController _usernameController =
       TextEditingController(text: "");
   final TextEditingController _passwordController =
       TextEditingController(text: "");
+  final TextEditingController _vcodeController =
+  TextEditingController(text: "");
   GlobalKey _formKey = GlobalKey<FormState>();
   bool _passwordVisible = false;
 
@@ -30,9 +42,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<LoginViewModel>(
-      create: (context) => LoginViewModel(),
-      child: Scaffold(
+    return Consumer<LoginViewModel>(builder: (context, vm, child) {
+      return Scaffold(
         appBar: AppBar(
           title: const Text("登录"),
         ),
@@ -87,8 +98,31 @@ class _LoginPageState extends State<LoginPage> {
                             return v!.trim().length > 0 ? null : "密码不能为空";
                           },
                         ),
+                        // if (vm.vcode != null)
+                        //   Container(
+                        //     height: 32,
+                        //   ),
+                        //   InkWell(
+                        //     onTap: (){
+                        //       vm.getVcode();
+                        //     },
+                        //       child: Image.memory(vm.vcode!["content"])),
+                        // Container(
+                        //   height: 8,
+                        // ),
+                        // TextFormField(
+                        //   controller: _vcodeController,
+                        //   autofocus: true,
+                        //   decoration: InputDecoration(
+                        //       labelText: "验证码",
+                        //       hintText: "验证码",
+                        //       prefixIcon: Icon(Icons.code)),
+                        //   validator: (v) {
+                        //     return v!.trim().length > 0 ? null : "验证码不能为空";
+                        //   },
+                        // ),
                         Container(
-                          height: 32,
+                          height: 16,
                         ),
                         Consumer<LoginViewModel>(
                           builder: (context, loginViewModel, child) {
@@ -111,8 +145,8 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   @override
@@ -122,10 +156,12 @@ class _LoginPageState extends State<LoginPage> {
       _usernameController.text = sp.getString(AppKey.username) ?? "";
       _passwordController.text = sp.getString(AppKey.password) ?? "";
     });
+    // LoginViewModel vm = Provider.of(context,listen: false);
+    // vm.getVcode();
   }
 
-  void _login(LoginViewModel loginViewModel, BuildContext context,
-      FormState currentState) {
+  Future<void> _login(LoginViewModel loginViewModel, BuildContext context,
+      FormState currentState) async {
     if (!currentState.validate()) {
       _loginMessage(context, "请检查输入");
       return;
@@ -135,6 +171,8 @@ class _LoginPageState extends State<LoginPage> {
       sp.setString(AppKey.username, _usernameController.text);
       sp.setString(AppKey.password, _passwordController.text);
     });
+
+    // await loginViewModel.setVcode(_vcodeController.text.trim());
     loginViewModel
         .login(_usernameController.text, _passwordController.text)
         .then((value) {

@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:guettoolbox/common/encrypt/cas_new.dart';
 import 'package:guettoolbox/data/model/login_cas_response.dart';
 import 'package:guettoolbox/util/js.dart';
 import 'package:guettoolbox/util/list.dart';
+import 'package:guettoolbox/util/random.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:dio/dio.dart';
 import 'package:guettoolbox/common/encrypt/cas.dart';
@@ -180,6 +182,22 @@ class LoginService {
   static Future<String> loginJwSystem(String ticket) async {
     final resp = await (await AppNetwork.getDio())
         .get("Login/MainDesktop?ticket=$ticket");
+    return resp.data;
+  }
+
+  static Future<Map<String, dynamic>> getVcode() async {
+    final resp = await (await AppNetwork.getDio()).get(
+        "https://cas.guet.edu.cn/cas/kaptcha?uid=${randomUidString(32)}",
+        options: Options(responseType: ResponseType.json));
+    final base64 = resp.data["content"].toString().split(",")[1];
+    resp.data["content"] = base64Decode(base64.replaceAll(RegExp(r'\s+'), ''));
+    return resp.data;
+  }
+
+  static Future<Map<String, dynamic>> vcode(String id, String code) async {
+    final resp = await (await AppNetwork.getDio()).post(
+        "https://cas.guet.edu.cn/cas/validateLoginCode",
+        data: {"id": id, "code": code});
     return resp.data;
   }
 }

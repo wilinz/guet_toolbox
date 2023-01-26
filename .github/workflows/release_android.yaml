@@ -22,6 +22,23 @@ jobs:
       - name: Build for Android
         run: flutter build apk --split-per-abi --release
 
+      - name: Key base64 to file
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: 'android_key.jks'
+          fileDir: '/tmp/.android_key/'
+          encodedString: ${{ secrets.ANDROID_KEY_BASE64 }}
+
+      - name: Sign apk
+        env:
+          ANDROID_KS_PASS: ${{ secrets.ANDROID_KS_PASS }}
+        run: |
+          for file in build/app/outputs/flutter-apk/*.apk; do
+                filename="${file##*/}"
+                echo "Signing ${filename}"
+                apksigner sign --v4-signing-enabled false --ks /tmp/.android_key/android_key.jks --ks-pass env:ANDROID_KS_PASS --ks-key-alias ${{ secrets.ANDROID_KEY_ALIAS }} ${file}
+              done
+
       - name: Upload x86_64 to artifact
         uses: actions/upload-artifact@v3
         with:

@@ -58,3 +58,14 @@ windows打包
 ```shell
 iscc innosetup/setup.iss
 ```
+签名apk
+```shell
+apksigner  sign  --v4-signing-enabled false --ks xxx.jks  --ks-key-alias alias  --out app-arm64-v8a-release-signed.apk app-arm64-v8a-release.apk
+```
+```shell
+for file in ./*.apk; do
+      filename="${file##*/}"
+      echo "Signing ${filename}"
+      apksigner sign --v4-signing-enabled false --ks xxx.jks  --ks-pass env:ANDROID_KS_PASS --ks-key-alias alias  --out ${file} ${file}
+    done
+```

@@ -46,3 +46,4 @@ app.*.map.json
 /dll/libssl-1_1-x64.dll
 /.cookies/ie0_ps1/v.guet.edu.cn
 /innosetup/output/
+*.dmg

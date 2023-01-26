@@ -10,10 +10,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install OpenSSL
-        run: |
-          sudo apt install libssl-dev
-
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -30,11 +26,7 @@ jobs:
           encodedString: ${{ secrets.ANDROID_KEY_BASE64 }}
 
       - name: Install apksigner
-        run: |
-          sudo apt update
-          sudo apt install apksigner
-          sudo apt --fix-broken install
-          sudo apt install apksigner
+        run: sudo apt install apksigner
 
       - name: Sign apk
         env:

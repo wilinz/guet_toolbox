@@ -11,5 +11,5 @@ create-dmg \
   --hide-extension "guettoolbox.app" \
   --app-drop-link 600 185 \
   "Guet-Toolbox.dmg" \
-  "../build/macos/Build/Products/Release/guettoolbox.app"
+  "build/macos/Build/Products/Release/guettoolbox.app"
 

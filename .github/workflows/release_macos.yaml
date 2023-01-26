@@ -19,7 +19,7 @@ jobs:
         run: flutter build macos --release
 
       - name: Package as dmg
-        run: /bin/sh ./dmg/build.sh
+        run: cd dmg && /bin/sh ./build.sh && cd ../
 
       - name: Upload to artifact
         uses: actions/upload-artifact@v3

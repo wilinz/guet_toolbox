@@ -152,7 +152,7 @@ class LoginInterceptor extends Interceptor {
               print(e);
               if (i == 4 && AppRoute.currentPage != AppRoute.loginPage) {
                 AppRoute.navigatorKey.currentState
-                    ?.pushNamed(AppRoute.loginPage);
+                    ?.pushNamed(AppRoute.loginPage, arguments: true);
               }
             }
           }

@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:guettoolbox/common/key.dart';
 import 'package:guettoolbox/ui/route.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'login_viewmodel.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  final bool popUpAfterSuccess;
+
+  const LoginPage({Key? key, required this.popUpAfterSuccess}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<LoginViewModel>(
-        create: (context) => LoginViewModel(), child: _LoginPage());
+        create: (context) => LoginViewModel(), child: _LoginPage(popUpAfterSuccess: popUpAfterSuccess,));
   }
 }
 
 class _LoginPage extends StatefulWidget {
-  const _LoginPage({Key? key}) : super(key: key);
-
+  const _LoginPage({Key? key, required this.popUpAfterSuccess}) : super(key: key);
+  final bool popUpAfterSuccess;
   @override
   State<_LoginPage> createState() => _LoginPageState();
 }
@@ -190,7 +193,7 @@ class _LoginPageState extends State<_LoginPage> {
         .then((value) {
       _loginMessage(context, value ? "登录成功" : "登录失败");
       final navigator = Navigator.of(context);
-      if (navigator.canPop()) {
+      if (widget.popUpAfterSuccess) {
         navigator.pop();
       } else {
         Navigator.pushReplacementNamed(context, AppRoute.mainPage);

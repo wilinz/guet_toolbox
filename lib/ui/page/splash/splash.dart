@@ -39,7 +39,7 @@ class _SplashPageState extends State<SplashPage> {
     t = Timer(Duration(milliseconds: 250), () {
       LoginRepository().ticket.then((ticket) {
         var route = ticket == null ? AppRoute.loginPage : AppRoute.mainPage;
-        Navigator.pushReplacementNamed(context, route);
+        Navigator.pushReplacementNamed(context, route, arguments: false);
       });
     });
   }

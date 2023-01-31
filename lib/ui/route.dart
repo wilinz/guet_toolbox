@@ -29,7 +29,11 @@ class AppRoute {
 
   ///路由表配置
   static Map<String, WidgetBuilder> routes = {
-    loginPage: (context) => const LoginPage(),
+    loginPage: (context){
+      final args = ModalRoute.of(context)!.settings.arguments!;
+      final popUpAfterSuccess = args as bool;
+      return LoginPage(popUpAfterSuccess: popUpAfterSuccess);
+    } ,
     splashPage: (context) => const SplashPage(),
     mainPage: (context) => const MainPage(),
     courseSelectionPage: (context) => const CourseSelectionPage(),

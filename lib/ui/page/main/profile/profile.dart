@@ -45,7 +45,7 @@ class _ProfilePageState extends State<_ProfilePage>
                     child: InkWell(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                       onTap: () {
-                        Navigator.of(context).pushNamed(AppRoute.loginPage);
+                        Navigator.of(context).pushNamed(AppRoute.loginPage, arguments: true);
                       },
                       child: Container(
                         padding: EdgeInsets.all(16),

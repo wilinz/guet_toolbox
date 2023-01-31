@@ -12,7 +12,7 @@ apt install libssl-dev
 
 Flutter 生成代码
 ```shell
-   flutter pub run build_runner build
+flutter pub run build_runner build
 ```
 
 Web运行在指定端口
@@ -68,4 +68,8 @@ for file in ./*.apk; do
       echo "Signing ${filename}"
       apksigner sign --v4-signing-enabled false --ks xxx.jks  --ks-pass env:ANDROID_KS_PASS --ks-key-alias alias  --out ${file} ${file}
     done
+```
+brew
+```shell
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 ```

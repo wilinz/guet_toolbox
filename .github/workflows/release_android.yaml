@@ -1,0 +1,69 @@
+name: Release Android
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Build for Android
+        run: flutter build apk --split-per-abi --release
+
+      - name: Key base64 to file
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: 'android_key.jks'
+          fileDir: '/tmp/.android_key/'
+          encodedString: ${{ secrets.ANDROID_KEY_BASE64 }}
+
+      - name: Install apksigner
+        run: sudo apt install apksigner
+
+      - name: Sign apk
+        env:
+          ANDROID_KS_PASS: ${{ secrets.ANDROID_KS_PASS }}
+        run: |
+          for file in build/app/outputs/flutter-apk/*.apk; do
+                filename="${file##*/}"
+                echo "Signing ${filename}"
+                apksigner sign --v4-signing-enabled false --ks /tmp/.android_key/android_key.jks --ks-pass env:ANDROID_KS_PASS --ks-key-alias ${{ secrets.ANDROID_KEY_ALIAS }} ${file}
+              done
+
+      - name: Upload x86_64 to artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-x86_64-release.apk
+          path: build/app/outputs/flutter-apk/app-x86_64-release.apk
+
+      - name: Upload arm64-v8a to artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-arm64-v8a-release.apk
+          path: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+
+      - name: Upload armeabi-v7a to artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-armeabi-v7a-release.apk
+          path: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+
+#      - name: Package as zip
+#        run: |
+#          cd build/windows/runner/Debug
+#          zip -q -r ../guet-toolbox-windows-debug.zip ./*
+#          cd ../../../../
+#
+#      - name: Upload to artifact
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: guet-toolbox-windows-debug.zip
+#          path: build/windows/runner/guet-toolbox-windows-debug.zip

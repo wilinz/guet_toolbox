@@ -1,0 +1,28 @@
+name: Release macOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Build for macOS
+        run: flutter build macos --release
+
+      - name: Package as dmg
+        run: cd dmg && /bin/sh ./build.sh && cd ../
+
+      - name: Upload to artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: guet-toolbox.dmg
+          path: dmg/Guet-Toolbox.dmg

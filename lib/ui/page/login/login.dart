@@ -29,7 +29,7 @@ class _LoginPageState extends State<_LoginPage> {
   final TextEditingController _passwordController =
       TextEditingController(text: "");
   final TextEditingController _vcodeController =
-  TextEditingController(text: "");
+      TextEditingController(text: "");
   GlobalKey _formKey = GlobalKey<FormState>();
   bool _passwordVisible = false;
 
@@ -64,12 +64,18 @@ class _LoginPageState extends State<_LoginPage> {
                           controller: _usernameController,
                           autofocus: true,
                           decoration: InputDecoration(
-                              labelText: "用户名",
-                              hintText: "您的用户名",
-                              prefixIcon: Icon(Icons.person)),
+                            labelText: "用户名",
+                            hintText: "您的用户名",
+                            prefixIcon: Icon(Icons.person),
+                            // helperText: '用户名',
+                            border: const OutlineInputBorder(),
+                          ),
                           validator: (v) {
                             return v!.trim().length > 0 ? null : "账号不能为空";
                           },
+                        ),
+                        SizedBox(
+                          height: 16,
                         ),
                         TextFormField(
                           controller: _passwordController,
@@ -93,6 +99,8 @@ class _LoginPageState extends State<_LoginPage> {
                                 });
                               },
                             ),
+                            // helperText: '密码',
+                            border: const OutlineInputBorder(),
                           ),
                           validator: (v) {
                             return v!.trim().length > 0 ? null : "密码不能为空";

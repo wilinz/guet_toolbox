@@ -26,29 +26,40 @@ class _MainPageState extends State<_MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        children: [HomePage(), SchedulePage(), ProfilePage()],
-        onPageChanged: (index) {
-          setState(() {
-            selected = index;
-          });
-        },
-        controller: pageController,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "主页"),
-          BottomNavigationBarItem(icon: Icon(Icons.table_view), label: "课表"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "我的")
-        ],
-        onTap: (index) {
-          if (index != selected) {
-            pageController.animateToPage(index,
-                duration: Duration(milliseconds: 200), curve: Curves.linear);
-          }
-        },
-        currentIndex: selected,
-      ),
-    );
+        body: PageView(
+          children: [HomePage(), SchedulePage(), ProfilePage()],
+          onPageChanged: (index) {
+            setState(() {
+              selected = index;
+            });
+          },
+          controller: pageController,
+        ),
+        bottomNavigationBar: NavigationBar(
+            destinations: [
+              NavigationDestination(
+                tooltip: '主页',
+                icon: Icon(Icons.home_outlined),
+                label: '主页',
+                selectedIcon: Icon(Icons.home),
+              ),
+              NavigationDestination(
+                tooltip: '课表',
+                icon: Icon(Icons.table_view_outlined),
+                label: '课表',
+                selectedIcon: Icon(Icons.table_view),
+              ),
+              NavigationDestination(
+                tooltip: '我的',
+                icon: Icon(Icons.person_outlined),
+                label: '我的',
+                selectedIcon: Icon(Icons.person),
+              )
+            ],
+            onDestinationSelected: (index) {
+              pageController.animateToPage(index,
+                  duration: Duration(milliseconds: 200), curve: Curves.linear);
+            },
+            selectedIndex: selected));
   }
 }

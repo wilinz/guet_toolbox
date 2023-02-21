@@ -200,6 +200,16 @@ class LoginService {
         data: {"id": id, "code": code});
     return resp.data;
   }
+
+  static Future<bool> isCampusNetwork() async {
+    try {
+      final resp =
+          await (await AppNetwork.getDio()).get("https://bkjw.guet.edu.cn/");
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
 
 class LogonFailedException implements Exception {

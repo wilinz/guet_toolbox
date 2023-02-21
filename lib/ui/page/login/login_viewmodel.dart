@@ -7,6 +7,8 @@ import '../../../data/repository/login.dart';
 class LoginViewModel extends ChangeNotifier {
   var isLoading = false;
 
+  Future<bool> get isCampusNetwork => LoginRepository().isCampusNetworkCache;
+
   Future<bool> login(String username, String password) {
     isLoading = true;
     notifyListeners();

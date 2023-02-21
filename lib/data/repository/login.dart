@@ -29,6 +29,22 @@ class LoginRepository {
     return Future(() => false);
   }
 
+  bool? _isCampusNetworkCache = null;
+
+  Future<bool> get isCampusNetworkCache async {
+    if (_isCampusNetworkCache == null) {
+      await isCampusNetwork();
+    }
+    return _isCampusNetworkCache!;
+  }
+
+  Future<bool> isCampusNetwork() async {
+    return LoginService.isCampusNetwork().then((value) {
+      _isCampusNetworkCache = value;
+      return value;
+    });
+  }
+
   LoginRepository._create();
 
   static final _instance = LoginRepository._create();

@@ -10,18 +10,24 @@ import 'login_viewmodel.dart';
 class LoginPage extends StatelessWidget {
   final bool popUpAfterSuccess;
 
-  const LoginPage({Key? key, required this.popUpAfterSuccess}) : super(key: key);
+  const LoginPage({Key? key, required this.popUpAfterSuccess})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<LoginViewModel>(
-        create: (context) => LoginViewModel(), child: _LoginPage(popUpAfterSuccess: popUpAfterSuccess,));
+        create: (context) => LoginViewModel(),
+        child: _LoginPage(
+          popUpAfterSuccess: popUpAfterSuccess,
+        ));
   }
 }
 
 class _LoginPage extends StatefulWidget {
-  const _LoginPage({Key? key, required this.popUpAfterSuccess}) : super(key: key);
+  const _LoginPage({Key? key, required this.popUpAfterSuccess})
+      : super(key: key);
   final bool popUpAfterSuccess;
+
   @override
   State<_LoginPage> createState() => _LoginPageState();
 }
@@ -137,7 +143,20 @@ class _LoginPageState extends State<_LoginPage> {
                         //   },
                         // ),
                         Container(
-                          height: 32,
+                          height: 16,
+                        ),
+                        FutureBuilder(
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Text(
+                                    snapshot.data! ? "当前处于校园网" : "当前处于非校园网");
+                              }
+                              return Container();
+                            },
+                            future: vm.isCampusNetwork,
+                            initialData: null),
+                        Container(
+                          height: 16,
                         ),
                         Consumer<LoginViewModel>(
                           builder: (context, loginViewModel, child) {

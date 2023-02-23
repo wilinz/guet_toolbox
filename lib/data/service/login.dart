@@ -115,7 +115,7 @@ class LoginService {
       String username, String password) async {
     Future<bool> login(String ticket) async {
       var resp = await (await AppNetwork.getDio(followRedirects: true))
-          .get("${AppNetwork.baseUrlInWebVpn}?ticket=$ticket");
+          .get("${await AppNetwork.baseUrlAutoAdapt}?ticket=$ticket");
       resp.data.toString();
       if (resp.statusCode != 200) {
         throw LogonFailedException(
@@ -133,8 +133,8 @@ class LoginService {
 
   static Future<String> loginNewCas(
       String username, String password, String service) async {
-    final resp = await (await AppNetwork.getDio(followRedirects: false))
-        .get("https://cas.guet.edu.cn/cas/login", queryParameters: {
+    final resp = await (await AppNetwork.getDio(followRedirects: true))
+        .get("https://cas.guet.edu.cn/authserver/login", queryParameters: {
       "service": service //"https://v.guet.edu.cn/login?cas_login=true"
     });
     final doc = parse(resp.data);
@@ -201,15 +201,6 @@ class LoginService {
     return resp.data;
   }
 
-  static Future<bool> isCampusNetwork() async {
-    try {
-      final resp =
-          await (await AppNetwork.getDio()).get("https://bkjw.guet.edu.cn/");
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
 }
 
 class LogonFailedException implements Exception {

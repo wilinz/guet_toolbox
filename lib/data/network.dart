@@ -8,6 +8,8 @@ import 'package:dio_proxy_plugin/dio_proxy_plugin.dart';
 import 'package:flutter/foundation.dart';
 import 'package:guettoolbox/common/key.dart';
 import 'package:guettoolbox/data/repository/login.dart';
+import 'package:guettoolbox/data/repository/network_detection.dart';
+import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/data/service/login.dart';
 import 'package:guettoolbox/main.dart';
 import 'package:guettoolbox/ui/route.dart';
@@ -37,8 +39,14 @@ class AppNetwork {
   static const String typeUrlEncode = "application/x-www-form-urlencoded";
   static const String userAgent =
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36";
-  static final String baseUrlInWebVpn =
-      Uri.parse(baseUrl).toWebVpnUrl().toString();
+
+  static Future<String> get baseUrlAutoAdapt async {
+    final isCampusNetwork =
+        await NetworkDetectionRepository.getInstance().isCampusNetwork;
+    if (isCampusNetwork != true) return baseUrl;
+    return Uri.parse(baseUrl).toWebVpnUrl().toString();
+  }
+
   late Dio _dio;
 
   AppNetwork._create();
@@ -59,7 +67,7 @@ class AppNetwork {
   static Future<AppNetwork> getInstance() async {
     if (_instance == null) {
       var dio = Dio(BaseOptions(
-        baseUrl: baseUrlInWebVpn,
+        baseUrl: await baseUrlAutoAdapt,
         headers: {"User-Agent": userAgent},
         followRedirects: false,
         validateStatus: (int? status) =>
@@ -134,7 +142,7 @@ class LoginInterceptor extends Interceptor {
         if (username != null && password != null) {
           for (var i = 0; i < 5; i++) {
             try {
-              var success = await LoginRepository()
+              var success = await LoginRepository.getInstance()
                   .loginAcademicAffairsSystem(username, password);
               if (!success) throw LogonFailedException("登录失败");
               await Future.delayed(Duration(milliseconds: 500));
@@ -172,11 +180,12 @@ class MyInterceptor extends Interceptor {
   String? referer = null;
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+  Future<void> onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
     if (referer != null) {
-      referer = AppNetwork.baseUrlInWebVpn;
+      referer = await AppNetwork.baseUrlAutoAdapt;
     }
-    options.headers.addAll({"Referer": AppNetwork.baseUrlInWebVpn});
+    options.headers.addAll({"Referer": await AppNetwork.baseUrlAutoAdapt});
     referer = options.uri.scheme + "://" + options.uri.path;
     handler.next(options);
   }

@@ -18,7 +18,7 @@ Future<void> main() async {
     // 必须加上这一行。
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = WindowOptions(
-      size: Size(480, 920)
+      size: Size(450, 920)
     );
 
     windowManager.waitUntilReadyToShow(windowOptions, () async {

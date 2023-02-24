@@ -39,8 +39,8 @@ class ScheduleViewModel extends ChangeNotifier {
     // nowTime.minute ;//6 分
     // nowTime.second ;//6 秒
     for (int i = 0; i < 7; i++) {
-      dateList[i]=(
-          mondayTime.month.toString() + "/" + (mondayTime.day + i).toString());
+      final targetDate = mondayTime.add(Duration(days: i + 1));
+      dateList[i] = ("${targetDate.month}/${targetDate.day}");
       if ((mondayTime.day + i) == dateTime.day) {
         weekday = i + 1;
       }

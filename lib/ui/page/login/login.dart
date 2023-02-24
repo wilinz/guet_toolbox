@@ -219,6 +219,7 @@ class _LoginPageState extends State<_LoginPage> {
       }
       return value;
     }).onError((error, stackTrace) {
+      print(stackTrace);
       _loginMessage(context, error.toString());
       return false;
     });

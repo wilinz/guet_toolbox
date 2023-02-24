@@ -1,16 +1,18 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:guettoolbox/common/encrypt/cas_new.dart';
 import 'package:guettoolbox/data/model/login_cas_response.dart';
+import 'package:guettoolbox/util/ext.dart';
 import 'package:guettoolbox/util/js.dart';
 import 'package:guettoolbox/util/list.dart';
-import 'package:guettoolbox/util/random.dart';
-import 'package:html/parser.dart' show parse;
+import 'package:html/parser.dart' as htmlParser;
 import 'package:dio/dio.dart';
 import 'package:guettoolbox/common/encrypt/cas.dart';
 import 'package:guettoolbox/data/network.dart';
+import 'package:kt_dart/kt.dart';
+
 
 class LoginService {
+  @Deprecated("use loginNewCas")
   static Future<String> loginCAS(
       String username, String password, String service) async {
     Future<String> first(
@@ -64,7 +66,7 @@ class LoginService {
         throw LogonFailedException("$title: $message");
       }
       if (location == null) {
-        var document = parse(respData);
+        var document = htmlParser.parse(respData);
         final form = document.body?.getElementsByTagName("form").first;
         location = form?.attributes["action"];
       }
@@ -93,53 +95,49 @@ class LoginService {
     return await second(url, service);
   }
 
-  static Future<bool> loginWebVpn(String username, String password) async {
-    Future<bool> loginWebVpn1(String ticket) async {
-      final Uri uri = Uri.parse(
-          "${AppNetwork.webVpnUrl}login?cas_login=true&ticket=$ticket");
-      // final cookieJar = (await AppNetwork.getInstance()).cookieJar;
-      // cookieJar.delete(uri);
-      var resp =
-          await (await AppNetwork.getDio(followRedirects: true)).getUri(uri);
-      resp.data.toString();
-      return resp.statusCode == 200;
-    }
+  static Future<bool> loginWithWebVpn(String username, String password) async {
+    final resp = await (await AppNetwork.getDio(followRedirects: true))
+        .get("https://v.guet.edu.cn");
 
-    var ticket = await loginCAS(
+    var resp1 = await loginNewCas(
         username, password, "https://v.guet.edu.cn/login?cas_login=true");
 
-    return loginWebVpn1(ticket);
-  }
-
-  static Future<String?> loginAcademicAffairsSystem(
-      String username, String password) async {
-    Future<bool> login(String ticket) async {
-      var resp = await (await AppNetwork.getDio(followRedirects: true))
-          .get("${await AppNetwork.baseUrlAutoAdapt}?ticket=$ticket");
-      resp.data.toString();
-      if (resp.statusCode != 200) {
-        throw LogonFailedException(
-            "登录失败, 响应头 Location 为null，状态码：${resp.statusCode}，返回：${resp.data}");
+    if (resp1.data.toString().contains("注销")) {
+      var resp2 =
+          await loginNewCas(username, password, "https://bkjw.guet.edu.cn");
+      if (resp2.data.toString().contains("用户类型：学生")) {
+        return true;
       }
-      return resp.statusCode == 200;
     }
 
-    var ticket = await loginCAS(username, password, "https://bkjw.guet.edu.cn");
-    await login(ticket);
-    final str = await loginJwSystem(ticket);
-    print(str);
-    return ticket;
+    return false;
   }
 
-  static Future<String> loginNewCas(
+  static Future<Response> loginNewCas(
       String username, String password, String service) async {
+    var uri =
+        "${Uri.parse("https://cas.guet.edu.cn").toWebVpnUrl()}authserver/login";
+    if (service == "https://v.guet.edu.cn/login?cas_login=true") {
+      uri = "https://v.guet.edu.cn/login?cas_login=true";
+    }
     final resp = await (await AppNetwork.getDio(followRedirects: true))
-        .get("https://cas.guet.edu.cn/authserver/login", queryParameters: {
-      "service": service //"https://v.guet.edu.cn/login?cas_login=true"
-    });
-    final doc = parse(resp.data);
+        .get(uri, queryParameters: {"service": service});
+
+    if (service == "https://v.guet.edu.cn/login?cas_login=true" &&
+        resp.data.toString().contains("注销")) {
+      return resp;
+    } else if (service == "https://bkjw.guet.edu.cn") {
+      resp.data.toString().contains("用户类型：学生");
+      return resp;
+    }
+
+    final doc = htmlParser.parse(resp.data);
     final aesKey = doc.getElementById("pwdEncryptSalt")?.attributes["value"];
-    final execution = doc.getElementById("execution")!.attributes["value"];
+    final execution = doc.getElementById("execution")?.attributes["value"];
+
+    if (aesKey == null || execution == null) {
+      throw Exception("aes key is null");
+    }
 
     bool needCaptcha = false;
     final needCaptchaScript = doc
@@ -153,52 +151,49 @@ class LoginService {
         needCaptcha = true;
       }
     }
+    final uri1 =
+        "${Uri.parse("https://cas.guet.edu.cn").toWebVpnUrl()}authserver/login";
+    final resp1 = await (await AppNetwork.getDio(followRedirects: false)).post(
+        uri1,
+        queryParameters: {"service": service},
+        options: Options(
+            contentType: AppNetwork.typeUrlEncode,
+            responseType: ResponseType.plain),
+        data: {
+          "username": username,
+          "password": encryptPassword(password, aesKey),
+          "captcha": "",
+          "_eventId": "submit",
+          "cllt": "userNameLogin",
+          "dllt": "generalLogin",
+          "lt": "",
+          "execution": execution
+        });
 
-    ///authserver/getCaptcha.htl?1673386753560=
+    final location = resp1.headers.value("location");
+    if (location == null) {
+      throw Exception("hello");
+    }
 
-    final resp1 = await (await AppNetwork.getDio(followRedirects: false))
-        .post("https://cas.guet.edu.cn/authserver/login",
-            queryParameters: {"service": service},
-            options: Options(contentType: AppNetwork.typeUrlEncode),
-            data: {
-              "username": username,
-              "password": encryptPassword(password, aesKey!),
-              "captcha": "",
-              "_eventId": "submit",
-              "cllt": "userNameLogin",
-              "dllt": "generalLogin",
-              "lt": "",
-              "execution": execution
-            });
-
-    if (resp1.statusCode != 302) throw LogonFailedException("登录失败");
-
-    final ticketUrl = resp1.headers.value("location");
-    if (ticketUrl == null) throw LogonFailedException("登录失败");
-    final ticket = Uri.parse(ticketUrl).queryParameters["ticket"];
-    return ticket!;
-  }
-
-  static Future<String> loginJwSystem(String ticket) async {
-    final resp = await (await AppNetwork.getDio())
-        .get("Login/MainDesktop?ticket=$ticket");
-    return resp.data;
+    return await (await AppNetwork.getDio(followRedirects: true)).get(location);
   }
 
   static Future<Map<String, dynamic>> getVcode() async {
-    final resp = await (await AppNetwork.getDio()).get(
-        "https://cas.guet.edu.cn/cas/kaptcha?uid=${randomUidString(32)}",
-        options: Options(responseType: ResponseType.json));
-    final base64 = resp.data["content"].toString().split(",")[1];
-    resp.data["content"] = base64Decode(base64.replaceAll(RegExp(r'\s+'), ''));
-    return resp.data;
+    // final resp = await (await AppNetwork.getDio()).get(
+    //     "https://cas.guet.edu.cn/cas/kaptcha?uid=${randomUidString(32)}",
+    //     options: Options(responseType: ResponseType.json));
+    // final base64 = resp.data["content"].toString().split(",")[1];
+    // resp.data["content"] = base64Decode(base64.replaceAll(RegExp(r'\s+'), ''));
+    // return resp.data;
+    TODO("");
   }
 
   static Future<Map<String, dynamic>> vcode(String id, String code) async {
-    final resp = await (await AppNetwork.getDio()).post(
-        "https://cas.guet.edu.cn/cas/validateLoginCode",
-        data: {"id": id, "code": code});
-    return resp.data;
+    // final resp = await (await AppNetwork.getDio()).post(
+    //     "https://cas.guet.edu.cn/cas/validateLoginCode",
+    //     data: {"id": id, "code": code});
+    // return resp.data;
+    TODO("");
   }
 
 }

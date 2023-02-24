@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:dio_proxy_plugin/dio_proxy_plugin.dart';
+
+// import 'package:dio_proxy_plugin/dio_proxy_plugin.dart';
 import 'package:flutter/foundation.dart';
 import 'package:guettoolbox/common/key.dart';
 import 'package:guettoolbox/data/repository/login.dart';
@@ -16,7 +18,9 @@ import 'package:guettoolbox/ui/route.dart';
 import 'package:guettoolbox/util/ext.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:dio_logger/dio_logger.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+
+// import 'package:dio_logger/dio_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 extension DioExt on Dio {
@@ -40,62 +44,86 @@ class AppNetwork {
   static const String userAgent =
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36";
 
+  static Future<CookieJar> getCookieJar() async {
+    CookieJar cookieJar;
+    if (!kIsWeb) {
+      var dir = await getApplicationSupportDirectory();
+      cookieJar =
+          PersistCookieJar(storage: FileStorage(join(dir.path, "cookies")));
+    } else {
+      cookieJar = CookieJar();
+    }
+    return cookieJar;
+  }
+
+  static Future<Dio> setupDio(Dio dio, CookieJar cookieJar) async {
+    dio.options = BaseOptions(
+      baseUrl: await baseUrlAutoAdapt,
+      headers: {"User-Agent": userAgent},
+      followRedirects: false,
+      validateStatus: (int? status) =>
+          status != null && status >= 200 && status < 400,
+    );
+    dio.interceptors.add(CookieManager(cookieJar));
+    if (!kReleaseMode) {
+      (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
+          (client) {
+        client.findProxy = (uri) {
+          // 这里设置代理地址和端口号
+          return "PROXY 127.0.0.1:18888";
+        };
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+      };
+    }
+    dio.interceptors.add(MyInterceptor());
+    // dio.interceptors.add(LoginInterceptor(dio));
+    dio.interceptors.add(PrettyDioLogger(
+        requestHeader: true,
+        requestBody: false,
+        responseBody: false,
+        responseHeader: false,
+        error: true,
+        compact: true,
+        maxWidth: 90));
+    return dio;
+  }
+
   static Future<String> get baseUrlAutoAdapt async {
     final isCampusNetwork =
         await NetworkDetectionRepository.getInstance().isCampusNetwork;
-    if (isCampusNetwork != true) return baseUrl;
+    if (isCampusNetwork == true) return baseUrl;
     return Uri.parse(baseUrl).toWebVpnUrl().toString();
   }
 
   late Dio _dio;
+  late Dio _dio1;
 
   AppNetwork._create();
 
   static AppNetwork? _instance = null;
 
-  static Future<Dio> getDio({bool followRedirects = false}) async {
+  static Future<Dio> getDio({bool followRedirects = true}) async {
     var appNetwork = await getInstance();
-    return followRedirects ? appNetwork.redirectDio : appNetwork.dio;
+    Dio dio = followRedirects ? appNetwork.redirectDio : appNetwork.dio;
+    dio.options.baseUrl = await baseUrlAutoAdapt;
+    return dio;
   }
 
-  get redirectDio => _dio.setFollowRedirects(true);
+  get redirectDio => _dio;
 
-  get dio => _dio.setFollowRedirects(false);
+  get dio => _dio1;
 
   late CookieJar cookieJar;
 
   static Future<AppNetwork> getInstance() async {
     if (_instance == null) {
-      var dio = Dio(BaseOptions(
-        baseUrl: await baseUrlAutoAdapt,
-        headers: {"User-Agent": userAgent},
-        followRedirects: false,
-        validateStatus: (int? status) =>
-            status != null && status >= 200 && status < 400,
-      ));
-      CookieJar cookieJar;
-      if (!kIsWeb) {
-        var dir = await getApplicationSupportDirectory();
-        cookieJar =
-            PersistCookieJar(storage: FileStorage(join(dir.path, "cookies")));
-      } else {
-        cookieJar = CookieJar();
-      }
-
-      dio.interceptors.add(CookieManager(cookieJar));
-      if (!kReleaseMode) {
-        //获取系统代理
-        //设置dio proxy
-        var httpProxyAdapter =
-            HttpProxyAdapter(ipAddr: "127.0.0.1", port: 8888);
-        // dio.httpClientAdapter = httpProxyAdapter;
-      }
-      dio.interceptors.add(MyInterceptor());
-      dio.interceptors.add(LoginInterceptor(dio));
-      dio.interceptors.add(dioLoggerInterceptor);
       _instance = AppNetwork._create();
-      _instance!._dio = dio;
-      _instance!.cookieJar = cookieJar;
+      _instance!.cookieJar = await getCookieJar();
+      _instance!._dio = await setupDio(Dio(), _instance!.cookieJar);
+      _instance!._dio.setFollowRedirects(true);
+      _instance!._dio1 = await setupDio(Dio(), _instance!.cookieJar);
+      _instance!._dio1.setFollowRedirects(false);
     }
     return Future(() => _instance!);
   }

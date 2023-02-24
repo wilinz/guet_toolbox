@@ -1,4 +1,5 @@
 import 'package:guettoolbox/common/key.dart';
+import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/data/service/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,15 +19,14 @@ class LoginRepository {
 
   Future<bool> loginAcademicAffairsSystem(
       String username, String password) async {
-    if (!(await LoginService.loginWebVpn(username, password))) {
-      return Future(() => false);
+    final isCampusNetwork =
+        await NetworkDetectionRepository.getInstance().isCampusNetwork;
+    if (isCampusNetwork == true) {
+      //todo
+    } else {
+      return await LoginService.loginWithWebVpn(username, password);
     }
-    var ticket =
-        await LoginService.loginAcademicAffairsSystem(username, password);
-    if (ticket != null) {
-      return setTicket(ticket);
-    }
-    return Future(() => false);
+    return false;
   }
 
   LoginRepository._create();

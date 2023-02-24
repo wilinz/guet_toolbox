@@ -58,6 +58,7 @@ dependencies:
   json5: ^0.8.0
   kt_dart: ^1.0.0
   pull_to_refresh: ^2.0.0
+  window_manager: ^0.3.0
 
 dev_dependencies:
   flutter_test:

@@ -5,13 +5,32 @@ import 'package:flutter/services.dart';
 import 'package:guettoolbox/db/setup.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:guettoolbox/ui/widget.dart';
+import 'package:guettoolbox/util/platform.dart';
 import 'package:logger/logger.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'db/database.dart';
 
 Future<void> main() async {
   //确保组件树初始化
   WidgetsFlutterBinding.ensureInitialized();
+  if (PlatformUtil.isDesktop()) {
+    // 必须加上这一行。
+    await windowManager.ensureInitialized();
+    WindowOptions windowOptions = WindowOptions(
+      size: Size(480, 920)
+    );
+
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.setMinimizable(true);
+      await windowManager.setAlignment(Alignment.centerRight);
+      await windowManager.setMaximizable(false);
+      await windowManager.setResizable(false);
+      // await windowManager.setTitleBarStyle(TitleBarStyle.normal,windowButtonVisibility: true);
+      await windowManager.show();
+      await windowManager.focus();
+    });
+  }
   //覆盖数据库打开方法
   setupDatabases();
   //创建数据库
@@ -32,10 +51,14 @@ showSnackBar(BuildContext context, String msg, int milliseconds) {
       duration: Duration(milliseconds: milliseconds)));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget with WindowListener {
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WindowListener {
   @override
   Widget build(BuildContext context) {
     if (Platform.isAndroid) {
@@ -71,6 +94,25 @@ class MyApp extends StatelessWidget {
             return AppRoute.routes[routeName]!.call(context);
           });
         });
+  }
+
+  @override
+  void onWindowFocus() {
+    // Make sure to call once.
+    setState(() {});
+    // do something
+  }
+
+  @override
+  void initState() {
+    windowManager.addListener(this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    windowManager.removeListener(this);
+    super.dispose();
   }
 }
 

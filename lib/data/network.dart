@@ -65,7 +65,7 @@ class AppNetwork {
           status != null && status >= 200 && status < 400,
     );
     dio.interceptors.add(CookieManager(cookieJar));
-    if (!kReleaseMode) {
+    if (!kReleaseMode && (Platform.isWindows || Platform.isMacOS)) {
       (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
           (client) {
         client.findProxy = (uri) {
@@ -203,6 +203,28 @@ class LoginInterceptor extends Interceptor {
 
   LoginInterceptor(this.dio);
 }
+
+// class PostInterceptor extends Interceptor {
+//   final Dio dio;
+//
+//   PostInterceptor(this.dio);
+//
+//   @override
+//   Future<void> onResponse(
+//       Response response, ResponseInterceptorHandler handler) async {
+//     if (response.requestOptions.method == "POST" &&
+//         (response.statusCode == 301 || response.statusCode == 302)) {
+//       final location = response.headers.value("location");
+//       if (location != null) {
+//
+//         final newResp = await dio.get(location,options: response.requestOptions);
+//         handler.next(newResp);
+//         return;
+//       }
+//     }
+//     handler.next(response);
+//   }
+// }
 
 class MyInterceptor extends Interceptor {
   String? referer = null;

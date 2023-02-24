@@ -22,7 +22,7 @@ class LoginRepository {
     final isCampusNetwork =
         await NetworkDetectionRepository.getInstance().isCampusNetwork;
     if (isCampusNetwork == true) {
-      //todo
+      return await LoginService.loginWithCampusNetwork(username, password);
     } else {
       return await LoginService.loginWithWebVpn(username, password);
     }

@@ -10,7 +10,6 @@ import 'package:guettoolbox/common/encrypt/cas.dart';
 import 'package:guettoolbox/data/network.dart';
 import 'package:kt_dart/kt.dart';
 
-
 class LoginService {
   @Deprecated("use loginNewCas")
   static Future<String> loginCAS(
@@ -99,12 +98,12 @@ class LoginService {
     final resp = await (await AppNetwork.getDio(followRedirects: true))
         .get("https://v.guet.edu.cn");
 
-    var resp1 = await loginNewCas(
-        username, password, "https://v.guet.edu.cn/login?cas_login=true");
+    var resp1 = await loginNewCas(username, password,
+        "https://v.guet.edu.cn/login?cas_login=true", false);
 
     if (resp1.data.toString().contains("注销")) {
-      var resp2 =
-          await loginNewCas(username, password, "https://bkjw.guet.edu.cn");
+      var resp2 = await loginNewCas(
+          username, password, "https://bkjw.guet.edu.cn", false);
       if (resp2.data.toString().contains("用户类型：学生")) {
         return true;
       }
@@ -113,21 +112,38 @@ class LoginService {
     return false;
   }
 
-  static Future<Response> loginNewCas(
-      String username, String password, String service) async {
-    var uri =
-        "${Uri.parse("https://cas.guet.edu.cn").toWebVpnUrl()}authserver/login";
+  static Future<bool> loginWithCampusNetwork(
+      String username, String password) async {
+    var resp =
+        await loginNewCas(username, password, "https://bkjw.guet.edu.cn", true);
+    if (resp.data.toString().contains("用户类型：学生")) {
+      return true;
+    }
+    return false;
+  }
+
+  static Future<Response> loginNewCas(String username, String password,
+      String service, bool isCampusNetwork) async {
+    String getUri() => isCampusNetwork
+        ? "https://cas.guet.edu.cn/authserver/login"
+        : "${Uri.parse("https://cas.guet.edu.cn").toWebVpnUrl()}authserver/login";
+
+    var uri = getUri();
     if (service == "https://v.guet.edu.cn/login?cas_login=true") {
       uri = "https://v.guet.edu.cn/login?cas_login=true";
     }
-    final resp = await (await AppNetwork.getDio(followRedirects: true))
+    var resp = await (await AppNetwork.getDio(followRedirects: true))
         .get(uri, queryParameters: {"service": service});
 
-    if (service == "https://v.guet.edu.cn/login?cas_login=true" &&
-        resp.data.toString().contains("注销")) {
-      return resp;
-    } else if (service == "https://bkjw.guet.edu.cn") {
-      resp.data.toString().contains("用户类型：学生");
+    if (service == "https://v.guet.edu.cn/login?cas_login=true") {
+      if(resp.data.toString().contains("注销")) {
+        return resp;
+      }else{
+        resp = await (await AppNetwork.getDio(followRedirects: true))
+            .get(getUri(), queryParameters: {"service": service});
+      }
+    } else if (service == "https://bkjw.guet.edu.cn" &&
+        resp.data.toString().contains("用户类型：学生")) {
       return resp;
     }
 
@@ -151,8 +167,7 @@ class LoginService {
         needCaptcha = true;
       }
     }
-    final uri1 =
-        "${Uri.parse("https://cas.guet.edu.cn").toWebVpnUrl()}authserver/login";
+    final uri1 = getUri();
     final resp1 = await (await AppNetwork.getDio(followRedirects: false)).post(
         uri1,
         queryParameters: {"service": service},
@@ -195,7 +210,6 @@ class LoginService {
     // return resp.data;
     TODO("");
   }
-
 }
 
 class LogonFailedException implements Exception {

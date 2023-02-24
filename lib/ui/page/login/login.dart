@@ -4,7 +4,9 @@ import 'package:guettoolbox/ui/route.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:window_manager/window_manager.dart';
 
+import '../../widget/window_caption.dart';
 import 'login_viewmodel.dart';
 
 class LoginPage extends StatelessWidget {

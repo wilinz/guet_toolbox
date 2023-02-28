@@ -214,7 +214,7 @@ class _LoginPageState extends State<_LoginPage> {
         .then((value) {
       _loginMessage(context, value ? "登录成功" : "登录失败");
       final navigator = Navigator.of(context);
-      if (widget.popUpAfterSuccess) {
+      if (value && widget.popUpAfterSuccess) {
         navigator.pop();
       } else {
         Navigator.pushReplacementNamed(context, AppRoute.mainPage);

@@ -2,14 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:guettoolbox/db/setup.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:guettoolbox/ui/widget.dart';
 import 'package:guettoolbox/util/platform.dart';
 import 'package:logger/logger.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'db/database.dart';
 
 Future<void> main() async {
   //确保组件树初始化
@@ -31,17 +29,7 @@ Future<void> main() async {
       await windowManager.focus();
     });
   }
-  //覆盖数据库打开方法
-  setupDatabases();
-  //创建数据库
-  final _database = MyEncryptedDatabase();
-  //操作数据库
-  _database.into(_database.notes).insert(NotesCompanion.insert(content: "sb"));
-  //查询
-  var r = await _database.select(_database.notes).get();
-  Logger().d(r);
   runApp(const MyApp());
-  // runApp(const AutocompleteExampleApp());
 }
 
 showSnackBar(BuildContext context, String msg, int milliseconds) {

@@ -46,7 +46,7 @@ dependencies:
 #  drift: ^2.4.0
 #  sqlcipher_flutter_libs: ^0.5.4
   drift: ^2.0.2+1
-  sqlcipher_flutter_libs: ^0.5.1
+#  sqlcipher_flutter_libs: ^0.5.1
   sqlite3: ^1.8.0
   html: ^0.15.1
   json_annotation: ^4.8.0
@@ -60,6 +60,7 @@ dependencies:
   pull_to_refresh: ^2.0.0
   window_manager: ^0.3.0
   floor: ^1.4.0
+  sqlite3_flutter_libs: ^0.5.13
 
 dev_dependencies:
   flutter_test:

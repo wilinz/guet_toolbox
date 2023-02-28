@@ -82,11 +82,13 @@ class CourseRepository {
   Future<List<SemesterSchedule>> getSemesterSchedule(String term) async {
     final cache = semesterSchedules[term];
     if (cache != null) return cache;
+    final db = await getDatabase();
+    // final dbCache = await db.semesterScheduleDao.getAll();
+    // if (dbCache.isNotEmpty) return dbCache;
     List responses =
         await Future.wait([getCourseList(term), getCourseLabList(term)]);
     semesterSchedules[term] =
         generateSemesterSchedule(responses[0], responses[1], "");
-    final db = await getDatabase();
 
     semesterSchedules[term]?.forEach((e) async {
       final data = await db.semesterScheduleDao.findById(e.id);

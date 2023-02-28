@@ -37,10 +37,11 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     t = Timer(Duration(milliseconds: 250), () {
-      LoginRepository.getInstance().ticket.then((ticket) {
-        var route = ticket == null ? AppRoute.loginPage : AppRoute.mainPage;
-        Navigator.pushReplacementNamed(context, route, arguments: false);
-      });
+      // LoginRepository.getInstance().ticket.then((ticket) {
+      //   var route = ticket == null ? AppRoute.loginPage : AppRoute.mainPage;
+      //
+      // });
+      Navigator.pushReplacementNamed(context, AppRoute.mainPage, arguments: false);
     });
   }
 }

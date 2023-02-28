@@ -9,7 +9,7 @@ import path_provider_foundation
 import screen_retriever
 import shared_preferences_foundation
 import sqflite
-import sqlcipher_flutter_libs
+import sqlite3_flutter_libs
 import window_manager
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {

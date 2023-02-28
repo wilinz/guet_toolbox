@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:guettoolbox/common/encrypt/cas_new.dart';
 import 'package:guettoolbox/data/model/login_cas_response.dart';
 import 'package:guettoolbox/util/ext.dart';
@@ -136,13 +137,20 @@ class LoginService {
         .get(uri, queryParameters: {"service": service});
 
     if (service == "https://v.guet.edu.cn/login?cas_login=true") {
-      if(resp.data.toString().contains("注销")) {
+      if (resp.data.toString().contains("注销")) {
         return resp;
-      }else{
-        resp = await (await AppNetwork.getDio(followRedirects: true))
-            .get(getUri(), queryParameters: {"service": service});
+      } else {
+        // resp = await (await AppNetwork.getDio(followRedirects: true))
+        //     .get(getUri(), queryParameters: {"service": service});
+        var resp = await (await AppNetwork.getDio(followRedirects: true))
+            .get(uri);
+        if (resp.data.toString().contains("注销")) {
+          return resp;
+        }
       }
-    } else if (service == "https://bkjw.guet.edu.cn" &&
+    }
+
+    if (service == "https://bkjw.guet.edu.cn" &&
         resp.data.toString().contains("用户类型：学生")) {
       return resp;
     }

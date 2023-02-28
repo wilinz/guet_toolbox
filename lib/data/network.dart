@@ -81,7 +81,7 @@ class AppNetwork {
     dio.interceptors.add(PrettyDioLogger(
         requestHeader: true,
         requestBody: false,
-        responseBody: false,
+        responseBody: true,
         responseHeader: false,
         error: true,
         compact: true,

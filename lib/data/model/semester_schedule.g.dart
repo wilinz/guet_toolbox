@@ -8,7 +8,11 @@ part of 'semester_schedule.dart';
 
 SemesterSchedule _$SemesterScheduleFromJson(Map<String, dynamic> json) =>
     SemesterSchedule(
-      id: json['id'] as int? ?? 0,
+      id: json['id'] as String,
+      username: json['username'] as String? ?? '',
+      isManuallyAdd: json['is_manually_add'] as bool? ?? false,
+      updateTime: json['updateTime'] as String,
+      courseIntId: json['course_int_id'] as int? ?? 0,
       type: json['type'] as String? ?? '',
       typename: json['typename'] as String? ?? '',
       examType: json['examType'] as String? ?? '',
@@ -37,10 +41,6 @@ SemesterSchedule _$SemesterScheduleFromJson(Map<String, dynamic> json) =>
       section: json['section'] as int? ?? 0,
       experiment: json['experiment'] as String? ?? '',
       classroom: json['classroom'] as String? ?? '',
-      classrooms: (json['classrooms'] as List<dynamic>?)
-              ?.map((e) => Classroom.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [],
       classroomAlias: json['classroomAlias'] as String? ?? '',
       classroomId: json['classroomId'] as String? ?? '',
       comment: json['comment'] as String? ?? '',
@@ -48,7 +48,11 @@ SemesterSchedule _$SemesterScheduleFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$SemesterScheduleToJson(SemesterSchedule instance) =>
     <String, dynamic>{
+      'updateTime': instance.updateTime,
       'id': instance.id,
+      'username': instance.username,
+      'is_manually_add': instance.isManuallyAdd,
+      'course_int_id': instance.courseIntId,
       'type': instance.type,
       'typename': instance.typename,
       'examType': instance.examType,
@@ -73,7 +77,6 @@ Map<String, dynamic> _$SemesterScheduleToJson(SemesterSchedule instance) =>
       'comment': instance.comment,
       'experiment': instance.experiment,
       'classroom': instance.classroom,
-      'classrooms': instance.classrooms.map((e) => e.toJson()).toList(),
       'classroomAlias': instance.classroomAlias,
       'classroomId': instance.classroomId,
       'startWeek': instance.startWeek,

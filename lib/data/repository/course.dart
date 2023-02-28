@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:guettoolbox/data/dao/database.dart';
 import 'package:guettoolbox/data/model/course_lab_response.dart';
 import 'package:guettoolbox/data/model/course_response.dart';
 import 'package:guettoolbox/data/model/plan_course_detail_response.dart';
@@ -44,7 +45,7 @@ class CourseRepository {
   int getWeek(Term term, DateTime dateTime) {
     int week;
     if (dateTime.isAfter(term.startDate) && dateTime.isBefore(term.endDate)) {
-      week = dateTime.difference(term.startDate).inDays ~/ 7 +1;
+      week = dateTime.difference(term.startDate).inDays ~/ 7 + 1;
     } else if (dateTime.isBefore(term.startDate)) {
       week = 0;
     } else {
@@ -84,7 +85,17 @@ class CourseRepository {
     List responses =
         await Future.wait([getCourseList(term), getCourseLabList(term)]);
     semesterSchedules[term] =
-        generateSemesterSchedule(responses[0], responses[1]);
+        generateSemesterSchedule(responses[0], responses[1], "");
+    final db = await getDatabase();
+
+    semesterSchedules[term]?.forEach((e) async {
+      final data = await db.semesterScheduleDao.findById(e.id);
+      if (data != null) {
+        await db.semesterScheduleDao.updateSemesterSchedule(data);
+      } else {
+        await db.semesterScheduleDao.insertSemesterSchedule(e);
+      }
+    });
     return semesterSchedules[term]!;
   }
 

@@ -1,17 +1,23 @@
 import 'dart:math';
 
-import 'package:common_utils/common_utils.dart';
+import 'package:floor/floor.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:guettoolbox/data/model/course_lab_response.dart';
 import 'package:guettoolbox/data/model/course_response.dart';
+import 'package:guettoolbox/data/model/db/base.dart';
 import 'package:guettoolbox/util/list.dart';
 
 part 'semester_schedule.g.dart';
 
+@Entity(tableName: 'semester_schedule')
 @JsonSerializable(explicitToJson: true)
-class SemesterSchedule {
+class SemesterSchedule extends BaseEntity {
   SemesterSchedule(
       {required this.id,
+      required this.username,
+      required this.isManuallyAdd,
+      required super.updateTime,
+      required this.courseIntId,
       required this.type,
       required this.typename,
       required this.examType,
@@ -40,82 +46,142 @@ class SemesterSchedule {
       required this.section,
       required this.experiment,
       required this.classroom,
-      required this.classrooms,
       required this.classroomAlias,
       required this.classroomId,
       required this.comment});
 
-  @JsonKey(name: "id", defaultValue: 0)
-  int id;
+  @PrimaryKey()
+  @ColumnInfo(name: "id")
+  String id;
+
+  @JsonKey(name: "username", defaultValue: "")
+  String username;
+
+  @JsonKey(name: "is_manually_add", defaultValue: false)
+  @ColumnInfo(name: "is_manually_add")
+  bool isManuallyAdd;
+
+  @ColumnInfo(name: "course_int_id")
+  @JsonKey(name: "course_int_id", defaultValue: 0)
+  int courseIntId;
+
   @JsonKey(name: "type", defaultValue: "")
   String type;
+
   @JsonKey(name: "typename", defaultValue: "")
   String typename;
+
+  @ColumnInfo(name: 'exam_type')
   @JsonKey(name: "examType", defaultValue: "")
   String examType;
+
+  @ColumnInfo(name: 'college_name')
   @JsonKey(name: "collegeName", defaultValue: "")
   String collegeName;
+
+  @ColumnInfo(name: 'college_no')
   @JsonKey(name: "collegeNo", defaultValue: "")
   String collegeNo;
+
+  @ColumnInfo(name: 'major_name')
   @JsonKey(name: "majorName", defaultValue: "")
   String majorName;
+
+  @ColumnInfo(name: 'major_no')
   @JsonKey(name: "majorNo", defaultValue: "")
   String majorNo;
+
   @JsonKey(name: "grade", defaultValue: "")
   String grade;
+
   @JsonKey(name: "name", defaultValue: "")
   String name;
+
+  @ColumnInfo(name: 'course_no')
   @JsonKey(name: "courseNo", defaultValue: "")
   String courseNo;
+
+  @ColumnInfo(name: 'teacher_no')
   @JsonKey(name: "teacherNo", defaultValue: "")
   String teacherNo;
+
   @JsonKey(name: "teacher", defaultValue: "")
   String teacher;
+
   @JsonKey(name: "term", defaultValue: "")
   String term;
+
+  @ColumnInfo(name: 'course_id')
   @JsonKey(name: "courseId", defaultValue: "")
   String courseId;
+
+  @ColumnInfo(name: 'maximum_selectable')
   @JsonKey(name: "maximumSelectable", defaultValue: 0)
   int maximumSelectable;
+
   @JsonKey(name: "selected", defaultValue: 0)
   int selected;
+
   @JsonKey(name: "credits", defaultValue: 0.0)
   double credits;
+
+  @ColumnInfo(name: 'is_lab')
   @JsonKey(name: "isLab", defaultValue: false)
   bool isLab;
+
+  @ColumnInfo(name: 'lab_lesson_id')
   @JsonKey(name: "labLessonId", defaultValue: "")
   String labLessonId;
+
   @JsonKey(name: "batch", defaultValue: 0)
   int batch;
+
+  @ColumnInfo(name: 'assistant_no')
   @JsonKey(name: "assistantNo", defaultValue: "")
   String assistantNo;
+
   @JsonKey(name: "comment", defaultValue: "")
   String comment;
+
   @JsonKey(name: "experiment", defaultValue: "")
   String experiment;
+
   @JsonKey(name: "classroom", defaultValue: "")
   String classroom;
-  @JsonKey(name: "classrooms", defaultValue: [])
-  List<Classroom> classrooms;
+
+  @ColumnInfo(name: 'classroom_alias')
   @JsonKey(name: "classroomAlias", defaultValue: "")
   String classroomAlias;
+
+  @ColumnInfo(name: 'classroom_id')
   @JsonKey(name: "classroomId", defaultValue: "")
   String classroomId;
+
+  @ColumnInfo(name: 'start_week')
   @JsonKey(name: "startWeek", defaultValue: 0)
   int startWeek;
+
+  @ColumnInfo(name: 'end_week')
   @JsonKey(name: "endWeek", defaultValue: 0)
   int endWeek;
+
+  @ColumnInfo(name: 'odd_week')
   @JsonKey(name: "oddWeek", defaultValue: false)
   bool oddWeek;
+
   @JsonKey(name: "weekday", defaultValue: 0)
   int weekday;
+
   @JsonKey(name: "section", defaultValue: 0)
   int section;
 
-  factory SemesterSchedule.fromCourse(
-      Course course, List<Classroom> classrooms) {
+  factory SemesterSchedule.fromCourse(Course course, String username) {
     return SemesterSchedule(
-        id: course.id,
+        id: course.courseno,
+        username: username,
+        isManuallyAdd: false,
+        updateTime: DateTime.now().toString(),
+        courseIntId: course.id,
         type: course.ctype,
         typename: course.tname,
         examType: course.examt,
@@ -144,16 +210,18 @@ class SemesterSchedule {
         section: int.parse(course.seq),
         experiment: "",
         classroom: course.croomno ?? "",
-        classrooms: classrooms,
         classroomAlias: "",
         classroomId: "",
         comment: course.comm ?? "");
   }
 
-  factory SemesterSchedule.fromLabCourse(
-      CourseLab course, List<Classroom> classrooms) {
+  factory SemesterSchedule.fromLabCourse(CourseLab course, String username) {
     return SemesterSchedule(
-        id: 0,
+        id: course.xh,
+        username: username,
+        isManuallyAdd: false,
+        updateTime: DateTime.now().toString(),
+        courseIntId: 0,
         type: "",
         typename: "",
         examType: "",
@@ -182,7 +250,6 @@ class SemesterSchedule {
         section: course.jc,
         experiment: course.itemname,
         classroom: course.srdd,
-        classrooms: classrooms,
         classroomAlias: course.srname,
         classroomId: course.srid,
         comment: course.comm ?? "");
@@ -195,44 +262,46 @@ class SemesterSchedule {
 }
 
 List<SemesterSchedule> generateSemesterSchedule(
-    List<Course> courses, List<CourseLab> labs) {
-  List<Course> courseGroup = [];
-  List<CourseLab> labCourseGroup = [];
-  Map<String,List<Classroom>> classrooms = {};
+    List<Course> courses, List<CourseLab> labs, String username) {
+  // List<Course> courseGroup = [];
+  // List<CourseLab> labCourseGroup = [];
+  // Map<String,List<Classroom>> classrooms = {};
   final list1 = courses.map((e) {
-    final last = () => courseGroup.first;
-    if (courseGroup.isEmpty ||
-        !(last().courseno == e.courseno &&
-            e.week == last().week &&
-            e.seq == last().seq)) {
-      courseGroup = courses
-          .where((e1) =>
-              e.courseno == e1.courseno && e.week == e1.week && e.seq == e1.seq)
-          .toList();
-      final classrooms0 = courseGroup
-          .where((e) => !TextUtil.isEmpty(e.croomno))
-          .map((e) => Classroom(e.startweek, e.endweek, e.croomno!))
-          .toSet()
-          .toList();
-      classrooms = groupAndMerge(classrooms0);
-    }
-    return SemesterSchedule.fromCourse(e, classrooms.values.expand((e) => e).toList());
+    // final last = () => courseGroup.first;
+    // if (courseGroup.isEmpty ||
+    //     !(last().courseno == e.courseno &&
+    //         e.week == last().week &&
+    //         e.seq == last().seq)) {
+    //   courseGroup = courses
+    //       .where((e1) =>
+    //           e.courseno == e1.courseno && e.week == e1.week && e.seq == e1.seq)
+    //       .toList();
+    //   final classrooms0 = courseGroup
+    //       .where((e) => !TextUtil.isEmpty(e.croomno))
+    //       .map((e) => Classroom(e.startweek, e.endweek, e.croomno!))
+    //       .toSet()
+    //       .toList();
+    //   classrooms = groupAndMerge(classrooms0);
+    // }
+    return SemesterSchedule.fromCourse(
+        e /*, classrooms.values.expand((e) => e).toList()*/, username);
   });
   final list2 = labs.map((e) {
-    final last = () => labCourseGroup.first;
-    if (labCourseGroup.isEmpty ||
-        !(last().labid == e.labid && e.xq == last().xq && e.jc == last().jc)) {
-      labCourseGroup = labs
-          .where((e1) => e.srdd == e1.srdd && e.xq == e1.xq && e.jc == e1.jc)
-          .toList();
-      final classrooms0 = labCourseGroup
-          .where((e) => !TextUtil.isEmpty(e.srdd))
-          .map((e) => Classroom(e.zc, e.zc, e.srdd))
-          .toSet()
-          .toList();
-      classrooms = groupAndMerge(classrooms0);
-    }
-    return SemesterSchedule.fromLabCourse(e, classrooms.values.expand((e) => e).toList());
+    // final last = () => labCourseGroup.first;
+    // if (labCourseGroup.isEmpty ||
+    //     !(last().labid == e.labid && e.xq == last().xq && e.jc == last().jc)) {
+    //   labCourseGroup = labs
+    //       .where((e1) => e.srdd == e1.srdd && e.xq == e1.xq && e.jc == e1.jc)
+    //       .toList();
+    //   final classrooms0 = labCourseGroup
+    //       .where((e) => !TextUtil.isEmpty(e.srdd))
+    //       .map((e) => Classroom(e.zc, e.zc, e.srdd))
+    //       .toSet()
+    //       .toList();
+    //   classrooms = groupAndMerge(classrooms0);
+    // }
+    return SemesterSchedule.fromLabCourse(
+        e /*, classrooms.values.expand((e) => e).toList()*/, username);
   });
   return [...list1, ...list2];
 }
@@ -255,7 +324,8 @@ class Classroom {
 }
 
 Map<String, List<Classroom>> groupAndMerge(List<Classroom> classrooms) {
-  Map<String, List<Classroom>> groupedClassrooms = classrooms.groupBy((c) => c.room);
+  Map<String, List<Classroom>> groupedClassrooms =
+      classrooms.groupBy((c) => c.room);
   Map<String, List<Classroom>> mergedClassrooms = {};
   for (List<Classroom> group in groupedClassrooms.values) {
     Classroom? merged = null;
@@ -272,7 +342,7 @@ Map<String, List<Classroom>> groupAndMerge(List<Classroom> classrooms) {
         merged = classroom;
       }
     }
-    if(merged != null) {
+    if (merged != null) {
       if (!mergedClassrooms.containsKey(merged.room)) {
         mergedClassrooms[merged.room] = [];
       }
@@ -281,7 +351,6 @@ Map<String, List<Classroom>> groupAndMerge(List<Classroom> classrooms) {
   }
   return mergedClassrooms;
 }
-
 
 Classroom merge(Classroom a, Classroom b) {
   return Classroom(

@@ -1,4 +1,4 @@
-import 'package:guettoolbox/data/model/pedagogical_evaluation_questions_response.dart';
+import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_questions_response.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'pedagogical_evaluation_questions_save_request.g.dart';

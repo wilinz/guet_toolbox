@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:guettoolbox/data/model/majors_response.dart';
+import 'package:guettoolbox/data/model/majors/majors_response.dart';
 import 'package:guettoolbox/data/network.dart';
 
 class MajorsService {

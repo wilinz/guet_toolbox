@@ -1,4 +1,4 @@
-import 'package:guettoolbox/data/model/plan_course_detail_response.dart';
+import 'package:guettoolbox/data/model/plan_course/plan_course_detail_response.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'plan_course_response.g.dart';

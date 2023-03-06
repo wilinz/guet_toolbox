@@ -1,10 +1,12 @@
 import 'package:guettoolbox/data/dao/database.dart';
 import 'package:guettoolbox/data/model/user/user.dart';
+import 'package:guettoolbox/util/list.dart';
 
 class UserRepository {
   Future<User?> getRecentUser() async {
     final db = await getDatabase();
-    return db.userDao.getRecent();
+    final user = await db.userDao.getRecent();
+    return user.firstOrNull();
   }
 
   Future<User?> getActiveUser() async {

@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:guettoolbox/common/key.dart';
-import 'package:guettoolbox/data/model/user/user.dart';
-import 'package:guettoolbox/data/repository/user.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:kt_dart/kt.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:window_manager/window_manager.dart';
 
-import '../../widget/window_caption.dart';
 import 'login_viewmodel.dart';
 
 class LoginPage extends StatelessWidget {
@@ -189,9 +182,12 @@ class _LoginPageState extends State<_LoginPage> {
   }
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
+    initAsync();
+  }
 
+  void initAsync() async {
     LoginViewModel vm = Provider.of(context, listen: false);
     final recentUser = await vm.getRecentUser();
     recentUser?.let((it) {

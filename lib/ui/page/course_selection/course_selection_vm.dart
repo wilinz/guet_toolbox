@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:guettoolbox/data/model/academy_response.dart';
-import 'package:guettoolbox/data/model/common_response.dart';
-import 'package:guettoolbox/data/model/majors_response.dart';
-import 'package:guettoolbox/data/model/plan_course_detail_response.dart';
-import 'package:guettoolbox/data/model/plan_course_response.dart';
-import 'package:guettoolbox/data/model/student_info.dart';
+import 'package:guettoolbox/data/model/academy/academy_response.dart';
+import 'package:guettoolbox/data/model/common/common_response.dart';
+import 'package:guettoolbox/data/model/majors/majors_response.dart';
+import 'package:guettoolbox/data/model/plan_course/plan_course_detail_response.dart';
+import 'package:guettoolbox/data/model/plan_course/plan_course_response.dart';
+import 'package:guettoolbox/data/model/student/student_info.dart';
 import 'package:guettoolbox/data/model/term/term.dart';
 import 'package:guettoolbox/data/repository/academy.dart';
 import 'package:guettoolbox/data/repository/course.dart';

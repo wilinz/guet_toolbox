@@ -1,7 +1,5 @@
-import 'package:guettoolbox/data/model/academy_response.dart';
-import 'package:guettoolbox/data/model/majors_response.dart';
+import 'package:guettoolbox/data/model/academy/academy_response.dart';
 import 'package:guettoolbox/data/service/academy.dart';
-import 'package:guettoolbox/data/service/majors.dart';
 
 class AcademyRepository {
   List<Academy> academyCache = [];

@@ -1,8 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:guettoolbox/data/model/majors_response.dart';
-import 'package:guettoolbox/data/model/plan_course_response.dart';
+import 'package:guettoolbox/data/model/majors/majors_response.dart';
+import 'package:guettoolbox/data/model/plan_course/plan_course_response.dart';
 import 'package:guettoolbox/data/service/course.dart';
 import 'package:guettoolbox/main.dart';
 import 'package:guettoolbox/ui/page/course_selection/course_selection_vm.dart';

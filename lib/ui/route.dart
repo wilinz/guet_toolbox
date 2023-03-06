@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:guettoolbox/data/model/pedagogical_evaluation_response.dart';
+import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_response.dart';
 import 'package:guettoolbox/ui/page/course_selection/course_selection.dart';
 import 'package:guettoolbox/ui/page/login/login.dart';
 import 'package:guettoolbox/ui/page/main/main.dart';

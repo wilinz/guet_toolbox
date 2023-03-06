@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:guettoolbox/data/model/pedagogical_evaluation_questions_response.dart';
-import 'package:guettoolbox/data/model/pedagogical_evaluation_response.dart';
+import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_questions_response.dart';
+import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_response.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 

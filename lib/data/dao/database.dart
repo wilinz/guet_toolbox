@@ -3,7 +3,7 @@ import 'package:floor/floor.dart';
 import 'package:guettoolbox/data/dao/datetime_converter.dart';
 import 'package:guettoolbox/data/dao/schedule.dart';
 import 'package:guettoolbox/data/dao/user.dart';
-import 'package:guettoolbox/data/model/index.dart';
+import 'package:guettoolbox/data/model/course/semester_schedule.dart';
 import 'package:guettoolbox/data/model/term/term.dart';
 import 'package:guettoolbox/data/model/user/user.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;

@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:guettoolbox/data/model/index.dart';
+import 'package:guettoolbox/data/model/course/semester_schedule.dart';
 import 'package:guettoolbox/data/model/schedule_datetime/schedule_datetime.dart';
 import 'package:guettoolbox/data/model/term/term.dart';
 import 'package:guettoolbox/data/repository/course.dart';

@@ -1,7 +1,7 @@
 
 import 'dart:convert';
 
-import 'package:guettoolbox/data/model/academy_response.dart';
+import 'package:guettoolbox/data/model/academy/academy_response.dart';
 import 'package:guettoolbox/data/network.dart';
 
 class AcademyService{

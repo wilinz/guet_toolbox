@@ -1,10 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:guettoolbox/data/model/common_response.dart';
-import 'package:guettoolbox/data/model/course_lab_response.dart';
-import 'package:guettoolbox/data/model/course_response.dart';
-import 'package:guettoolbox/data/model/plan_course_detail_response.dart';
-import 'package:guettoolbox/data/model/plan_course_response.dart';
-
+import 'package:guettoolbox/data/model/common/common_response.dart';
+import 'package:guettoolbox/data/model/course/course_lab_response.dart';
+import 'package:guettoolbox/data/model/course/course_response.dart';
+import 'package:guettoolbox/data/model/plan_course/plan_course_detail_response.dart';
+import 'package:guettoolbox/data/model/plan_course/plan_course_response.dart';
 import '../model/template.dart';
 import '../network.dart';
 

@@ -8,26 +8,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LoginRepository {
   Future<bool> loginAcademicAffairsSystem(
       String username, String password) async {
+
+    final db = await getDatabase();
+    final user = await db.userDao.get(username);
+    if (user == null) {
+      final newUser = User(
+          updateTime: DateTime.now(),
+          username: username,
+          password: password,
+          isActive: true);
+      db.userDao.insertUser(newUser);
+    } else {
+      user.isActive = true;
+      db.userDao.updateUser(user);
+    }
+
     final isCampusNetwork =
         await NetworkDetectionRepository.getInstance().isCampusNetwork;
     bool ok;
     if (isCampusNetwork == true) {
       ok = await LoginService.loginWithCampusNetwork(username, password);
-      if (ok) {
-        final db = await getDatabase();
-        final user = await db.userDao.get(username);
-        if (user == null) {
-          final newUser = User(
-              updateTime: DateTime.now(),
-              username: username,
-              password: password,
-              isActive: true);
-          db.userDao.insertUser(newUser);
-        } else {
-          user.isActive = true;
-          db.userDao.updateUser(user);
-        }
-      }
     } else {
       ok = await LoginService.loginWithWebVpn(username, password);
     }

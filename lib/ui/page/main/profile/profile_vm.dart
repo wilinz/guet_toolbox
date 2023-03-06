@@ -1,6 +1,6 @@
 
 import 'package:flutter/cupertino.dart';
-import 'package:guettoolbox/data/model/student_info.dart';
+import 'package:guettoolbox/data/model/student/student_info.dart';
 import 'package:guettoolbox/data/repository/student_info.dart';
 
 class ProfileViewModel extends ChangeNotifier{

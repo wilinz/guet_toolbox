@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:guettoolbox/common/encrypt/cas_new.dart';
-import 'package:guettoolbox/data/model/login_cas_response.dart';
+import 'package:guettoolbox/data/model/login/login_cas_response.dart';
 import 'package:guettoolbox/util/ext.dart';
 import 'package:guettoolbox/util/js.dart';
 import 'package:guettoolbox/util/list.dart';

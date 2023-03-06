@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:floor/floor.dart';
 import 'package:guettoolbox/data/model/db/base.dart';
-import 'package:guettoolbox/data/model/semester_schedule.dart';
 
 @Entity(tableName: 'users', indices: [
   Index(unique: true, value: ["username"])

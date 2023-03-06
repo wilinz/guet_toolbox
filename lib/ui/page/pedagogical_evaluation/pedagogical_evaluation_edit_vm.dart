@@ -1,16 +1,12 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:guettoolbox/data/model/common_response.dart';
-import 'package:guettoolbox/data/model/pedagogical_evaluation_data.dart';
-import 'package:guettoolbox/data/model/pedagogical_evaluation_questions_response.dart';
-import 'package:guettoolbox/data/model/pedagogical_evaluation_response.dart';
+import 'package:guettoolbox/data/model/common/common_response.dart';
+import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_data.dart';
+import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_questions_response.dart';
+import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_response.dart';
 import 'package:guettoolbox/data/repository/pedagogical_evaluation.dart';
-import 'package:guettoolbox/data/service/pedagogical_evaluation.dart';
 import 'package:guettoolbox/util/list.dart';
-import 'dart:math';
-
-import 'package:logger/logger.dart';
 
 class PedagogicalEvaluationEditViewModel extends ChangeNotifier {
   final PedagogicalEvaluation pedagogicalEvaluation;

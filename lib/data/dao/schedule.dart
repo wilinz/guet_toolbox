@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:floor/floor.dart';
-import 'package:guettoolbox/data/model/semester_schedule.dart';
+import 'package:guettoolbox/data/model/course/semester_schedule.dart';
 
 @dao
 abstract class SemesterScheduleDao {

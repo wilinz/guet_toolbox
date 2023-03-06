@@ -419,9 +419,9 @@ class _$UserDao extends UserDao {
   }
 
   @override
-  Future<User?> getRecent() async {
-    return _queryAdapter.query(
-        'SELECT * FROM users ORDER BY updateTime DESC LIMIT 1',
+  Future<List<User>> getRecent() async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM users ORDER BY update_time DESC LIMIT 1',
         mapper: (Map<String, Object?> row) => User(
             updateTime: _dateTimeConverter.decode(row['update_time'] as int),
             createTime:

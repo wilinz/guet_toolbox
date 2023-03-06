@@ -1,7 +1,7 @@
-import 'package:guettoolbox/data/model/common_response.dart';
-import 'package:guettoolbox/data/model/pedagogical_evaluation_data.dart';
-import 'package:guettoolbox/data/model/pedagogical_evaluation_questions_response.dart';
-import 'package:guettoolbox/data/model/pedagogical_evaluation_response.dart';
+import 'package:guettoolbox/data/model/common/common_response.dart';
+import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_data.dart';
+import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_questions_response.dart';
+import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_response.dart';
 import 'package:guettoolbox/data/service/pedagogical_evaluation.dart';
 
 class PedagogicalEvaluationRepository {

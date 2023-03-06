@@ -1,17 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:guettoolbox/data/dao/database.dart';
-import 'package:guettoolbox/data/model/course_lab_response.dart';
-import 'package:guettoolbox/data/model/course_response.dart';
-import 'package:guettoolbox/data/model/plan_course_detail_response.dart';
-import 'package:guettoolbox/data/model/plan_course_response.dart';
-import 'package:guettoolbox/data/model/semester_schedule.dart';
+import 'package:guettoolbox/data/model/course/course_lab_response.dart';
+import 'package:guettoolbox/data/model/course/course_response.dart';
+import 'package:guettoolbox/data/model/course/semester_schedule.dart';
+import 'package:guettoolbox/data/model/plan_course/plan_course_detail_response.dart';
+import 'package:guettoolbox/data/model/plan_course/plan_course_response.dart';
 import 'package:guettoolbox/data/model/term/term.dart';
-import 'package:guettoolbox/data/network.dart';
 import 'package:guettoolbox/data/service/term.dart';
-import 'package:guettoolbox/util/datetime.dart';
 import 'package:guettoolbox/util/list.dart';
 
-import '../model/common_response.dart';
+import '../model/common/common_response.dart';
 import '../service/course.dart';
 
 class CourseRepository {

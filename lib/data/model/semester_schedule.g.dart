@@ -11,7 +11,7 @@ SemesterSchedule _$SemesterScheduleFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       username: json['username'] as String? ?? '',
       isManuallyAdd: json['is_manually_add'] as bool? ?? false,
-      updateTime: json['updateTime'] as String,
+      updateTime: DateTime.parse(json['updateTime'] as String),
       courseIntId: json['course_int_id'] as int? ?? 0,
       type: json['type'] as String? ?? '',
       typename: json['typename'] as String? ?? '',
@@ -44,11 +44,12 @@ SemesterSchedule _$SemesterScheduleFromJson(Map<String, dynamic> json) =>
       classroomAlias: json['classroomAlias'] as String? ?? '',
       classroomId: json['classroomId'] as String? ?? '',
       comment: json['comment'] as String? ?? '',
-    );
+    )..createTime = DateTime.parse(json['createTime'] as String);
 
 Map<String, dynamic> _$SemesterScheduleToJson(SemesterSchedule instance) =>
     <String, dynamic>{
-      'updateTime': instance.updateTime,
+      'createTime': instance.createTime.toIso8601String(),
+      'updateTime': instance.updateTime.toIso8601String(),
       'id': instance.id,
       'username': instance.username,
       'is_manually_add': instance.isManuallyAdd,

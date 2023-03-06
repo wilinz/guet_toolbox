@@ -1,37 +1,43 @@
 import 'package:guettoolbox/common/key.dart';
+import 'package:guettoolbox/data/dao/database.dart';
+import 'package:guettoolbox/data/model/user/user.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/data/service/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginRepository {
-  Future<SharedPreferences> get _sp async =>
-      await SharedPreferences.getInstance();
-
-  Future<String?> get ticket async {
-    var sp = await _sp;
-    return sp.get(AppKey.ticket) as String?;
-  }
-
-  Future<bool> setTicket(String value) async {
-    var sp = await _sp;
-    return sp.setString(AppKey.ticket, value);
-  }
-
   Future<bool> loginAcademicAffairsSystem(
       String username, String password) async {
     final isCampusNetwork =
         await NetworkDetectionRepository.getInstance().isCampusNetwork;
+    bool ok;
     if (isCampusNetwork == true) {
-      return await LoginService.loginWithCampusNetwork(username, password);
+      ok = await LoginService.loginWithCampusNetwork(username, password);
+      if (ok) {
+        final db = await getDatabase();
+        final user = await db.userDao.get(username);
+        if (user == null) {
+          final newUser = User(
+              updateTime: DateTime.now(),
+              username: username,
+              password: password,
+              isActive: true);
+          db.userDao.insertUser(newUser);
+        } else {
+          user.isActive = true;
+          db.userDao.updateUser(user);
+        }
+      }
     } else {
-      return await LoginService.loginWithWebVpn(username, password);
+      ok = await LoginService.loginWithWebVpn(username, password);
     }
-    return false;
+    return ok;
   }
 
   LoginRepository._create();
 
-  static final _instance = LoginRepository._create();
+  static LoginRepository? _instance;
 
-  factory LoginRepository.getInstance() => _instance;
+  factory LoginRepository.getInstance() =>
+      _instance ??= LoginRepository._create();
 }

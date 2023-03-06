@@ -5,7 +5,7 @@ import 'package:guettoolbox/data/model/majors_response.dart';
 import 'package:guettoolbox/data/model/plan_course_detail_response.dart';
 import 'package:guettoolbox/data/model/plan_course_response.dart';
 import 'package:guettoolbox/data/model/student_info.dart';
-import 'package:guettoolbox/data/model/term/term_response.dart';
+import 'package:guettoolbox/data/model/term/term.dart';
 import 'package:guettoolbox/data/repository/academy.dart';
 import 'package:guettoolbox/data/repository/course.dart';
 import 'package:guettoolbox/data/repository/majors.dart';

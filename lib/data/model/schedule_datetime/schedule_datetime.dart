@@ -1,16 +1,13 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:guettoolbox/data/model/term/term_response.dart';
+import 'package:guettoolbox/data/model/term/term.dart';
 
-part 'schedule_datetime.freezed.dart';
+class ScheduleDatetime {
+  Term term;
+  DateTime dateTime;
+  int week;
+  int weekDay;
 
-@freezed
-class ScheduleDatetime with _$ScheduleDatetime {
-  const ScheduleDatetime._();
-  const factory ScheduleDatetime(
-      {required Term term,
-      required DateTime dateTime,
-      required int week,
-      required int weekDay}) = _ScheduleDatetime;
+  ScheduleDatetime({required this.term, required this.dateTime, required this.week, required this.weekDay});
 
   bool isCurrentWeek() {
     final now = DateTime.now();
@@ -19,6 +16,6 @@ class ScheduleDatetime with _$ScheduleDatetime {
     return weekInYear0 == weekInYear1;
   }
 
-  // factory ScheduleDatetime.fromJson(Map<String, dynamic> json) =>
-  //     _$ScheduleDatetimeFromJson(json);
+// factory ScheduleDatetime.fromJson(Map<String, dynamic> json) =>
+//     _$ScheduleDatetimeFromJson(json);
 }

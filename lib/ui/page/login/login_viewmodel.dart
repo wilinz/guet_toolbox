@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:guettoolbox/data/model/user/user.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
+import 'package:guettoolbox/data/repository/user.dart';
 import 'package:guettoolbox/data/service/login.dart';
 import 'package:logger/logger.dart';
 
@@ -35,4 +37,7 @@ class LoginViewModel extends ChangeNotifier {
     if (vcode == null) return;
     return LoginService.vcode(vcode!["uid"], code);
   }
+
+  Future<User?> getRecentUser() async => UserRepository.getInstance().getRecentUser();
+
 }

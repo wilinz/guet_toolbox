@@ -7,8 +7,8 @@ abstract class SemesterScheduleDao {
   @Query('SELECT * FROM semester_schedule')
   Future<List<SemesterSchedule>> getAll();
 
-  @Query('SELECT * FROM semester_schedule WHERE id = :id')
-  Future<SemesterSchedule?> findById(String id);
+  @Query('SELECT * FROM semester_schedule WHERE id = :id and username = :username')
+  Future<SemesterSchedule?> find(String id, String username);
 
   @Query('DELETE * FROM semester_schedule WHERE id NOT IN (:ids)')
   Future<SemesterSchedule?> deleteNotIn(List<String> ids);

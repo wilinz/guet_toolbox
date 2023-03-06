@@ -5,7 +5,7 @@ import 'package:guettoolbox/data/model/course_response.dart';
 import 'package:guettoolbox/data/model/plan_course_detail_response.dart';
 import 'package:guettoolbox/data/model/plan_course_response.dart';
 import 'package:guettoolbox/data/model/semester_schedule.dart';
-import 'package:guettoolbox/data/model/term/term_response.dart';
+import 'package:guettoolbox/data/model/term/term.dart';
 import 'package:guettoolbox/data/network.dart';
 import 'package:guettoolbox/data/service/term.dart';
 import 'package:guettoolbox/util/datetime.dart';
@@ -91,7 +91,8 @@ class CourseRepository {
         generateSemesterSchedule(responses[0], responses[1], "");
 
     semesterSchedules[term]?.forEach((e) async {
-      final data = await db.semesterScheduleDao.findById(e.id);
+      // todo
+      final data = await db.semesterScheduleDao.find(e.id, "");
       if (data != null) {
         await db.semesterScheduleDao.updateSemesterSchedule(data);
       } else {

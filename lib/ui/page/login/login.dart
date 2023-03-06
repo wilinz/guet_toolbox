@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:guettoolbox/common/key.dart';
+import 'package:guettoolbox/data/model/user/user.dart';
+import 'package:guettoolbox/data/repository/user.dart';
 import 'package:guettoolbox/ui/route.dart';
+import 'package:kt_dart/kt.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -186,14 +189,15 @@ class _LoginPageState extends State<_LoginPage> {
   }
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
-    SharedPreferences.getInstance().then((sp) {
-      _usernameController.text = sp.getString(AppKey.username) ?? "";
-      _passwordController.text = sp.getString(AppKey.password) ?? "";
+
+    LoginViewModel vm = Provider.of(context, listen: false);
+    final recentUser = await vm.getRecentUser();
+    recentUser?.let((it) {
+      _usernameController.text = it.username;
+      _passwordController.text = it.password;
     });
-    // LoginViewModel vm = Provider.of(context,listen: false);
-    // vm.getVcode();
   }
 
   Future<void> _login(LoginViewModel loginViewModel, BuildContext context,
@@ -202,11 +206,6 @@ class _LoginPageState extends State<_LoginPage> {
       _loginMessage(context, "请检查输入");
       return;
     }
-
-    SharedPreferences.getInstance().then((sp) {
-      sp.setString(AppKey.username, _usernameController.text);
-      sp.setString(AppKey.password, _passwordController.text);
-    });
 
     // await loginViewModel.setVcode(_vcodeController.text.trim());
     loginViewModel

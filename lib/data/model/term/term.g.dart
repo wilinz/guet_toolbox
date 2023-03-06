@@ -1,13 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'term_response.dart';
+part of 'term.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_TermResponse _$$_TermResponseFromJson(Map<String, dynamic> json) =>
-    _$_TermResponse(
+TermResponse _$TermResponseFromJson(Map<String, dynamic> json) => TermResponse(
       success: json['success'] as bool? ?? false,
       total: json['total'] as int? ?? 0,
       data: (json['data'] as List<dynamic>?)
@@ -16,24 +15,25 @@ _$_TermResponse _$$_TermResponseFromJson(Map<String, dynamic> json) =>
           [],
     );
 
-Map<String, dynamic> _$$_TermResponseToJson(_$_TermResponse instance) =>
+Map<String, dynamic> _$TermResponseToJson(TermResponse instance) =>
     <String, dynamic>{
       'success': instance.success,
       'total': instance.total,
       'data': instance.data.map((e) => e.toJson()).toList(),
     };
 
-_$_Term _$$_TermFromJson(Map<String, dynamic> json) => _$_Term(
+Term _$TermFromJson(Map<String, dynamic> json) => Term(
       term: json['term'] as String? ?? '',
       startDate: _parseDateTime(json['startdate']),
       endDate: _parseDateTime(json['enddate']),
       weekNum: json['weeknum'] == null ? 0 : _parseStringToInt(json['weeknum']),
       termName: json['termname'] as String? ?? '',
       schoolYear: _parseStringToInt(json['schoolyear']),
-      comment: json['comm'] as String? ?? "",
-    );
+      comment: json['comm'] as String,
+    )..id = json['id'] as int;
 
-Map<String, dynamic> _$$_TermToJson(_$_Term instance) => <String, dynamic>{
+Map<String, dynamic> _$TermToJson(Term instance) => <String, dynamic>{
+      'id': instance.id,
       'term': instance.term,
       'startdate': instance.startDate.toIso8601String(),
       'enddate': instance.endDate.toIso8601String(),

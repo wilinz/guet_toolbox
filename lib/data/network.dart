@@ -171,7 +171,8 @@ class LoginInterceptor extends Interceptor {
           for (var i = 0; i < 5; i++) {
             try {
               var success = await LoginRepository.getInstance()
-                  .loginAcademicAffairsSystem(username, password);
+                  .loginAcademicAffairsSystem(
+                      username, password, () async => "");
               if (!success) throw LogonFailedException("登录失败");
               await Future.delayed(Duration(milliseconds: 500));
               var newResp = await dio

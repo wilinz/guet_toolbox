@@ -6,9 +6,8 @@ import 'package:guettoolbox/data/service/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginRepository {
-  Future<bool> loginAcademicAffairsSystem(
-      String username, String password) async {
-
+  Future<bool> loginAcademicAffairsSystem(String username, String password,
+      Future<String> Function() onGetCode) async {
     final db = await getDatabase();
     final user = await db.userDao.get(username);
     if (user == null) {
@@ -27,12 +26,15 @@ class LoginRepository {
         await NetworkDetectionRepository.getInstance().isCampusNetwork;
     bool ok;
     if (isCampusNetwork == true) {
-      ok = await LoginService.loginWithCampusNetwork(username, password);
+      ok = await LoginService.loginWithCampusNetwork(
+          username, password, onGetCode);
     } else {
-      ok = await LoginService.loginWithWebVpn(username, password);
+      ok = await LoginService.loginWithWebVpn(username, password, onGetCode);
     }
     return ok;
   }
+
+  Future<Map<String, dynamic>> getDynamicCode(String username) => LoginService.getDynamicCode(username);
 
   LoginRepository._create();
 

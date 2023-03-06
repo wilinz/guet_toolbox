@@ -10,13 +10,15 @@ import '../../../data/repository/login.dart';
 class LoginViewModel extends ChangeNotifier {
   var isLoading = false;
 
-  Future<bool?> get isCampusNetwork => NetworkDetectionRepository.getInstance().isCampusNetwork;
+  Future<bool?> get isCampusNetwork =>
+      NetworkDetectionRepository.getInstance().isCampusNetwork;
 
-  Future<bool> login(String username, String password) {
+  Future<bool> login(
+      String username, String password, Future<String> Function() onGetCode) {
     isLoading = true;
     notifyListeners();
     return LoginRepository.getInstance()
-        .loginAcademicAffairsSystem(username, password)
+        .loginAcademicAffairsSystem(username, password, onGetCode)
         .whenComplete(() {
       isLoading = false;
       notifyListeners();
@@ -25,19 +27,9 @@ class LoginViewModel extends ChangeNotifier {
 
   Map<String, dynamic>? vcode;
 
-  getVcode() {
-    return LoginService.getVcode().then((value) {
-      vcode = value;
-      notifyListeners();
-      return vcode;
-    });
-  }
+  Future<Map<String, dynamic>> getDynamicCode(String username) =>
+      LoginRepository.getInstance().getDynamicCode(username);
 
-  setVcode(String code) {
-    if (vcode == null) return;
-    return LoginService.vcode(vcode!["uid"], code);
-  }
-
-  Future<User?> getRecentUser() async => UserRepository.getInstance().getRecentUser();
-
+  Future<User?> getRecentUser() async =>
+      UserRepository.getInstance().getRecentUser();
 }

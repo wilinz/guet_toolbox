@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:kt_dart/kt.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import 'login_viewmodel.dart';
@@ -117,29 +120,7 @@ class _LoginPageState extends State<_LoginPage> {
                             return v!.trim().length > 0 ? null : "密码不能为空";
                           },
                         ),
-                        // if (vm.vcode != null)
-                        //   Container(
-                        //     height: 32,
-                        //   ),
-                        //   InkWell(
-                        //     onTap: (){
-                        //       vm.getVcode();
-                        //     },
-                        //       child: Image.memory(vm.vcode!["content"])),
-                        // Container(
-                        //   height: 8,
-                        // ),
-                        // TextFormField(
-                        //   controller: _vcodeController,
-                        //   autofocus: true,
-                        //   decoration: InputDecoration(
-                        //       labelText: "验证码",
-                        //       hintText: "验证码",
-                        //       prefixIcon: Icon(Icons.code)),
-                        //   validator: (v) {
-                        //     return v!.trim().length > 0 ? null : "验证码不能为空";
-                        //   },
-                        // ),
+                        if (isShowCodeEditor) buildCodeTextField(vm),
                         Container(
                           height: 16,
                         ),
@@ -181,6 +162,44 @@ class _LoginPageState extends State<_LoginPage> {
     });
   }
 
+  Widget buildCodeTextField(LoginViewModel vm) {
+    return Column(
+      children: [
+        Container(
+          height: 32,
+        ),
+        TextFormField(
+          controller: _vcodeController,
+          autofocus: true,
+          decoration: InputDecoration(
+            labelText: "验证码",
+            hintText: "验证码",
+            prefixIcon: Icon(Icons.code),
+            suffixIcon: IconButton(
+                onPressed: () {
+                  vm.getDynamicCode(_usernameController.text).then((value) {
+                    if (value["res"] == "success") {
+                      _loginMessage(context, "发送成功");
+                    } else {
+                      _loginMessage(context, "发送失败");
+                    }
+                  });
+                },
+                icon: Icon(Icons.send)),
+            border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(16))),
+          ),
+          validator: (v) {
+            return v!.trim().length > 0 ? null : "验证码不能为空";
+          },
+          onFieldSubmitted: (v){
+            getCodeCompleter.complete(_vcodeController.text);
+          },
+        ),
+      ],
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -196,6 +215,9 @@ class _LoginPageState extends State<_LoginPage> {
     });
   }
 
+  Completer<String> getCodeCompleter = Completer();
+  bool isShowCodeEditor = false;
+
   Future<void> _login(LoginViewModel loginViewModel, BuildContext context,
       FormState currentState) async {
     if (!currentState.validate()) {
@@ -204,9 +226,14 @@ class _LoginPageState extends State<_LoginPage> {
     }
 
     // await loginViewModel.setVcode(_vcodeController.text.trim());
-    loginViewModel
-        .login(_usernameController.text, _passwordController.text)
-        .then((value) {
+    loginViewModel.login(_usernameController.text, _passwordController.text,
+        () async {
+      setState(() {
+        isShowCodeEditor = true;
+      });
+      Logger().d("");
+      return await getCodeCompleter.future;
+    }).then((value) {
       _loginMessage(context, value ? "登录成功" : "登录失败");
       final navigator = Navigator.of(context);
       if (value && widget.popUpAfterSuccess) {
@@ -219,6 +246,8 @@ class _LoginPageState extends State<_LoginPage> {
       print(stackTrace);
       _loginMessage(context, error.toString());
       return false;
+    }).whenComplete(() {
+      isShowCodeEditor = false;
     });
   }
 }

@@ -10,6 +10,6 @@ Future<void> main() async {
   // $env:GUET_PASSWORD="you_password"
   final password = envVars['GUET_PASSWORD'];
   print("password: ${password}");
-  final resp = await LoginRepository.getInstance()
-      .loginAcademicAffairsSystem("id", password.toString());
+  // final resp = await LoginRepository.getInstance()
+  //     .loginAcademicAffairsSystem("id", password.toString());
 }

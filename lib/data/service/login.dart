@@ -95,16 +95,17 @@ class LoginService {
     return await second(url, service);
   }
 
-  static Future<bool> loginWithWebVpn(String username, String password) async {
+  static Future<bool> loginWithWebVpn(String username, String password,
+      Future<String> Function() onGetCode) async {
     final resp = await (await AppNetwork.getDio(followRedirects: true))
         .get("https://v.guet.edu.cn");
 
     var resp1 = await loginNewCas(username, password,
-        "https://v.guet.edu.cn/login?cas_login=true", false);
+        "https://v.guet.edu.cn/login?cas_login=true", false, onGetCode);
 
     if (resp1.data.toString().contains("注销")) {
       var resp2 = await loginNewCas(
-          username, password, "https://bkjw.guet.edu.cn", false);
+          username, password, "https://bkjw.guet.edu.cn", false, onGetCode);
       if (resp2.data.toString().contains("用户类型：学生")) {
         return true;
       }
@@ -113,21 +114,32 @@ class LoginService {
     return false;
   }
 
-  static Future<bool> loginWithCampusNetwork(
-      String username, String password) async {
-    var resp =
-        await loginNewCas(username, password, "https://bkjw.guet.edu.cn", true);
+  static Future<bool> loginWithCampusNetwork(String username, String password,
+      Future<String> Function() onGetCode) async {
+    var resp = await loginNewCas(
+        username, password, "https://bkjw.guet.edu.cn", true, onGetCode);
     if (resp.data.toString().contains("用户类型：学生")) {
       return true;
     }
     return false;
   }
 
-  static Future<Response> loginNewCas(String username, String password,
-      String service, bool isCampusNetwork) async {
+  static String getCasBaseUrl(bool isCampusNetwork) {
+    final baseUri = isCampusNetwork
+        ? "https://cas.guet.edu.cn/"
+        : Uri.parse("https://cas.guet.edu.cn").toWebVpnUrl().toString();
+    return baseUri;
+  }
+
+  static Future<Response> loginNewCas(
+      String username,
+      String password,
+      String service,
+      bool isCampusNetwork,
+      Future<String> Function() onGetCode) async {
     String getUri() => isCampusNetwork
         ? "https://cas.guet.edu.cn/authserver/login"
-        : "${Uri.parse("https://cas.guet.edu.cn").toWebVpnUrl()}authserver/login";
+        : "${getCasBaseUrl(isCampusNetwork)}authserver/login";
 
     var uri = getUri();
     if (service == "https://v.guet.edu.cn/login?cas_login=true") {
@@ -142,8 +154,8 @@ class LoginService {
       } else {
         // resp = await (await AppNetwork.getDio(followRedirects: true))
         //     .get(getUri(), queryParameters: {"service": service});
-        var resp = await (await AppNetwork.getDio(followRedirects: true))
-            .get(uri);
+        var resp =
+            await (await AppNetwork.getDio(followRedirects: true)).get(uri);
         if (resp.data.toString().contains("注销")) {
           return resp;
         }
@@ -153,6 +165,26 @@ class LoginService {
     if (service == "https://bkjw.guet.edu.cn" &&
         resp.data.toString().contains("用户类型：学生")) {
       return resp;
+    }
+
+    if (resp.data.toString().contains("多因子登录")) {
+      final code = await onGetCode();
+      final resp = await (await AppNetwork.getDio()).post(
+          "${getCasBaseUrl(isCampusNetwork)}authserver/reAuthCheck/reAuthSubmit.do",
+          data: {
+            "service": "",
+            "reAuthType": 3,
+            "isMultifactor": true,
+            "password": "",
+            "dynamicCode": code,
+            "uuid": "",
+            "answer1": "",
+            "answer2": "",
+            "otpCode": "",
+          },
+          options: Options(contentType: AppNetwork.typeUrlEncode));
+      return loginNewCas(
+          username, password, service, isCampusNetwork, onGetCode);
     }
 
     final doc = htmlParser.parse(resp.data);
@@ -199,6 +231,18 @@ class LoginService {
     }
 
     return await (await AppNetwork.getDio(followRedirects: true)).get(location);
+  }
+
+  /// {"res":"success","mobile":"123****4567","returnMessage":"动态口令已发送到手机","codeTime":120}
+  static Future<Map<String, dynamic>> getDynamicCode(String username) async {
+    final resp = await (await AppNetwork.getDio()).post(
+        "https://cas.guet.edu.cn/authserver/dynamicCode/getDynamicCodeByReauth.do",
+        data: {
+          "userName": username,
+          "authCodeTypeName": "reAuthDynamicCodeType"
+        },
+        options: Options(contentType: AppNetwork.typeUrlEncode));
+    return resp.data;
   }
 
   static Future<Map<String, dynamic>> getVcode() async {

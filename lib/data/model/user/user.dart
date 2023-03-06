@@ -19,11 +19,9 @@ class User extends BaseEntity {
 
   User(
       {required DateTime updateTime,
-      required DateTime createTime,
+      DateTime? createTime,
       required this.username,
       required this.password,
       required this.isActive})
       : super(updateTime: updateTime, createTime: createTime);
-
-
 }

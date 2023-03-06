@@ -397,7 +397,8 @@ class _$UserDao extends UserDao {
         'SELECT * FROM users WHERE is_active = 1 LIMIT 1',
         mapper: (Map<String, Object?> row) => User(
             updateTime: _dateTimeConverter.decode(row['update_time'] as int),
-            createTime: _dateTimeConverter.decode(row['create_time'] as int),
+            createTime:
+                _dateTimeNullableConverter.decode(row['create_time'] as int?),
             username: row['username'] as String,
             password: row['password'] as String,
             isActive: (row['is_active'] as int) != 0));
@@ -409,7 +410,8 @@ class _$UserDao extends UserDao {
         'SELECT * FROM users WHERE username = ?1 LIMIT 1',
         mapper: (Map<String, Object?> row) => User(
             updateTime: _dateTimeConverter.decode(row['update_time'] as int),
-            createTime: _dateTimeConverter.decode(row['create_time'] as int),
+            createTime:
+                _dateTimeNullableConverter.decode(row['create_time'] as int?),
             username: row['username'] as String,
             password: row['password'] as String,
             isActive: (row['is_active'] as int) != 0),
@@ -422,7 +424,8 @@ class _$UserDao extends UserDao {
         'SELECT * FROM users ORDER BY updateTime DESC LIMIT 1',
         mapper: (Map<String, Object?> row) => User(
             updateTime: _dateTimeConverter.decode(row['update_time'] as int),
-            createTime: _dateTimeConverter.decode(row['create_time'] as int),
+            createTime:
+                _dateTimeNullableConverter.decode(row['create_time'] as int?),
             username: row['username'] as String,
             password: row['password'] as String,
             isActive: (row['is_active'] as int) != 0));
@@ -433,7 +436,8 @@ class _$UserDao extends UserDao {
     return _queryAdapter.queryList('SELECT * FROM users WHERE username LIKE ?1',
         mapper: (Map<String, Object?> row) => User(
             updateTime: _dateTimeConverter.decode(row['update_time'] as int),
-            createTime: _dateTimeConverter.decode(row['create_time'] as int),
+            createTime:
+                _dateTimeNullableConverter.decode(row['create_time'] as int?),
             username: row['username'] as String,
             password: row['password'] as String,
             isActive: (row['is_active'] as int) != 0),
@@ -445,7 +449,8 @@ class _$UserDao extends UserDao {
     return _queryAdapter.queryList('SELECT * FROM users',
         mapper: (Map<String, Object?> row) => User(
             updateTime: _dateTimeConverter.decode(row['update_time'] as int),
-            createTime: _dateTimeConverter.decode(row['create_time'] as int),
+            createTime:
+                _dateTimeNullableConverter.decode(row['create_time'] as int?),
             username: row['username'] as String,
             password: row['password'] as String,
             isActive: (row['is_active'] as int) != 0));
@@ -464,3 +469,4 @@ class _$UserDao extends UserDao {
 
 // ignore_for_file: unused_element
 final _dateTimeConverter = DateTimeConverter();
+final _dateTimeNullableConverter = DateTimeNullableConverter();

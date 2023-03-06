@@ -10,7 +10,7 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 
 part 'database.g.dart'; // the generated code will be there
 
-@TypeConverters([DateTimeConverter])
+@TypeConverters([DateTimeConverter, DateTimeNullableConverter])
 @Database(version: 1, entities: [SemesterSchedule, User, Term])
 abstract class AppDatabase extends FloorDatabase {
   SemesterScheduleDao get semesterScheduleDao;

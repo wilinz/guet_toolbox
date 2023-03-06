@@ -16,7 +16,6 @@ class SemesterSchedule extends BaseEntity {
       {required this.id,
       required this.username,
       required this.isManuallyAdd,
-        required super.createTime,
       required super.updateTime,
       required this.courseIntId,
       required this.type,

@@ -241,3 +241,48 @@ class MyInterceptor extends Interceptor {
     handler.next(options);
   }
 }
+
+class RedirectInterceptor extends Interceptor {
+  final dio;
+
+  RedirectInterceptor(this.dio);
+
+  @override
+  Future<void> onResponse(
+      Response response, ResponseInterceptorHandler handler) async {
+    if (_isRedirect(response.statusCode ?? 0)) {
+      final location = response.headers.value('location');
+      if (location == null) throw Exception("location is null");
+      final requestOptions = response.requestOptions;
+      final redirectResponse = dio.get(
+        location,
+        options: Options(
+          sendTimeout: requestOptions.sendTimeout,
+          receiveTimeout: requestOptions.receiveTimeout,
+          extra: requestOptions.extra,
+          headers: requestOptions.headers,
+          responseType: requestOptions.responseType,
+          contentType: requestOptions.contentType,
+          validateStatus: requestOptions.validateStatus,
+          receiveDataWhenStatusError: requestOptions.receiveDataWhenStatusError,
+          followRedirects: requestOptions.followRedirects,
+          maxRedirects: requestOptions.maxRedirects,
+          persistentConnection: requestOptions.persistentConnection,
+          requestEncoder: requestOptions.requestEncoder,
+          responseDecoder: requestOptions.responseDecoder,
+          listFormat: requestOptions.listFormat,
+        ),
+      );
+      return handler.resolve(redirectResponse);
+    }
+    return handler.next(response);
+  }
+
+  bool _isRedirect(int statusCode) {
+    return statusCode == 301 ||
+        statusCode == 302 ||
+        statusCode == 303 ||
+        statusCode == 307 ||
+        statusCode == 308;
+  }
+}

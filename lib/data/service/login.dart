@@ -145,7 +145,7 @@ class LoginService {
     if (service == "https://v.guet.edu.cn/login?cas_login=true") {
       uri = "https://v.guet.edu.cn/login?cas_login=true";
     }
-    var resp = await (await AppNetwork.getDio(followRedirects: true))
+    var resp = await (await AppNetwork.getRedirect2Dio())
         .get(uri, queryParameters: {"service": service});
 
     if (service == "https://v.guet.edu.cn/login?cas_login=true") {
@@ -155,7 +155,7 @@ class LoginService {
         // resp = await (await AppNetwork.getDio(followRedirects: true))
         //     .get(getUri(), queryParameters: {"service": service});
         var resp =
-            await (await AppNetwork.getDio(followRedirects: true)).get(uri);
+            await (await AppNetwork.getRedirect2Dio()).get(uri);
         if (resp.data.toString().contains("注销")) {
           return resp;
         }
@@ -169,7 +169,7 @@ class LoginService {
 
     if (resp.data.toString().contains("多因子登录")) {
       final code = await onGetCode();
-      final resp = await (await AppNetwork.getDio()).post(
+      final resp = await (await AppNetwork.getRedirect2Dio()).post(
           "${getCasBaseUrl(isCampusNetwork)}authserver/reAuthCheck/reAuthSubmit.do",
           data: {
             "service": "",
@@ -208,7 +208,7 @@ class LoginService {
       }
     }
     final uri1 = getUri();
-    final resp1 = await (await AppNetwork.getDio(followRedirects: false)).post(
+    final resp1 = await (await AppNetwork.getRedirect2Dio()).post(
         uri1,
         queryParameters: {"service": service},
         options: Options(
@@ -225,12 +225,13 @@ class LoginService {
           "execution": execution
         });
 
-    final location = resp1.headers.value("location");
-    if (location == null) {
-      throw Exception("hello");
-    }
+    // final location = resp1.headers.value("location");
+    // if (location == null) {
+    //   throw Exception("hello");
+    // }
 
-    return await (await AppNetwork.getDio(followRedirects: true)).get(location);
+    // return await (await AppNetwork.getDio(followRedirects: true)).get(location);
+    return resp1;
   }
 
   /// {"res":"success","mobile":"123****4567","returnMessage":"动态口令已发送到手机","codeTime":120}

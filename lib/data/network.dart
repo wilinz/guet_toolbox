@@ -5,22 +5,16 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-
-// import 'package:dio_proxy_plugin/dio_proxy_plugin.dart';
 import 'package:flutter/foundation.dart';
 import 'package:guettoolbox/common/key.dart';
 import 'package:guettoolbox/data/repository/login.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
-import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/data/service/login.dart';
-import 'package:guettoolbox/main.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:guettoolbox/util/ext.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-
-// import 'package:dio_logger/dio_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 extension DioExt on Dio {
@@ -98,6 +92,7 @@ class AppNetwork {
 
   late Dio _dio;
   late Dio _dio1;
+  late Dio _dio2;
 
   AppNetwork._create();
 
@@ -110,9 +105,18 @@ class AppNetwork {
     return dio;
   }
 
+  static Future<Dio> getRedirect2Dio() async {
+    var appNetwork = await getInstance();
+    Dio dio = appNetwork.redirect2Dio;
+    dio.options.baseUrl = await baseUrlAutoAdapt;
+    return dio;
+  }
+
   get redirectDio => _dio;
 
   get dio => _dio1;
+
+  get redirect2Dio => _dio2;
 
   late CookieJar cookieJar;
 
@@ -120,10 +124,17 @@ class AppNetwork {
     if (_instance == null) {
       _instance = AppNetwork._create();
       _instance!.cookieJar = await getCookieJar();
+
       _instance!._dio = await setupDio(Dio(), _instance!.cookieJar);
       _instance!._dio.setFollowRedirects(true);
+
       _instance!._dio1 = await setupDio(Dio(), _instance!.cookieJar);
       _instance!._dio1.setFollowRedirects(false);
+
+      final dio2 = Dio();
+      _instance!._dio2 = await setupDio(dio2, _instance!.cookieJar);
+      _instance!._dio2.setFollowRedirects(false);
+      _instance!._dio2.interceptors.add(RedirectInterceptor(dio2));
     }
     return Future(() => _instance!);
   }
@@ -243,7 +254,7 @@ class MyInterceptor extends Interceptor {
 }
 
 class RedirectInterceptor extends Interceptor {
-  final dio;
+  final Dio dio;
 
   RedirectInterceptor(this.dio);
 
@@ -254,7 +265,7 @@ class RedirectInterceptor extends Interceptor {
       final location = response.headers.value('location');
       if (location == null) throw Exception("location is null");
       final requestOptions = response.requestOptions;
-      final redirectResponse = dio.get(
+      final redirectResponse = await dio.get(
         location,
         options: Options(
           sendTimeout: requestOptions.sendTimeout,
@@ -273,7 +284,7 @@ class RedirectInterceptor extends Interceptor {
           listFormat: requestOptions.listFormat,
         ),
       );
-      return handler.resolve(redirectResponse);
+      return handler.next(redirectResponse);
     }
     return handler.next(response);
   }

@@ -1,39 +1,58 @@
+import 'package:floor/floor.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'student_info.g.dart';
 
 @JsonSerializable(explicitToJson: true)
+@Entity(tableName: "student_info", indices: [
+  Index(value: ["student_id"], unique: true)
+])
 class StudentInfo {
   StudentInfo(
       {required this.term,
       required this.grade,
-      required this.dptno,
-      required this.dptname,
-      required this.spno,
-      required this.spname,
-      required this.stid,
+      required this.collegeNo,
+      required this.collegeName,
+      required this.majorNo,
+      required this.majorName,
+      required this.studentId,
       required this.name});
+
+  @PrimaryKey(autoGenerate: true)
+  @JsonKey(includeFromJson: false)
+  int? id;
 
   @JsonKey(name: "term", defaultValue: "")
   String term;
+
   @JsonKey(name: "grade", defaultValue: "")
   String grade;
+
   @JsonKey(name: "dptno", defaultValue: "")
-  String dptno;
+  @ColumnInfo(name: 'college_no')
+  String collegeNo;
+
   @JsonKey(name: "dptname", defaultValue: "")
-  String dptname;
+  @ColumnInfo(name: 'college_name')
+  String collegeName;
+
   @JsonKey(name: "spno", defaultValue: "")
-  String spno;
+  @ColumnInfo(name: 'major_no')
+  String majorNo;
+
   @JsonKey(name: "spname", defaultValue: "")
-  String spname;
+  @ColumnInfo(name: 'major_name')
+  String majorName;
+
   @JsonKey(name: "stid", defaultValue: "")
-  String stid;
+  @ColumnInfo(name: 'student_id')
+  String studentId;
+
   @JsonKey(name: "name", defaultValue: "")
   String name;
 
-  factory StudentInfo.fromJson(Map<String, dynamic> json) => _$StudentInfoFromJson(json);
+  factory StudentInfo.fromJson(Map<String, dynamic> json) =>
+      _$StudentInfoFromJson(json);
 
   Map<String, dynamic> toJson() => _$StudentInfoToJson(this);
 }
-
-

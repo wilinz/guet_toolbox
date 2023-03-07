@@ -13,7 +13,8 @@ class TermResponse {
   @JsonKey(name: "data", defaultValue: [])
   List<Term> data;
 
-  TermResponse({required this.success, required this.total, required this.data});
+  TermResponse(
+      {required this.success, required this.total, required this.data});
 
   factory TermResponse.fromJson(Map<String, dynamic> json) =>
       _$TermResponseFromJson(json);
@@ -28,8 +29,10 @@ _parseStringToInt(v) => int.parse(v);
 @Entity(tableName: 'terms')
 @JsonSerializable(explicitToJson: true)
 class Term {
+
+  @JsonKey(includeFromJson: false)
   @PrimaryKey(autoGenerate: true)
-  int id = 0;
+  int? id;
 
   @ColumnInfo(name: "term")
   @JsonKey(name: "term", defaultValue: "")
@@ -56,7 +59,7 @@ class Term {
   int schoolYear;
 
   @ColumnInfo(name: "comment")
-  @JsonKey(name: "comm")
+  @JsonKey(name: "comm", defaultValue: "")
   String comment;
 
   Term(

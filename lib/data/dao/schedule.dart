@@ -7,6 +7,9 @@ abstract class SemesterScheduleDao {
   @Query('SELECT * FROM semester_schedule')
   Future<List<SemesterSchedule>> getAll();
 
+  @Query('SELECT * FROM semester_schedule WHERE term = :term')
+  Future<List<SemesterSchedule>> getAllByTerm(String term);
+
   @Query('SELECT * FROM semester_schedule WHERE id = :id and username = :username')
   Future<SemesterSchedule?> find(String id, String username);
 

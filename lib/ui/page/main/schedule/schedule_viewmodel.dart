@@ -39,7 +39,7 @@ class ScheduleViewModel extends ChangeNotifier {
     // nowTime.minute ;//6 分
     // nowTime.second ;//6 秒
     for (int i = 0; i < 7; i++) {
-      final targetDate = mondayTime.add(Duration(days: i + 1));
+      final targetDate = mondayTime.add(Duration(days: i));
       dateList[i] = ("${targetDate.month}/${targetDate.day}");
       if ((mondayTime.day + i) == dateTime.day) {
         weekday = i + 1;
@@ -128,6 +128,7 @@ class ScheduleViewModel extends ChangeNotifier {
         _currentTerm =
             CourseRepository.getInstance().getCurrentTerm(terms, true);
       }
+      if (this.currentTerm == null) throw Exception("");
       currentTerm = this.currentTerm!;
     } else {
       currentTerm = term;

@@ -8,18 +8,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LoginRepository {
   Future<bool> loginAcademicAffairsSystem(String username, String password,
       Future<String> Function() onGetCode) async {
+
     final db = await getDatabase();
-    final user = await db.userDao.get(username);
+    var user = await db.userDao.get(username);
     if (user == null) {
-      final newUser = User(
+      user = User(
           updateTime: DateTime.now(),
           username: username,
           password: password,
-          isActive: true);
-      db.userDao.insertUser(newUser);
-    } else {
-      user.isActive = true;
-      db.userDao.updateUser(user);
+          isActive: false);
+      db.userDao.insertUser(user);
     }
 
     final isCampusNetwork =
@@ -30,6 +28,12 @@ class LoginRepository {
           username, password, onGetCode);
     } else {
       ok = await LoginService.loginWithWebVpn(username, password, onGetCode);
+    }
+    if (ok){
+      user.password = password;
+      user.isActive = true;
+      db.userDao.updateUser(user);
+      db.userDao.offlineOtherUser(user.username);
     }
     return ok;
   }

@@ -1,7 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:guettoolbox/ui/page/main/profile/profile_vm.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart' as launcher;
+import 'package:url_launcher/url_launcher_string.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -45,7 +48,8 @@ class _ProfilePageState extends State<_ProfilePage>
                     child: InkWell(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                       onTap: () {
-                        Navigator.of(context).pushNamed(AppRoute.loginPage, arguments: true);
+                        Navigator.of(context)
+                            .pushNamed(AppRoute.loginPage, arguments: true);
                       },
                       child: Container(
                         padding: EdgeInsets.all(16),
@@ -63,10 +67,10 @@ class _ProfilePageState extends State<_ProfilePage>
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text((viewModel.studentInfo?.stid ?? "") +
+                                Text((viewModel.studentInfo?.studentId ?? "") +
                                     (viewModel.studentInfo?.name ?? "")),
                                 SizedBox(height: 4),
-                                Text(viewModel.studentInfo?.dptname ?? ""),
+                                Text(viewModel.studentInfo?.collegeName ?? ""),
                               ],
                             )
                           ],
@@ -80,18 +84,51 @@ class _ProfilePageState extends State<_ProfilePage>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pushNamed(AppRoute.courseSelectionPage);
-                          },
-                          child: Text("选课")),
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pushNamed(AppRoute.pedagogicalEvaluationPage);
-                          },
-                          child: Text("评教"))
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(AppRoute.courseSelectionPage);
+                            },
+                            child: Text("选课")),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(
+                                  AppRoute.pedagogicalEvaluationPage);
+                            },
+                            child: Text("评教")),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Center(
+                        child: Text.rich(
+                          TextSpan(children: [
+                            TextSpan(
+                                text:
+                                    "一个使用 Flutter 开发的 GUET 工具箱，此项目正在开发中，更多信息请关注 "),
+                            TextSpan(
+                                text: "https://github.com/wilinz/guet_toolbox",
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    launcher.launchUrl(
+                                        Uri.parse(
+                                            "https://github.com/wilinz/guet_toolbox"),
+                                        mode: LaunchMode.externalApplication);
+                                  })
+                          ]),
+                        ),
+                      ),
                     ],
                   ),
                 )

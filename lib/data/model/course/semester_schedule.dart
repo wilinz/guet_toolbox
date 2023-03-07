@@ -18,7 +18,6 @@ class SemesterSchedule extends BaseEntity {
       required this.username,
       required this.isManuallyAdd,
       required super.updateTime,
-      required this.courseIntId,
       required this.type,
       required this.typename,
       required this.examType,
@@ -33,7 +32,7 @@ class SemesterSchedule extends BaseEntity {
       required this.teacher,
       required this.term,
       required this.courseId,
-      required this.maximumSelectable,
+      required this.capacity,
       required this.selected,
       required this.credits,
       required this.isLab,
@@ -61,10 +60,6 @@ class SemesterSchedule extends BaseEntity {
   @JsonKey(name: "is_manually_add", defaultValue: false)
   @ColumnInfo(name: "is_manually_add")
   bool isManuallyAdd;
-
-  @ColumnInfo(name: "course_int_id")
-  @JsonKey(name: "course_int_id", defaultValue: 0)
-  int courseIntId;
 
   @JsonKey(name: "type", defaultValue: "")
   String type;
@@ -116,9 +111,9 @@ class SemesterSchedule extends BaseEntity {
   @JsonKey(name: "courseId", defaultValue: "")
   String courseId;
 
-  @ColumnInfo(name: 'maximum_selectable')
-  @JsonKey(name: "maximumSelectable", defaultValue: 0)
-  int maximumSelectable;
+  @ColumnInfo(name: 'capacity')
+  @JsonKey(name: "capacity", defaultValue: 0)
+  int capacity;
 
   @JsonKey(name: "selected", defaultValue: 0)
   int selected;
@@ -178,11 +173,10 @@ class SemesterSchedule extends BaseEntity {
 
   factory SemesterSchedule.fromCourse(Course course, String username) {
     return SemesterSchedule(
-        id: course.courseno,
+        id: course.id.toString(),
         username: username,
         isManuallyAdd: false,
         updateTime: DateTime.now(),
-        courseIntId: course.id,
         type: course.ctype,
         typename: course.tname,
         examType: course.examt,
@@ -197,7 +191,7 @@ class SemesterSchedule extends BaseEntity {
         teacher: course.name,
         term: course.term,
         courseId: course.courseid,
-        maximumSelectable: course.maxcnt,
+        capacity: course.maxcnt,
         selected: course.sctcnt,
         credits: course.xf,
         isLab: false,
@@ -222,7 +216,6 @@ class SemesterSchedule extends BaseEntity {
         username: username,
         isManuallyAdd: false,
         updateTime: DateTime.now(),
-        courseIntId: 0,
         type: "",
         typename: "",
         examType: "",
@@ -237,7 +230,7 @@ class SemesterSchedule extends BaseEntity {
         teacher: course.name,
         term: course.term,
         courseId: course.courseid,
-        maximumSelectable: course.persons,
+        capacity: course.persons,
         selected: course.stusct,
         credits: 0,
         isLab: true,

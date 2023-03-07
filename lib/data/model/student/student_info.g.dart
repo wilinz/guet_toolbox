@@ -9,11 +9,11 @@ part of 'student_info.dart';
 StudentInfo _$StudentInfoFromJson(Map<String, dynamic> json) => StudentInfo(
       term: json['term'] as String? ?? '',
       grade: json['grade'] as String? ?? '',
-      dptno: json['dptno'] as String? ?? '',
-      dptname: json['dptname'] as String? ?? '',
-      spno: json['spno'] as String? ?? '',
-      spname: json['spname'] as String? ?? '',
-      stid: json['stid'] as String? ?? '',
+      collegeNo: json['dptno'] as String? ?? '',
+      collegeName: json['dptname'] as String? ?? '',
+      majorNo: json['spno'] as String? ?? '',
+      majorName: json['spname'] as String? ?? '',
+      studentId: json['stid'] as String? ?? '',
       name: json['name'] as String? ?? '',
     );
 
@@ -21,10 +21,10 @@ Map<String, dynamic> _$StudentInfoToJson(StudentInfo instance) =>
     <String, dynamic>{
       'term': instance.term,
       'grade': instance.grade,
-      'dptno': instance.dptno,
-      'dptname': instance.dptname,
-      'spno': instance.spno,
-      'spname': instance.spname,
-      'stid': instance.stid,
+      'dptno': instance.collegeNo,
+      'dptname': instance.collegeName,
+      'spno': instance.majorNo,
+      'spname': instance.majorName,
+      'stid': instance.studentId,
       'name': instance.name,
     };

@@ -256,9 +256,9 @@ class _CourseSelectionPageState extends State<_CourseSelectionPage> {
                   setState(() {
                     viewModel.currentAcademy = viewModel.academy
                         .firstWhereOrNull(
-                            (e) => e.dptno == viewModel.studentInfo?.dptno);
+                            (e) => e.dptno == viewModel.studentInfo?.collegeNo);
                     viewModel.currentMajor = viewModel.major.firstWhereOrNull(
-                        (e) => e.spno == viewModel.studentInfo?.spno);
+                        (e) => e.spno == viewModel.studentInfo?.majorNo);
                     viewModel.studentInfo?.grade.let((it) {
                       viewModel.currentGrade = int.parse(it);
                     });

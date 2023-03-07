@@ -61,6 +61,7 @@ dependencies:
   window_manager: ^0.3.0
   floor: ^1.4.0
   sqlite3_flutter_libs: ^0.5.13
+  url_launcher: ^6.1.10
 
 dev_dependencies:
   flutter_test:

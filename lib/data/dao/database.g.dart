@@ -65,6 +65,10 @@ class _$AppDatabase extends AppDatabase {
 
   UserDao? _userDaoInstance;
 
+  TermDao? _termDaoInstance;
+
+  StudentInfoDao? _studentInfoDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
@@ -87,13 +91,17 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `semester_schedule` (`id` TEXT NOT NULL, `username` TEXT NOT NULL, `is_manually_add` INTEGER NOT NULL, `course_int_id` INTEGER NOT NULL, `type` TEXT NOT NULL, `typename` TEXT NOT NULL, `exam_type` TEXT NOT NULL, `college_name` TEXT NOT NULL, `college_no` TEXT NOT NULL, `major_name` TEXT NOT NULL, `major_no` TEXT NOT NULL, `grade` TEXT NOT NULL, `name` TEXT NOT NULL, `course_no` TEXT NOT NULL, `teacher_no` TEXT NOT NULL, `teacher` TEXT NOT NULL, `term` TEXT NOT NULL, `course_id` TEXT NOT NULL, `maximum_selectable` INTEGER NOT NULL, `selected` INTEGER NOT NULL, `credits` REAL NOT NULL, `is_lab` INTEGER NOT NULL, `lab_lesson_id` TEXT NOT NULL, `batch` INTEGER NOT NULL, `assistant_no` TEXT NOT NULL, `comment` TEXT NOT NULL, `experiment` TEXT NOT NULL, `classroom` TEXT NOT NULL, `classroom_alias` TEXT NOT NULL, `classroom_id` TEXT NOT NULL, `start_week` INTEGER NOT NULL, `end_week` INTEGER NOT NULL, `odd_week` INTEGER NOT NULL, `weekday` INTEGER NOT NULL, `section` INTEGER NOT NULL, `create_time` INTEGER NOT NULL, `update_time` INTEGER NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `semester_schedule` (`id` TEXT NOT NULL, `username` TEXT NOT NULL, `is_manually_add` INTEGER NOT NULL, `type` TEXT NOT NULL, `typename` TEXT NOT NULL, `exam_type` TEXT NOT NULL, `college_name` TEXT NOT NULL, `college_no` TEXT NOT NULL, `major_name` TEXT NOT NULL, `major_no` TEXT NOT NULL, `grade` TEXT NOT NULL, `name` TEXT NOT NULL, `course_no` TEXT NOT NULL, `teacher_no` TEXT NOT NULL, `teacher` TEXT NOT NULL, `term` TEXT NOT NULL, `course_id` TEXT NOT NULL, `capacity` INTEGER NOT NULL, `selected` INTEGER NOT NULL, `credits` REAL NOT NULL, `is_lab` INTEGER NOT NULL, `lab_lesson_id` TEXT NOT NULL, `batch` INTEGER NOT NULL, `assistant_no` TEXT NOT NULL, `comment` TEXT NOT NULL, `experiment` TEXT NOT NULL, `classroom` TEXT NOT NULL, `classroom_alias` TEXT NOT NULL, `classroom_id` TEXT NOT NULL, `start_week` INTEGER NOT NULL, `end_week` INTEGER NOT NULL, `odd_week` INTEGER NOT NULL, `weekday` INTEGER NOT NULL, `section` INTEGER NOT NULL, `create_time` INTEGER NOT NULL, `update_time` INTEGER NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `username` TEXT NOT NULL, `password` TEXT NOT NULL, `is_active` INTEGER NOT NULL, `create_time` INTEGER NOT NULL, `update_time` INTEGER NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `username` TEXT NOT NULL, `password` TEXT NOT NULL, `is_active` INTEGER NOT NULL, `create_time` INTEGER NOT NULL, `update_time` INTEGER NOT NULL)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `terms` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `term` TEXT NOT NULL, `start_date` INTEGER NOT NULL, `end_date` INTEGER NOT NULL, `week_num` INTEGER NOT NULL, `term_name` TEXT NOT NULL, `school_year` INTEGER NOT NULL, `comment` TEXT NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `student_info` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `term` TEXT NOT NULL, `grade` TEXT NOT NULL, `college_no` TEXT NOT NULL, `college_name` TEXT NOT NULL, `major_no` TEXT NOT NULL, `major_name` TEXT NOT NULL, `student_id` TEXT NOT NULL, `name` TEXT NOT NULL)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `terms` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `term` TEXT NOT NULL, `start_date` INTEGER NOT NULL, `end_date` INTEGER NOT NULL, `week_num` INTEGER NOT NULL, `term_name` TEXT NOT NULL, `school_year` INTEGER NOT NULL, `comment` TEXT NOT NULL)');
         await database.execute(
             'CREATE UNIQUE INDEX `index_users_username` ON `users` (`username`)');
+        await database.execute(
+            'CREATE UNIQUE INDEX `index_student_info_student_id` ON `student_info` (`student_id`)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -111,6 +119,17 @@ class _$AppDatabase extends AppDatabase {
   UserDao get userDao {
     return _userDaoInstance ??= _$UserDao(database, changeListener);
   }
+
+  @override
+  TermDao get termDao {
+    return _termDaoInstance ??= _$TermDao(database, changeListener);
+  }
+
+  @override
+  StudentInfoDao get studentInfoDao {
+    return _studentInfoDaoInstance ??=
+        _$StudentInfoDao(database, changeListener);
+  }
 }
 
 class _$SemesterScheduleDao extends SemesterScheduleDao {
@@ -125,7 +144,6 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
                   'id': item.id,
                   'username': item.username,
                   'is_manually_add': item.isManuallyAdd ? 1 : 0,
-                  'course_int_id': item.courseIntId,
                   'type': item.type,
                   'typename': item.typename,
                   'exam_type': item.examType,
@@ -140,7 +158,7 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
                   'teacher': item.teacher,
                   'term': item.term,
                   'course_id': item.courseId,
-                  'maximum_selectable': item.maximumSelectable,
+                  'capacity': item.capacity,
                   'selected': item.selected,
                   'credits': item.credits,
                   'is_lab': item.isLab ? 1 : 0,
@@ -168,7 +186,6 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
                   'id': item.id,
                   'username': item.username,
                   'is_manually_add': item.isManuallyAdd ? 1 : 0,
-                  'course_int_id': item.courseIntId,
                   'type': item.type,
                   'typename': item.typename,
                   'exam_type': item.examType,
@@ -183,7 +200,7 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
                   'teacher': item.teacher,
                   'term': item.term,
                   'course_id': item.courseId,
-                  'maximum_selectable': item.maximumSelectable,
+                  'capacity': item.capacity,
                   'selected': item.selected,
                   'credits': item.credits,
                   'is_lab': item.isLab ? 1 : 0,
@@ -222,7 +239,6 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
             username: row['username'] as String,
             isManuallyAdd: (row['is_manually_add'] as int) != 0,
             updateTime: _dateTimeConverter.decode(row['update_time'] as int),
-            courseIntId: row['course_int_id'] as int,
             type: row['type'] as String,
             typename: row['typename'] as String,
             examType: row['exam_type'] as String,
@@ -237,7 +253,7 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
             teacher: row['teacher'] as String,
             term: row['term'] as String,
             courseId: row['course_id'] as String,
-            maximumSelectable: row['maximum_selectable'] as int,
+            capacity: row['capacity'] as int,
             selected: row['selected'] as int,
             credits: row['credits'] as double,
             isLab: (row['is_lab'] as int) != 0,
@@ -257,18 +273,14 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
   }
 
   @override
-  Future<SemesterSchedule?> find(
-    String id,
-    String username,
-  ) async {
-    return _queryAdapter.query(
-        'SELECT * FROM semester_schedule WHERE id = ?1 and username = ?2',
+  Future<List<SemesterSchedule>> getAllByTerm(String term) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM semester_schedule WHERE term = ?1',
         mapper: (Map<String, Object?> row) => SemesterSchedule(
             id: row['id'] as String,
             username: row['username'] as String,
             isManuallyAdd: (row['is_manually_add'] as int) != 0,
             updateTime: _dateTimeConverter.decode(row['update_time'] as int),
-            courseIntId: row['course_int_id'] as int,
             type: row['type'] as String,
             typename: row['typename'] as String,
             examType: row['exam_type'] as String,
@@ -283,7 +295,53 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
             teacher: row['teacher'] as String,
             term: row['term'] as String,
             courseId: row['course_id'] as String,
-            maximumSelectable: row['maximum_selectable'] as int,
+            capacity: row['capacity'] as int,
+            selected: row['selected'] as int,
+            credits: row['credits'] as double,
+            isLab: (row['is_lab'] as int) != 0,
+            labLessonId: row['lab_lesson_id'] as String,
+            batch: row['batch'] as int,
+            assistantNo: row['assistant_no'] as String,
+            startWeek: row['start_week'] as int,
+            endWeek: row['end_week'] as int,
+            oddWeek: (row['odd_week'] as int) != 0,
+            weekday: row['weekday'] as int,
+            section: row['section'] as int,
+            experiment: row['experiment'] as String,
+            classroom: row['classroom'] as String,
+            classroomAlias: row['classroom_alias'] as String,
+            classroomId: row['classroom_id'] as String,
+            comment: row['comment'] as String),
+        arguments: [term]);
+  }
+
+  @override
+  Future<SemesterSchedule?> find(
+    String id,
+    String username,
+  ) async {
+    return _queryAdapter.query(
+        'SELECT * FROM semester_schedule WHERE id = ?1 and username = ?2',
+        mapper: (Map<String, Object?> row) => SemesterSchedule(
+            id: row['id'] as String,
+            username: row['username'] as String,
+            isManuallyAdd: (row['is_manually_add'] as int) != 0,
+            updateTime: _dateTimeConverter.decode(row['update_time'] as int),
+            type: row['type'] as String,
+            typename: row['typename'] as String,
+            examType: row['exam_type'] as String,
+            collegeName: row['college_name'] as String,
+            collegeNo: row['college_no'] as String,
+            majorName: row['major_name'] as String,
+            majorNo: row['major_no'] as String,
+            grade: row['grade'] as String,
+            name: row['name'] as String,
+            courseNo: row['course_no'] as String,
+            teacherNo: row['teacher_no'] as String,
+            teacher: row['teacher'] as String,
+            term: row['term'] as String,
+            courseId: row['course_id'] as String,
+            capacity: row['capacity'] as int,
             selected: row['selected'] as int,
             credits: row['credits'] as double,
             isLab: (row['is_lab'] as int) != 0,
@@ -318,7 +376,6 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
             username: row['username'] as String,
             isManuallyAdd: (row['is_manually_add'] as int) != 0,
             updateTime: _dateTimeConverter.decode(row['update_time'] as int),
-            courseIntId: row['course_int_id'] as int,
             type: row['type'] as String,
             typename: row['typename'] as String,
             examType: row['exam_type'] as String,
@@ -333,7 +390,7 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
             teacher: row['teacher'] as String,
             term: row['term'] as String,
             courseId: row['course_id'] as String,
-            maximumSelectable: row['maximum_selectable'] as int,
+            capacity: row['capacity'] as int,
             selected: row['selected'] as int,
             credits: row['credits'] as double,
             isLab: (row['is_lab'] as int) != 0,
@@ -421,7 +478,7 @@ class _$UserDao extends UserDao {
   @override
   Future<List<User>> getRecent() async {
     return _queryAdapter.queryList(
-        'SELECT * FROM users ORDER BY update_time DESC LIMIT 1',
+        'SELECT * FROM users ORDER BY update_time DESC LIMIT 5',
         mapper: (Map<String, Object?> row) => User(
             updateTime: _dateTimeConverter.decode(row['update_time'] as int),
             createTime:
@@ -457,6 +514,13 @@ class _$UserDao extends UserDao {
   }
 
   @override
+  Future<void> offlineOtherUser(String username) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE SET is_active = 0 WHERE username <> ?1',
+        arguments: [username]);
+  }
+
+  @override
   Future<void> insertUser(User user) async {
     await _userInsertionAdapter.insert(user, OnConflictStrategy.replace);
   }
@@ -464,6 +528,131 @@ class _$UserDao extends UserDao {
   @override
   Future<void> updateUser(User user) async {
     await _userInsertionAdapter.insert(user, OnConflictStrategy.replace);
+  }
+}
+
+class _$TermDao extends TermDao {
+  _$TermDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _termInsertionAdapter = InsertionAdapter(
+            database,
+            'terms',
+            (Term item) => <String, Object?>{
+                  'id': item.id,
+                  'term': item.term,
+                  'start_date': _dateTimeConverter.encode(item.startDate),
+                  'end_date': _dateTimeConverter.encode(item.endDate),
+                  'week_num': item.weekNum,
+                  'term_name': item.termName,
+                  'school_year': item.schoolYear,
+                  'comment': item.comment
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Term> _termInsertionAdapter;
+
+  @override
+  Future<List<Term>> getAll() async {
+    return _queryAdapter.queryList('SELECT * FROM terms',
+        mapper: (Map<String, Object?> row) => Term(
+            term: row['term'] as String,
+            startDate: _dateTimeConverter.decode(row['start_date'] as int),
+            endDate: _dateTimeConverter.decode(row['end_date'] as int),
+            weekNum: row['week_num'] as int,
+            termName: row['term_name'] as String,
+            schoolYear: row['school_year'] as int,
+            comment: row['comment'] as String));
+  }
+
+  @override
+  Future<void> insert(Term term) async {
+    await _termInsertionAdapter.insert(term, OnConflictStrategy.fail);
+  }
+
+  @override
+  Future<void> insertAll(List<Term> terms) async {
+    await _termInsertionAdapter.insertList(terms, OnConflictStrategy.fail);
+  }
+
+  @override
+  Future<void> update(Term term) async {
+    await _termInsertionAdapter.insert(term, OnConflictStrategy.fail);
+  }
+}
+
+class _$StudentInfoDao extends StudentInfoDao {
+  _$StudentInfoDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _studentInfoInsertionAdapter = InsertionAdapter(
+            database,
+            'student_info',
+            (StudentInfo item) => <String, Object?>{
+                  'id': item.id,
+                  'term': item.term,
+                  'grade': item.grade,
+                  'college_no': item.collegeNo,
+                  'college_name': item.collegeName,
+                  'major_no': item.majorNo,
+                  'major_name': item.majorName,
+                  'student_id': item.studentId,
+                  'name': item.name
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<StudentInfo> _studentInfoInsertionAdapter;
+
+  @override
+  Future<StudentInfo?> get(String username) async {
+    return _queryAdapter.query(
+        'SELECT * FROM student_info WHERE student_id = ?1 LIMIT 1',
+        mapper: (Map<String, Object?> row) => StudentInfo(
+            term: row['term'] as String,
+            grade: row['grade'] as String,
+            collegeNo: row['college_no'] as String,
+            collegeName: row['college_name'] as String,
+            majorNo: row['major_no'] as String,
+            majorName: row['major_name'] as String,
+            studentId: row['student_id'] as String,
+            name: row['name'] as String),
+        arguments: [username]);
+  }
+
+  @override
+  Future<List<StudentInfo>> getAll() async {
+    return _queryAdapter.queryList('SELECT * FROM student_info',
+        mapper: (Map<String, Object?> row) => StudentInfo(
+            term: row['term'] as String,
+            grade: row['grade'] as String,
+            collegeNo: row['college_no'] as String,
+            collegeName: row['college_name'] as String,
+            majorNo: row['major_no'] as String,
+            majorName: row['major_name'] as String,
+            studentId: row['student_id'] as String,
+            name: row['name'] as String));
+  }
+
+  @override
+  Future<void> insert(StudentInfo info) async {
+    await _studentInfoInsertionAdapter.insert(info, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> update(StudentInfo info) async {
+    await _studentInfoInsertionAdapter.insert(info, OnConflictStrategy.replace);
   }
 }
 

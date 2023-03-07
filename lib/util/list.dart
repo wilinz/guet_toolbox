@@ -13,6 +13,13 @@ extension ListExtension<E> on Iterable<E> {
     return null;
   }
 
+  E? lastWhereOrNull(bool test(E element), {E orElse()?}) {
+    try {
+      return lastWhere(test, orElse: orElse);
+    } catch (e) {}
+    return null;
+  }
+
   Map<K, List<E>> groupBy<K>(K Function(E) key) {
     var map = <K, List<E>>{};
     for (E item in this) {

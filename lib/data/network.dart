@@ -59,12 +59,13 @@ class AppNetwork {
           status != null && status >= 200 && status < 400,
     );
     dio.interceptors.add(CookieManager(cookieJar));
-    if (!kReleaseMode && (Platform.isWindows || Platform.isMacOS)) {
+    if (!kReleaseMode &&
+        (Platform.isWindows || Platform.isMacOS || Platform.isAndroid)) {
       (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
           (client) {
         client.findProxy = (uri) {
           // 这里设置代理地址和端口号
-          return "PROXY 127.0.0.1:18888";
+          return "PROXY 192.168.1.209:18888";
         };
         client.badCertificateCallback =
             (X509Certificate cert, String host, int port) => true;

@@ -7,7 +7,7 @@ import 'package:guettoolbox/data/model/db/base.dart';
 ])
 class User extends BaseEntity {
   @PrimaryKey(autoGenerate: true)
-  int id = 0;
+  int? id;
 
   String username;
 

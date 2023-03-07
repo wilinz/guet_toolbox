@@ -29,11 +29,10 @@ Term _$TermFromJson(Map<String, dynamic> json) => Term(
       weekNum: json['weeknum'] == null ? 0 : _parseStringToInt(json['weeknum']),
       termName: json['termname'] as String? ?? '',
       schoolYear: _parseStringToInt(json['schoolyear']),
-      comment: json['comm'] as String,
-    )..id = json['id'] as int;
+      comment: json['comm'] as String? ?? '',
+    );
 
 Map<String, dynamic> _$TermToJson(Term instance) => <String, dynamic>{
-      'id': instance.id,
       'term': instance.term,
       'startdate': instance.startDate.toIso8601String(),
       'enddate': instance.endDate.toIso8601String(),

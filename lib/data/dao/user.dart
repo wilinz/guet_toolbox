@@ -24,4 +24,7 @@ abstract class UserDao {
 
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> updateUser(User user);
+
+  @Query("UPDATE users SET is_active = 0 WHERE username <> :username")
+  Future<void> offlineOtherUser(String username);
 }

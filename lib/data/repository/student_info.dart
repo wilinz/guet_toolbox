@@ -1,13 +1,23 @@
 import 'package:guettoolbox/data/model/student/student_info.dart';
+import 'package:guettoolbox/data/repository/user.dart';
 import 'package:guettoolbox/data/service/student_info.dart';
 
+import '../dao/database.dart';
+
 class StudentInfoRepository {
-  StudentInfo? studentInfoCache = null;
 
   Future<StudentInfo> getStudentInfo() async {
-    if (studentInfoCache != null) return studentInfoCache!;
-    studentInfoCache = await StudioInfoService.get();
-    return studentInfoCache!;
+    final db = await getDatabase();
+    final user = await UserRepository.getInstance().getActiveUser();
+    if (user != null) {
+      final userInfo = await db.studentInfoDao.get(user.username);
+      if (userInfo != null) {
+        return userInfo;
+      }
+    }
+    final userInfo = await StudioInfoService.get();
+    db.studentInfoDao.insert(userInfo);
+    return userInfo;
   }
 
   StudentInfoRepository._();

@@ -21,8 +21,11 @@ class _HomePageState extends State<_HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Center(
-      child: Text("Home"),
+    return Scaffold(
+      appBar: AppBar(title: Text("Guet Toolbox")),
+      body: Center(
+        child: Text("欢迎使用 Guet Toolbox", style: TextStyle(fontSize: 25)),
+      ),
     );
   }
 

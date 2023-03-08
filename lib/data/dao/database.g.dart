@@ -516,7 +516,7 @@ class _$UserDao extends UserDao {
   @override
   Future<void> offlineOtherUser(String username) async {
     await _queryAdapter.queryNoReturn(
-        'UPDATE SET is_active = 0 WHERE username <> ?1',
+        'UPDATE users SET is_active = 0 WHERE username <> ?1',
         arguments: [username]);
   }
 

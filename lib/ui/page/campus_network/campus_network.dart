@@ -181,5 +181,8 @@ class _CampusNetworkPageState extends State<_CampusNetworkPage> {
     } else if (data is CampusNetworkAuthResponseFail) {
       _loginMessage(context, "登录失败: ${data.msga}");
     }
+    setState(() {
+      vm.isLoading = false;
+    });
   }
 }

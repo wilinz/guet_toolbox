@@ -1,0 +1,22 @@
+//jsonp
+{
+  "result": 0,
+  "wopt": 0,
+  "msg": 1,
+  "uid": "2222222222",
+  "hidm": 0,
+  "hidn": -5,
+  "ss5": "10.70.164.xxx",
+  "ss6": "10.0.1.5",
+  "vid": 0,
+  "ss1": "ccd39d9ebcaf",
+  "ss4": "000000000000",
+  "cvid": 0,
+  "pvid": 0,
+  "hotel": 0,
+  "aolno": 34778,
+  "eport": -1,
+  "eclass": 1,
+  "ubind": "",
+  "msga": "unbind isp uid"
+}

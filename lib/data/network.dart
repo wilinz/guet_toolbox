@@ -82,6 +82,7 @@ class AppNetwork {
         error: true,
         compact: true,
         maxWidth: 90));
+    dio.interceptors.add(JsonpInterceptor());
     return dio;
   }
 
@@ -253,6 +254,37 @@ class MyInterceptor extends Interceptor {
     referer = options.uri.scheme + "://" + options.uri.path;
     handler.next(options);
   }
+}
+
+/// options: Options(extra: {JsonpInterceptor.UseJsonpParser: true})
+class JsonpInterceptor extends Interceptor {
+   static const String UseJsonpParser = "use_jsonp_parser";
+
+   @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+     final useJsonpParser = options.extra[UseJsonpParser] as bool? ?? false;
+     if (useJsonpParser) {
+       options.responseType = ResponseType.plain;
+     }
+     handler.next(options);
+  }
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    final useJsonpParser = response.requestOptions.extra[UseJsonpParser] as bool? ?? false;
+    if (useJsonpParser) {
+      response.data = json.decode(_removeJsonpWrapper(response.data));
+    }
+    handler.next(response);
+  }
+
+   String _removeJsonpWrapper(String jsonp) {
+     int functionStart = jsonp.indexOf('(') + 1;
+     int functionEnd = jsonp.lastIndexOf(')');
+     String jsonString = jsonp.substring(functionStart, functionEnd);
+     return jsonString;
+   }
+
 }
 
 class RedirectInterceptor extends Interceptor {

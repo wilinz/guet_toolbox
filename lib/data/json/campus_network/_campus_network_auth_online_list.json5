@@ -1,0 +1,23 @@
+//jsonp
+{
+  "result": 1,
+  "msg": "获取用户在线信息成功！",
+  "list": [
+    {
+      "online_session": 31589,
+      "online_time": "2023-03-08 17:15:54",
+      "online_ip": "10.70.164.95",
+      "online_mac": "000000000000",
+      "time_long": "580",
+      "uplink_bytes": "1434",
+      "downlink_bytes": "64190",
+      "dhcp_host": "",
+      "device_alias": "",
+      "nas_ip": "0",
+      "user_account": "2222222222",
+      "exit_id": "0",
+      "is_owner_ip": "1"
+    }
+  ],
+  "total": 1
+}

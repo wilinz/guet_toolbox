@@ -106,6 +106,18 @@ class _ProfilePageState extends State<_ProfilePage>
                             child: Text("评教")),
                       ),
                       SizedBox(
+                        height: 8,
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(
+                                  AppRoute.campusNetworkPage);
+                            },
+                            child: Text("连接校园网")),
+                      ),
+                      SizedBox(
                         height: 16,
                       ),
                       Center(

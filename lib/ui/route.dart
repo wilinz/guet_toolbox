@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_response.dart';
+import 'package:guettoolbox/ui/page/campus_network/campus_network.dart';
 import 'package:guettoolbox/ui/page/course_selection/course_selection.dart';
 import 'package:guettoolbox/ui/page/login/login.dart';
 import 'package:guettoolbox/ui/page/main/main.dart';
@@ -27,13 +28,15 @@ class AppRoute {
   static const String pedagogicalEvaluationEditPage =
       "pedagogicalEvaluationEditPage";
 
+  static const String campusNetworkPage = "CampusNetworkPage";
+
   ///路由表配置
   static Map<String, WidgetBuilder> routes = {
-    loginPage: (context){
+    loginPage: (context) {
       final args = ModalRoute.of(context)!.settings.arguments!;
       final popUpAfterSuccess = args as bool;
       return LoginPage(popUpAfterSuccess: popUpAfterSuccess);
-    } ,
+    },
     splashPage: (context) => const SplashPage(),
     mainPage: (context) => const MainPage(),
     courseSelectionPage: (context) => const CourseSelectionPage(),
@@ -43,6 +46,7 @@ class AppRoute {
       final pedagogicalEvaluation = args as PedagogicalEvaluation;
       return PedagogicalEvaluationEditPage(
           pedagogicalEvaluation: pedagogicalEvaluation);
-    }
+    },
+    campusNetworkPage: (context) => const CampusNetworkPage()
   };
 }

@@ -5,18 +5,18 @@ import 'package:guettoolbox/data/model/campus_network/campus_network_auth_respon
 import 'package:guettoolbox/data/model/campus_network/campus_network_auth_response_success.dart';
 import 'package:guettoolbox/data/network.dart';
 
-enum Operators {
+enum ISP {
   telecom,
   cmcc,
   unicom,
   campus;
 }
 
-String getOperatorsUsername(String username, Operators operators) {
-  if (operators == Operators.campus) {
+String getOperatorsUsername(String username, ISP isp) {
+  if (isp == ISP.campus) {
     return username;
   }
-  return "$username@${operators.name}";
+  return "$username@${isp.name}";
 }
 
 class CampusNetworkAuth {
@@ -25,12 +25,12 @@ class CampusNetworkAuth {
   /// success: lib/data/model/campus_network/campus_network_auth_response_success.dart
   /// fail: lib/data/model/campus_network/campus_network_auth_response_fail.dart
   static Future<dynamic> login(
-      String username, String password, Operators operators) async {
+      String username, String password, ISP isp) async {
     final dio = await AppNetwork.getRedirect2Dio();
     final resp = await dio.get("http://10.0.1.5/drcom/login",
         queryParameters: {
           "callback": "dr1003",
-          "DDDDD": getOperatorsUsername(username, operators),
+          "DDDDD": getOperatorsUsername(username, isp),
           "upass": password,
           "0MKKey": "123456",
           "R1": "0",

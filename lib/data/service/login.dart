@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:guettoolbox/common/encrypt/cas_new.dart';
 import 'package:guettoolbox/data/model/login/login_cas_response.dart';
+import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/util/ext.dart';
 import 'package:guettoolbox/util/js.dart';
 import 'package:guettoolbox/util/list.dart';
@@ -154,8 +155,7 @@ class LoginService {
       } else {
         // resp = await (await AppNetwork.getDio(followRedirects: true))
         //     .get(getUri(), queryParameters: {"service": service});
-        var resp =
-            await (await AppNetwork.getRedirect2Dio()).get(uri);
+        var resp = await (await AppNetwork.getRedirect2Dio()).get(uri);
         if (resp.data.toString().contains("注销")) {
           return resp;
         }
@@ -208,8 +208,7 @@ class LoginService {
       }
     }
     final uri1 = getUri();
-    final resp1 = await (await AppNetwork.getRedirect2Dio()).post(
-        uri1,
+    final resp1 = await (await AppNetwork.getRedirect2Dio()).post(uri1,
         queryParameters: {"service": service},
         options: Options(
             contentType: AppNetwork.typeUrlEncode,
@@ -236,8 +235,10 @@ class LoginService {
 
   /// {"res":"success","mobile":"123****4567","returnMessage":"动态口令已发送到手机","codeTime":120}
   static Future<Map<String, dynamic>> getDynamicCode(String username) async {
-    final resp = await (await AppNetwork.getDio()).post(
-        "https://cas.guet.edu.cn/authserver/dynamicCode/getDynamicCodeByReauth.do",
+    final isCampusNetwork =
+        await NetworkDetectionRepository.getInstance().isCampusNetwork ?? false;
+    final resp = await (await AppNetwork.getRedirect2Dio()).post(
+        "${getCasBaseUrl(isCampusNetwork)}authserver/dynamicCode/getDynamicCodeByReauth.do",
         data: {
           "userName": username,
           "authCodeTypeName": "reAuthDynamicCodeType"

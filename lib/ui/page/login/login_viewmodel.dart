@@ -13,6 +13,8 @@ class LoginViewModel extends ChangeNotifier {
   Future<bool?> get isCampusNetwork =>
       NetworkDetectionRepository.getInstance().isCampusNetwork;
 
+  Stream<bool?> get isCampusNetworkState => NetworkDetectionRepository.getInstance().isCampusNetworkState;
+
   Future<bool> login(
       String username, String password, Future<String> Function() onGetCode) {
     isLoading = true;

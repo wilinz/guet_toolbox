@@ -102,7 +102,6 @@ class _LoginPageState extends State<_LoginPage> {
                                 _passwordVisible
                                     ? Icons.visibility
                                     : Icons.visibility_off,
-                                color: Theme.of(context).primaryColor,
                               ),
                               onPressed: () {
                                 //更新状态控制密码显示或隐藏
@@ -124,7 +123,7 @@ class _LoginPageState extends State<_LoginPage> {
                         Container(
                           height: 16,
                         ),
-                        FutureBuilder(
+                        StreamBuilder(
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 return Text(
@@ -132,7 +131,7 @@ class _LoginPageState extends State<_LoginPage> {
                               }
                               return Container();
                             },
-                            future: vm.isCampusNetwork,
+                            stream: vm.isCampusNetworkState,
                             initialData: null),
                         Container(
                           height: 16,
@@ -204,6 +203,11 @@ class _LoginPageState extends State<_LoginPage> {
   void initState() {
     super.initState();
     initAsync();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   void initAsync() async {

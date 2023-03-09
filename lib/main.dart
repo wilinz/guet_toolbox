@@ -1,13 +1,16 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:guettoolbox/data/repository/campus_network.dart';
+import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:guettoolbox/ui/widget.dart';
 import 'package:guettoolbox/util/platform.dart';
 import 'package:logger/logger.dart';
 import 'package:window_manager/window_manager.dart';
-
 
 Future<void> main() async {
   //确保组件树初始化
@@ -15,9 +18,7 @@ Future<void> main() async {
   if (PlatformUtil.isDesktop()) {
     // 必须加上这一行。
     await windowManager.ensureInitialized();
-    WindowOptions windowOptions = WindowOptions(
-      size: Size(450, 920)
-    );
+    WindowOptions windowOptions = WindowOptions(size: Size(450, 920));
 
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.setMinimizable(true);
@@ -29,6 +30,9 @@ Future<void> main() async {
       await windowManager.focus();
     });
   }
+  NetworkDetectionRepository.getInstance().refresh();
+  CampusNetworkRepository.getInstance().refresh();
+
   runApp(const MyApp());
 }
 
@@ -91,15 +95,24 @@ class _MyAppState extends State<MyApp> with WindowListener {
     // do something
   }
 
+  StreamSubscription<ConnectivityResult>? subscription;
+
   @override
   void initState() {
     windowManager.addListener(this);
     super.initState();
+    subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
+      NetworkDetectionRepository.getInstance().refresh();
+      CampusNetworkRepository.getInstance().refresh();
+    });
   }
 
   @override
   void dispose() {
     windowManager.removeListener(this);
+    subscription?.cancel();
     super.dispose();
   }
 }

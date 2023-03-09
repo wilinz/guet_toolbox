@@ -1,11 +1,24 @@
+import 'dart:async';
+
+import 'package:rxdart/rxdart.dart';
+
 import '../network.dart';
 import '../service/network_detection.dart';
 
 class NetworkDetectionRepository {
-  bool? _isCampusNetworkCache = null;
+
+  bool? get isCampusNetworkCache => isCampusNetworkState.valueOrNull;
+
+  BehaviorSubject<bool?> _isCampusNetworkStateController = BehaviorSubject<bool?>();
+  ValueStream<bool?> get isCampusNetworkState => _isCampusNetworkStateController.stream;
 
   Future<bool?> get isCampusNetwork async {
-    return _isCampusNetworkCache ??= await _isCampusNetwork();
+    if (isCampusNetworkCache == null) await refresh();
+    return isCampusNetworkCache;
+  }
+
+  refresh() async {
+    _isCampusNetworkStateController.add(await _isCampusNetwork());
   }
 
   Future<bool> _isCampusNetwork() async {

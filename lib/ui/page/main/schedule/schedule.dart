@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guettoolbox/ui/route.dart';
 import 'package:guettoolbox/util/list.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
@@ -125,37 +126,42 @@ class _SchedulePageState extends State<_SchedulePage>
         icon: Icon(Icons.date_range));
   }
 
-  Widget buildWeekItem(ScheduleViewModel vm, int index) {
+  Widget buildWeekdayList(ScheduleViewModel vm, int index) {
     return Container(
       color: index == vm.currentWeekdayIndex ? Color(0xf7f7f7) : null,
       child: Center(
-        child: index == 0
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("星期", style: TextStyle(fontSize: 14)),
-                  // SpaceWidget(height: 5),
-                  Text("日期", style: TextStyle(fontSize: 12)),
-                ],
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(weekdayList[index - 1],
-                      style: TextStyle(
-                          fontSize: 14,
-                          color:
-                              index == vm.weekday ? Colors.lightBlue : null)),
-                  // SpaceWidget(height: 5),
-                  Text(vm.dateList[index - 1],
-                      style: TextStyle(
-                          fontSize: 12,
-                          color:
-                              index == vm.weekday ? Colors.lightBlue : null)),
-                ],
-              ),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 4, bottom: 4),
+          child: buildWeekdayItem(index, vm),
+        ),
       ),
     );
+  }
+
+  Column buildWeekdayItem(int index, ScheduleViewModel vm) {
+    return index == 0
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("星期", style: TextStyle(fontSize: 14)),
+              // SpaceWidget(height: 5),
+              Text("日期", style: TextStyle(fontSize: 12)),
+            ],
+          )
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(weekdayList[index - 1],
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: index == vm.weekday ? Colors.lightBlue : null)),
+              // SpaceWidget(height: 5),
+              Text(vm.dateList[index - 1],
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: index == vm.weekday ? Colors.lightBlue : null)),
+            ],
+          );
   }
 
   bor() {
@@ -222,21 +228,27 @@ class _SchedulePageState extends State<_SchedulePage>
             }
             final courses = viewModel.courseList[index];
             final course = courses.first;
-            return Container(
-              margin: EdgeInsets.all(0.5),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(2),
-                color: viewModel.colorsMap[courses.first.courseNo],
-              ),
-              child: Center(
-                child: Text(
-                  // infoList[index % 2],
-                  course.classroom + "#" + course.name + "@" + course.teacher,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white, fontSize: 11, letterSpacing: 1),
+            return InkWell(
+              child: Container(
+                margin: EdgeInsets.all(0.5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(2),
+                  color: viewModel.colorsMap[courses.first.courseNo],
+                ),
+                child: Center(
+                  child: Text(
+                    // infoList[index % 2],
+                    course.classroom + "#" + course.name + "@" + course.teacher,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Colors.white, fontSize: 11, letterSpacing: 1),
+                  ),
                 ),
               ),
+              onTap: () {
+                Navigator.pushNamed(context, AppRoute.courseDetailPage,
+                    arguments: course);
+              },
             );
           })
         ],
@@ -279,7 +291,7 @@ class _SchedulePageState extends State<_SchedulePage>
     return Row(
       children: [
         for (var index = 0; index < 8; index++)
-          Expanded(flex: 1, child: buildWeekItem(vm, index))
+          Expanded(flex: 1, child: buildWeekdayList(vm, index))
       ],
     );
   }

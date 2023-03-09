@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:guettoolbox/data/model/course/semester_schedule.dart';
 import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_response.dart';
 import 'package:guettoolbox/ui/page/campus_network/campus_network.dart';
+import 'package:guettoolbox/ui/page/course_detail/course_detail.dart';
 import 'package:guettoolbox/ui/page/course_selection/course_selection.dart';
 import 'package:guettoolbox/ui/page/login/login.dart';
 import 'package:guettoolbox/ui/page/main/main.dart';
@@ -30,6 +32,8 @@ class AppRoute {
 
   static const String campusNetworkPage = "CampusNetworkPage";
 
+  static const String courseDetailPage = "CourseDetailPage";
+
   ///路由表配置
   static Map<String, WidgetBuilder> routes = {
     loginPage: (context) {
@@ -47,6 +51,11 @@ class AppRoute {
       return PedagogicalEvaluationEditPage(
           pedagogicalEvaluation: pedagogicalEvaluation);
     },
-    campusNetworkPage: (context) => const CampusNetworkPage()
+    campusNetworkPage: (context) => const CampusNetworkPage(),
+    courseDetailPage: (BuildContext context) {
+      final args = ModalRoute.of(context)!.settings.arguments;
+      final schedule = args as SemesterSchedule;
+      return CourseDetailPage(schedule: schedule);
+    },
   };
 }

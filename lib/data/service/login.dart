@@ -216,6 +216,7 @@ class LoginService {
         data: {
           "username": username,
           "password": encryptPassword(password, aesKey),
+          "rememberMe": true,
           "captcha": "",
           "_eventId": "submit",
           "cllt": "userNameLogin",

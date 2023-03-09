@@ -53,12 +53,13 @@ class AppNetwork {
 
   static Future<Dio> setupDio(Dio dio, CookieJar cookieJar) async {
     dio.options = BaseOptions(
-      baseUrl: await baseUrlAutoAdapt,
+      baseUrl: await baseUrl,
       headers: {"User-Agent": userAgent},
       followRedirects: false,
       validateStatus: (int? status) =>
           status != null && status >= 200 && status < 400,
     );
+    dio.interceptors.add(BaseUrlInterceptor());
     dio.interceptors.add(CookieManager(cookieJar));
     // if (!kReleaseMode &&
     //     (Platform.isWindows || Platform.isMacOS || Platform.isAndroid)) {
@@ -72,7 +73,7 @@ class AppNetwork {
     //         (X509Certificate cert, String host, int port) => true;
     //   };
     // }
-    dio.interceptors.add(MyInterceptor());
+    dio.interceptors.add(RefererInterceptor());
     // dio.interceptors.add(LoginInterceptor(dio));
     dio.interceptors.add(PrettyDioLogger(
         requestHeader: true,
@@ -219,29 +220,27 @@ class LoginInterceptor extends Interceptor {
   LoginInterceptor(this.dio);
 }
 
-// class PostInterceptor extends Interceptor {
-//   final Dio dio;
-//
-//   PostInterceptor(this.dio);
-//
-//   @override
-//   Future<void> onResponse(
-//       Response response, ResponseInterceptorHandler handler) async {
-//     if (response.requestOptions.method == "POST" &&
-//         (response.statusCode == 301 || response.statusCode == 302)) {
-//       final location = response.headers.value("location");
-//       if (location != null) {
-//
-//         final newResp = await dio.get(location,options: response.requestOptions);
-//         handler.next(newResp);
-//         return;
-//       }
-//     }
-//     handler.next(response);
-//   }
-// }
+class BaseUrlInterceptor extends Interceptor {
+  final hosts = ["bkjw.guet.edu.cn"];
 
-class MyInterceptor extends Interceptor {
+  @override
+  Future<void> onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
+    if (hosts.contains(options.uri.host)) {
+      final isCampusNetwork =
+          await NetworkDetectionRepository.getInstance().isCampusNetwork;
+      if (isCampusNetwork != true) {
+        final newOptions = options.copyWith(
+            baseUrl: Uri.parse(options.baseUrl).toWebVpnUrl().toString());
+        handler.next(newOptions);
+        return;
+      }
+    }
+    handler.next(options);
+  }
+}
+
+class RefererInterceptor extends Interceptor {
   String? referer = null;
 
   @override
@@ -258,33 +257,33 @@ class MyInterceptor extends Interceptor {
 
 /// options: Options(extra: {JsonpInterceptor.UseJsonpParser: true})
 class JsonpInterceptor extends Interceptor {
-   static const String UseJsonpParser = "use_jsonp_parser";
+  static const String UseJsonpParser = "use_jsonp_parser";
 
-   @override
+  @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-     final useJsonpParser = options.extra[UseJsonpParser] as bool? ?? false;
-     if (useJsonpParser) {
-       options.responseType = ResponseType.plain;
-     }
-     handler.next(options);
+    final useJsonpParser = options.extra[UseJsonpParser] as bool? ?? false;
+    if (useJsonpParser) {
+      options.responseType = ResponseType.plain;
+    }
+    handler.next(options);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    final useJsonpParser = response.requestOptions.extra[UseJsonpParser] as bool? ?? false;
+    final useJsonpParser =
+        response.requestOptions.extra[UseJsonpParser] as bool? ?? false;
     if (useJsonpParser) {
       response.data = json.decode(_removeJsonpWrapper(response.data));
     }
     handler.next(response);
   }
 
-   String _removeJsonpWrapper(String jsonp) {
-     int functionStart = jsonp.indexOf('(') + 1;
-     int functionEnd = jsonp.lastIndexOf(')');
-     String jsonString = jsonp.substring(functionStart, functionEnd);
-     return jsonString;
-   }
-
+  String _removeJsonpWrapper(String jsonp) {
+    int functionStart = jsonp.indexOf('(') + 1;
+    int functionEnd = jsonp.lastIndexOf(')');
+    String jsonString = jsonp.substring(functionStart, functionEnd);
+    return jsonString;
+  }
 }
 
 class RedirectInterceptor extends Interceptor {

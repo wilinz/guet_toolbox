@@ -251,7 +251,10 @@ class _LoginPageState extends State<_LoginPage> {
       _loginMessage(context, error.toString());
       return false;
     }).whenComplete(() {
-      isShowCodeEditor = false;
+      setState(() {
+        loginViewModel.isLoading = false;
+        isShowCodeEditor = false;
+      });
     });
   }
 }

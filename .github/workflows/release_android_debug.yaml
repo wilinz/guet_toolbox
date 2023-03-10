@@ -30,8 +30,8 @@ jobs:
       - name: Upload to artifact
         uses: actions/upload-artifact@v3
         with:
-          name: guet-toolbox-debug
-          path: build/app/outputs/flutter-apk/*-debug.apk
+          name: app-debug.apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
 
 #      - name: Package as zip
 #        run: |

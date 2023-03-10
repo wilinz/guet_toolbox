@@ -7,24 +7,30 @@ import 'package:flutter/services.dart';
 import 'package:guettoolbox/data/repository/campus_network.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/ui/route.dart';
-import 'package:guettoolbox/ui/widget.dart';
 import 'package:guettoolbox/util/platform.dart';
-import 'package:logger/logger.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:window_size/window_size.dart';
 
 Future<void> main() async {
   //确保组件树初始化
   WidgetsFlutterBinding.ensureInitialized();
   if (PlatformUtil.isDesktop()) {
+    // 获取主显示器的物理大小
+    final screen = await getCurrentScreen();
+    print(screen?.frame.width);
+    print(screen?.frame.height);
+    final height = (screen?.frame.height ?? 450 + 200) - 200;
     // 必须加上这一行。
     await windowManager.ensureInitialized();
-    WindowOptions windowOptions = WindowOptions(size: Size(450, 920));
+    WindowOptions windowOptions = WindowOptions(size: Size(450, height));
 
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.setMinimizable(true);
       await windowManager.setAlignment(Alignment.centerRight);
       await windowManager.setMaximizable(false);
       await windowManager.setResizable(false);
+      final position = await windowManager.getPosition();
+      await windowManager.setPosition(Offset(position.dx - 100, position.dy));
       // await windowManager.setTitleBarStyle(TitleBarStyle.normal,windowButtonVisibility: true);
       await windowManager.show();
       await windowManager.focus();

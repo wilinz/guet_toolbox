@@ -131,7 +131,7 @@ class _SchedulePageState extends State<_SchedulePage>
       color: index == vm.currentWeekdayIndex ? Color(0xf7f7f7) : null,
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.only(top: 4, bottom: 4),
+          padding: const EdgeInsets.only(top: 8, bottom: 8),
           child: buildWeekdayItem(index, vm),
         ),
       ),

@@ -15,14 +15,14 @@ Future<void> main() async {
   //确保组件树初始化
   WidgetsFlutterBinding.ensureInitialized();
   if (PlatformUtil.isDesktop()) {
-    // 获取主显示器的物理大小
+    final padding = 50;
     final screen = await getCurrentScreen();
-    print(screen?.frame.width);
-    print(screen?.frame.height);
-    final height = (screen?.frame.height ?? 450 + 200) - 200;
+    print(screen?.visibleFrame.width);
+    print(screen?.visibleFrame.height);
+    final height = (screen?.visibleFrame.height ?? 450 + padding * 2) - padding * 2;
     // 必须加上这一行。
     await windowManager.ensureInitialized();
-    WindowOptions windowOptions = WindowOptions(size: Size(450, height));
+    WindowOptions windowOptions = WindowOptions(size: Size(height*(0.48), height));
 
     windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.setMinimizable(true);
@@ -30,7 +30,7 @@ Future<void> main() async {
       await windowManager.setMaximizable(false);
       await windowManager.setResizable(false);
       final position = await windowManager.getPosition();
-      await windowManager.setPosition(Offset(position.dx - 100, position.dy));
+      await windowManager.setPosition(Offset(position.dx - padding, position.dy));
       // await windowManager.setTitleBarStyle(TitleBarStyle.normal,windowButtonVisibility: true);
       await windowManager.show();
       await windowManager.focus();

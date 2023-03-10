@@ -1,4 +1,3 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:guettoolbox/data/model/term/term.dart';
 
 class ScheduleDatetime {

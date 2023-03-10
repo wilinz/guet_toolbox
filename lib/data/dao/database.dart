@@ -9,6 +9,8 @@ import 'package:guettoolbox/data/model/course/semester_schedule.dart';
 import 'package:guettoolbox/data/model/student/student_info.dart';
 import 'package:guettoolbox/data/model/term/term.dart';
 import 'package:guettoolbox/data/model/user/user.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 
 part 'database.g.dart'; // the generated code will be there
@@ -16,7 +18,6 @@ part 'database.g.dart'; // the generated code will be there
 @TypeConverters([DateTimeConverter, DateTimeNullableConverter])
 @Database(version: 1, entities: [SemesterSchedule, User, StudentInfo, Term])
 abstract class AppDatabase extends FloorDatabase {
-
   SemesterScheduleDao get semesterScheduleDao;
 
   UserDao get userDao;
@@ -24,7 +25,6 @@ abstract class AppDatabase extends FloorDatabase {
   TermDao get termDao;
 
   StudentInfoDao get studentInfoDao;
-
 }
 
 // 以下是OnConflictStrategy枚举中可用的选项：
@@ -35,5 +35,13 @@ abstract class AppDatabase extends FloorDatabase {
 // OnConflictStrategy.ignore: 忽略冲突并继续执行操作，不会抛出异常或撤销操作。
 // OnConflictStrategy.replace: 替换现有记录的值，并继续执行操作，不会抛出异常或撤销操作。
 
-Future<AppDatabase> getDatabase() =>
-    $FloorAppDatabase.databaseBuilder('app_database.db').build();
+AppDatabase? _database;
+
+Future<AppDatabase> getDatabase() async => _database ??= await _getDatabase();
+
+Future<AppDatabase> _getDatabase() async {
+  final dir = await getApplicationDocumentsDirectory();
+  return $FloorAppDatabase
+      .databaseBuilder(join(dir.path, 'app_database.db'))
+      .build();
+}

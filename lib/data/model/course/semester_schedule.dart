@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:floor/floor.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:guettoolbox/data/model/course/course_lab_response.dart';
 import 'package:guettoolbox/data/model/db/base.dart';
 import 'package:guettoolbox/util/list.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import 'course_response.dart';
 

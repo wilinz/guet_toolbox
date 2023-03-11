@@ -296,12 +296,12 @@ class RedirectInterceptor extends Interceptor {
       Response response, ResponseInterceptorHandler handler) async {
     if (_isRedirect(response.statusCode ?? 0)) {
       final location = response.headers.value('location');
-      if (location == null) throw Exception("location is null");
+      if (location == null) throw Exception("Redirect location is null");
       final requestOptions = response.requestOptions;
       final rawUri = requestOptions.uri.toString();
 
       final redirectResponse = await dio.get(
-        parseHttpLocation(rawUri, location),
+        _parseHttpLocation(rawUri, location),
         options: Options(
           sendTimeout: requestOptions.sendTimeout,
           receiveTimeout: requestOptions.receiveTimeout,
@@ -331,4 +331,28 @@ class RedirectInterceptor extends Interceptor {
         statusCode == 307 ||
         statusCode == 308;
   }
+
+  String _parseHttpLocation(final String rawUri, final String location) {
+    var location1 = location;
+    String uri;
+    if (!location1.contains("://")) {
+      final schemaEndIndex = rawUri.indexOf("://") + 3;
+      var index = location1.startsWith("/")
+          ? rawUri.indexOf("/", schemaEndIndex)
+          : rawUri.substring(schemaEndIndex).lastIndexOf("/") + schemaEndIndex;
+      if (index == -1) index = rawUri.length - 1;
+      var baseUrl = rawUri.substring(0, index + 1);
+      if (baseUrl.endsWith("/")) {
+        baseUrl = baseUrl.substring(0, baseUrl.length - 1);
+      }
+      if (location1.startsWith("/")) {
+        location1 = location1.substring(1);
+      }
+      uri = baseUrl + "/" + location1;
+    } else {
+      uri = location1;
+    }
+    return uri;
+  }
+
 }

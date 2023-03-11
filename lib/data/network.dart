@@ -12,7 +12,6 @@ import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/data/service/login.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:guettoolbox/util/ext.dart';
-import 'package:guettoolbox/util/uri_util.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';

@@ -73,3 +73,8 @@ brew
 ```shell
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 ```
+
+## 许可证：MPL2.0
+基于 Mozilla Public License Version 2.0 并附加以下条款：
+
+* **非商业性使用** — 不得将此项目及其衍生的项目的源代码和二进制产品用于任何商业和盈利用途

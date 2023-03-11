@@ -1,0 +1,42 @@
+//https://bkjw.guet.edu.cn/student/GetSctCourse?_dc=1678533148599&comm=1@1&term=2022-2023_2&page=1&start=0&limit=25
+{
+  "success": true,
+  "total": 0,
+  "data": [
+    {
+      "xf": "3.00",
+      "classno": "班级",
+      "spno": "080717T",
+      "spname": null,
+      "tname": "通识必修",
+      "tname1": "必修课",
+      "grade": "2022",
+      "cname": "思想道德与法治",
+      "pycc": "本科",
+      "dpt": "22",
+      "dptno": "16",
+      "xm": null,
+      "warn": null,
+      "role": null,
+      "demo": "课堂派：123456",
+      "testtype": "0",
+      "stid": "学号",
+      "name": "姓名",
+      "term": "2022-2023_2",
+      "courseid": "BG000000000",
+      "courseno": "222222",
+      "stype": "正常",
+      "khsj": null,
+      "state": 2,
+      "xksj": "2022/12/4 19:20:31",
+      "ip": "10.100.1.1",
+      "comm": "集体选课",
+      "checked": 0,
+      "pscj": null,
+      "khzt": null,
+      "cjf": null,
+      "setjc": null,
+      "textnum": null
+    }
+  ]
+}

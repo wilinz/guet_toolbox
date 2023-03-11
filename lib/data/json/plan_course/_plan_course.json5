@@ -1,0 +1,31 @@
+//https://bkjw.guet.edu.cn/student/getplancj?_dc=1678532719506&page=1&start=0&limit=25
+{
+  "success": true,
+  "total": 0,
+  "data": [
+    {
+      "dptno": "22",
+      "dptname": "学院",
+      "spno": "000000T",
+      "spname": "专业",
+      "stid": "学号",
+      "grade": "2022",
+      "classno": "班级",
+      "name": "姓名",
+      "coursetype": "BG",
+      "tname": "通识必修",
+      "cname": "课程名称",
+      "credithour": "1.00",
+      "score": "100",//成绩
+      "zpxs": "100",//成绩
+      "term": "2022-2023_1",
+      "sterm": "2022-2023_1",
+      "scname": "体育1",
+      "courseid": "BG0000028X0",
+      "courseno": "2222222",
+      "stp": "BG",
+      "xf": "1.00",
+      "chk": "1"
+    }
+  ]
+}

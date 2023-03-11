@@ -1,0 +1,59 @@
+//https://bkjw.guet.edu.cn/Student/GetStuScore
+//_dc: 1678532599500
+//term:
+//page: 1
+//start: 0
+//limit: 25
+//sort: [{"property":"stid","direction":"ASC"},{"property":"term","direction":"ASC"}]
+{
+  "success": true,
+  "total": 0,
+  "data": [
+    {
+      "dptno": "年级，如：22",
+      "dptname": "学院",
+      "spno": "000000T",
+      "spname": "专业",
+      "bj": "班级",
+      "grade": 2022,
+      "stid": "学号",
+      "name": "姓名",
+      "term": "2022-2023_1",
+      "courseid": "课程id",
+      "courseno": "课号",
+      "cname": "课程名称",
+      "courselevel": null,
+      //分数
+      "score": 100,
+      //可能为 "合格
+      "zpxs": "100",
+      "kctype": "通识必修",
+      "typeno": "BG",
+      "cid": "课程id",
+      "cno": "课号",
+      //实验成绩
+      "sycj": 0.0,
+      //期中成绩
+      "qzcj": 0.0,
+      //平时成绩
+      "pscj": 100.0,
+      //考试成绩
+      "khcj": 100.0,
+      //总评成绩
+      "zpcj": 100.0,
+      //考试类别
+      "kslb": "正考",
+      "cjlb": "正常",
+      "kssj": 1,
+      "xf": 1.00,
+      "xslb": "本科",
+      "tname1": null,
+      "stage": 0.0,
+      "examt": "考查",//考试类别
+      "xs": 0,
+      "cjlx": 0,
+      "chk": 1,
+      "comm": null
+    }
+  ]
+}

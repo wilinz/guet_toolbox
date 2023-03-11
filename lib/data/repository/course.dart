@@ -97,7 +97,7 @@ class CourseRepository {
     List responses =
         await Future.wait([getCourseList(term), getCourseLabList(term)]);
     final user = await UserRepository.getInstance().getActiveUser();
-    if (user == null) throw new Exception("");
+    if (user == null) throw new Exception("未登录");
     final terms =
         generateSemesterSchedule(responses[0], responses[1], user.username);
 

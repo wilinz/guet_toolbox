@@ -74,14 +74,16 @@ class AppNetwork {
     // }
     dio.interceptors.add(RefererInterceptor());
     // dio.interceptors.add(LoginInterceptor(dio));
-    dio.interceptors.add(PrettyDioLogger(
-        requestHeader: true,
-        requestBody: false,
-        responseBody: true,
-        responseHeader: false,
-        error: true,
-        compact: true,
-        maxWidth: 90));
+    if (kDebugMode){
+      dio.interceptors.add(PrettyDioLogger(
+          requestHeader: true,
+          requestBody: false,
+          responseBody: true,
+          responseHeader: false,
+          error: true,
+          compact: true,
+          maxWidth: 90));
+    }
     dio.interceptors.add(JsonpInterceptor());
     return dio;
   }

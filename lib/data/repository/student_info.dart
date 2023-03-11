@@ -1,8 +1,8 @@
+import 'package:guettoolbox/data/database/database.dart';
 import 'package:guettoolbox/data/model/student/student_info.dart';
 import 'package:guettoolbox/data/repository/user.dart';
 import 'package:guettoolbox/data/service/student_info.dart';
 
-import '../dao/database.dart';
 
 class StudentInfoRepository {
 

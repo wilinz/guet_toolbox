@@ -1,4 +1,4 @@
-import 'package:guettoolbox/data/dao/database.dart';
+import 'package:guettoolbox/data/database/database.dart';
 import 'package:guettoolbox/data/model/user/user.dart';
 import 'package:guettoolbox/util/list.dart';
 

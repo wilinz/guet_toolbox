@@ -1,5 +1,5 @@
 import 'package:guettoolbox/common/key.dart';
-import 'package:guettoolbox/data/dao/database.dart';
+import 'package:guettoolbox/data/database/database.dart';
 import 'package:guettoolbox/data/model/campus_network/campus_network_auth_online_list.dart';
 import 'package:guettoolbox/data/model/campus_network/campus_network_auth_response_common.dart';
 import 'package:guettoolbox/data/model/campus_network/campus_network_auth_response_success.dart';

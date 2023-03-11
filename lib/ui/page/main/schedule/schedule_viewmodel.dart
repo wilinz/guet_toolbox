@@ -63,7 +63,7 @@ class ScheduleViewModel extends ChangeNotifier {
     update(term.startDate, term: term);
   }
 
-  toToday() {
+  updateToToday() {
     update(DateTime.now());
   }
 

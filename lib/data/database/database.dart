@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:floor/floor.dart';
-import 'package:guettoolbox/data/dao/datetime_converter.dart';
+import 'package:guettoolbox/data/database/datetime_converter.dart';
 import 'package:guettoolbox/data/dao/schedule.dart';
 import 'package:guettoolbox/data/dao/student.dart';
 import 'package:guettoolbox/data/dao/term.dart';
@@ -9,6 +9,7 @@ import 'package:guettoolbox/data/model/course/semester_schedule.dart';
 import 'package:guettoolbox/data/model/student/student_info.dart';
 import 'package:guettoolbox/data/model/term/term.dart';
 import 'package:guettoolbox/data/model/user/user.dart';
+import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
@@ -40,7 +41,7 @@ AppDatabase? _database;
 Future<AppDatabase> getDatabase() async => _database ??= await _getDatabase();
 
 Future<AppDatabase> _getDatabase() async {
-  final dir = await getApplicationDocumentsDirectory();
+  final dir = await getApplicationSupportDirectory();
   return $FloorAppDatabase
       .databaseBuilder(join(dir.path, 'app_database.db'))
       .build();

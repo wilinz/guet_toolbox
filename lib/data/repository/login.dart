@@ -1,11 +1,16 @@
 import 'package:guettoolbox/common/key.dart';
-import 'package:guettoolbox/data/dao/database.dart';
+import 'package:guettoolbox/data/database/database.dart';
 import 'package:guettoolbox/data/model/user/user.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/data/service/login.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rxdart/rxdart.dart';
 
 class LoginRepository {
+
+  final _onLoginEvent = BehaviorSubject<User>();
+
+  ValueStream<User> get onLoginEvent => _onLoginEvent.stream;
+
   Future<bool> loginAcademicAffairsSystem(String username, String password,
       Future<String> Function() onGetCode) async {
 
@@ -29,12 +34,15 @@ class LoginRepository {
     } else {
       ok = await LoginService.loginWithWebVpn(username, password, onGetCode);
     }
+    user.password = password;
     if (ok){
-      user.password = password;
       user.isActive = true;
       db.userDao.updateUser(user);
       db.userDao.offlineOtherUser(user.username);
+    }else{
+      db.userDao.updateUser(user);
     }
+    _onLoginEvent.add(user);
     return ok;
   }
 

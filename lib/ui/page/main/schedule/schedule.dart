@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:guettoolbox/data/model/user/user.dart';
+import 'package:guettoolbox/data/repository/login.dart';
 import 'package:guettoolbox/ui/route.dart';
-import 'package:guettoolbox/util/list.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import 'schedule_viewmodel.dart';
@@ -29,16 +31,26 @@ class _SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<_SchedulePage>
     with AutomaticKeepAliveClientMixin {
   var weekdayList = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+  StreamSubscription<User>? onLoginEvent;
 
   @override
   void initState() {
     super.initState();
 
     var vm = Provider.of<ScheduleViewModel>(context, listen: false);
+    onLoginEvent = LoginRepository.getInstance().onLoginEvent.listen((user) {
+      vm.updateToToday();
+    });
     vm.getWeekday(DateTime.now());
-    vm.toToday();
+    vm.updateToToday();
 
     // print('Recent monday '+DateTime.now().day.toString());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    onLoginEvent?.cancel();
   }
 
   _getDateString(DateTime dateTime) {

@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:guettoolbox/common/key.dart';
 import 'package:guettoolbox/data/repository/login.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
+import 'package:guettoolbox/data/repository/user.dart';
 import 'package:guettoolbox/data/service/login.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:guettoolbox/util/ext.dart';
@@ -73,8 +74,7 @@ class AppNetwork {
     //   };
     // }
     dio.interceptors.add(RefererInterceptor());
-    // dio.interceptors.add(LoginInterceptor(dio));
-    if (kDebugMode){
+    if (kDebugMode) {
       dio.interceptors.add(PrettyDioLogger(
           requestHeader: true,
           requestBody: false,
@@ -85,6 +85,7 @@ class AppNetwork {
           maxWidth: 90));
     }
     dio.interceptors.add(JsonpInterceptor());
+    dio.interceptors.add(LoginInterceptor(dio));
     return dio;
   }
 
@@ -150,52 +151,43 @@ class LoginInterceptor extends Interceptor {
   @override
   Future<void> onResponse(
       Response response, ResponseInterceptorHandler handler) async {
-    var newResp = await _onResponse(response, handler);
-    handler.next(newResp);
-    // if (response.headers.value("Location") == "/login") {
-    //   handler.reject(DioError(
-    //       requestOptions: response.requestOptions, error: UnauthorizedException("请登录")));
-    // }
-    // handler.next(response);
+    if (!_isRedirect(response.statusCode ?? 0)) return handler.next(response);
+    handler.next(await _onResponse(response, handler));
   }
 
   Future<Response> _onResponse(
       Response response, ResponseInterceptorHandler handler) async {
-    // Location: /login
-    print(jsonEncode(response.data));
-    var h = response.headers.value("location");
-    final contentType = response.headers.value("content-type");
-    print("content-type: $contentType");
-    print("head: ${h}");
-    if (h != null) {
-      var uri = Uri.parse(h);
+    var location = response.headers.value("location");
+    if (location != null) {
+      var uri = Uri.parse(location);
       var path = uri.path;
       if ((path.endsWith("/login") || path.endsWith("/Login")) &&
           (uri.query.isEmpty || uri.queryParameters["ReturnUrl"] != null)) {
-        var sp = await SharedPreferences.getInstance();
-        var username = sp.getString(AppKey.username);
-        var password = sp.getString(AppKey.password);
+        var user = await UserRepository.getInstance().getActiveUser();
+        var username = user?.username;
+        var password = user?.password;
         if (username != null && password != null) {
-          for (var i = 0; i < 5; i++) {
+          for (var i = 0; i < 1; i++) {
             try {
               var success = await LoginRepository.getInstance()
-                  .loginAcademicAffairsSystem(
-                      username, password, () async => "");
+                  .loginAcademicAffairsSystem(username, password, () async {
+                AppRoute.navigatorKey.currentState
+                    ?.pushNamed(AppRoute.loginPage, arguments: true);
+                throw LogonFailedException("登录失败");
+              });
               if (!success) throw LogonFailedException("登录失败");
               await Future.delayed(Duration(milliseconds: 500));
-              var newResp = await dio
-                  .setFollowRedirects(false)
-                  .fetch(response.requestOptions);
-              if (newResp.headers
+              var newResp = await dio.fetch(response.requestOptions);
+              final isJsonResponse = newResp.headers
                       .value("content-type")
-                      ?.contains("application/json") !=
-                  true) {
+                      ?.contains("application/json") ==
+                  true;
+              if (!isJsonResponse) {
                 throw LogonFailedException("登录失败");
               }
               return newResp;
             } catch (e) {
-              print(e);
-              if (i == 4 && AppRoute.currentPage != AppRoute.loginPage) {
+              if (/*i == 4 && */ AppRoute.currentPage != AppRoute.loginPage) {
                 AppRoute.navigatorKey.currentState
                     ?.pushNamed(AppRoute.loginPage, arguments: true);
               }
@@ -206,6 +198,14 @@ class LoginInterceptor extends Interceptor {
     }
 
     return response;
+  }
+
+  bool _isRedirect(int statusCode) {
+    return statusCode == 301 ||
+        statusCode == 302 ||
+        statusCode == 303 ||
+        statusCode == 307 ||
+        statusCode == 308;
   }
 
   final Dio dio;
@@ -347,5 +347,4 @@ class RedirectInterceptor extends Interceptor {
     }
     return uri;
   }
-
 }

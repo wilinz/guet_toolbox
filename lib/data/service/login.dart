@@ -28,7 +28,7 @@ class LoginService {
       final Uri uri = Uri.parse("https://cas.guet.edu.cn/cas/v1/tickets");
       // final cookieJar = (await AppNetwork.getInstance()).cookieJar;
       // cookieJar.delete(uri);
-      var resp = await (await AppNetwork.getDio(followRedirects: true)).postUri(
+      var resp = await (await AppNetwork.getDio()).postUri(
           uri,
           options: Options(
               contentType: AppNetwork.typeUrlEncode,
@@ -80,7 +80,7 @@ class LoginService {
 
     Future<String> second(String url, String service) async {
       var data = {"service": service};
-      var resp = await (await AppNetwork.getDio(followRedirects: true)).post(
+      var resp = await (await AppNetwork.getDio()).post(
           url,
           options: Options(contentType: AppNetwork.typeUrlEncode),
           data: data);
@@ -98,7 +98,7 @@ class LoginService {
 
   static Future<bool> loginWithWebVpn(String username, String password,
       Future<String> Function() onGetCode) async {
-    final resp = await (await AppNetwork.getDio(followRedirects: true))
+    final resp = await (await AppNetwork.getDio())
         .get("https://v.guet.edu.cn");
 
     var resp1 = await loginNewCas(username, password,
@@ -146,16 +146,16 @@ class LoginService {
     if (service == "https://v.guet.edu.cn/login?cas_login=true") {
       uri = "https://v.guet.edu.cn/login?cas_login=true";
     }
-    var resp = await (await AppNetwork.getRedirect2Dio())
+    var resp = await (await AppNetwork.getDio())
         .get(uri, queryParameters: {"service": service});
 
     if (service == "https://v.guet.edu.cn/login?cas_login=true") {
       if (resp.data.toString().contains("注销")) {
         return resp;
       } else {
-        // resp = await (await AppNetwork.getDio(followRedirects: true))
+        // resp = await (await AppNetwork.getDio())
         //     .get(getUri(), queryParameters: {"service": service});
-        var resp = await (await AppNetwork.getRedirect2Dio()).get(uri);
+        var resp = await (await AppNetwork.getDio()).get(uri);
         if (resp.data.toString().contains("注销")) {
           return resp;
         }
@@ -169,7 +169,7 @@ class LoginService {
 
     if (resp.data.toString().contains("多因子登录")) {
       final code = await onGetCode();
-      final resp = await (await AppNetwork.getRedirect2Dio()).post(
+      final resp = await (await AppNetwork.getDio()).post(
           "${getCasBaseUrl(isCampusNetwork)}authserver/reAuthCheck/reAuthSubmit.do",
           data: {
             "service": "",
@@ -208,7 +208,7 @@ class LoginService {
       }
     }
     final uri1 = getUri();
-    final resp1 = await (await AppNetwork.getRedirect2Dio()).post(uri1,
+    final resp1 = await (await AppNetwork.getDio()).post(uri1,
         queryParameters: {"service": service},
         options: Options(
             contentType: AppNetwork.typeUrlEncode,
@@ -230,7 +230,7 @@ class LoginService {
     //   throw Exception("hello");
     // }
 
-    // return await (await AppNetwork.getDio(followRedirects: true)).get(location);
+    // return await (await AppNetwork.getDio()).get(location);
     return resp1;
   }
 
@@ -238,7 +238,7 @@ class LoginService {
   static Future<Map<String, dynamic>> getDynamicCode(String username) async {
     final isCampusNetwork =
         await NetworkDetectionRepository.getInstance().isCampusNetwork ?? false;
-    final resp = await (await AppNetwork.getRedirect2Dio()).post(
+    final resp = await (await AppNetwork.getDio()).post(
         "${getCasBaseUrl(isCampusNetwork)}authserver/dynamicCode/getDynamicCodeByReauth.do",
         data: {
           "userName": username,

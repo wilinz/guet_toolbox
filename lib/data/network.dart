@@ -103,17 +103,9 @@ class AppNetwork {
 
   static AppNetwork? _instance = null;
 
-  static Future<Dio> getDio({bool followRedirects = true}) async {
-    var appNetwork = await getInstance();
-    Dio dio = followRedirects ? appNetwork.redirectDio : appNetwork.dio;
-    dio.options.baseUrl = await baseUrlAutoAdapt;
-    return dio;
-  }
-
-  static Future<Dio> getRedirect2Dio() async {
+  static Future<Dio> getDio() async {
     var appNetwork = await getInstance();
     Dio dio = appNetwork.redirect2Dio;
-    dio.options.baseUrl = await baseUrlAutoAdapt;
     return dio;
   }
 

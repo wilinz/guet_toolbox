@@ -26,7 +26,7 @@ class CampusNetworkAuth {
   /// fail: lib/data/model/campus_network/campus_network_auth_response_fail.dart
   static Future<dynamic> login(
       String username, String password, ISP isp) async {
-    final dio = await AppNetwork.getRedirect2Dio();
+    final dio = await AppNetwork.getDio();
     final resp = await dio.get("http://10.0.1.5/drcom/login",
         queryParameters: {
           "callback": "dr1003",
@@ -55,7 +55,7 @@ class CampusNetworkAuth {
 
   /// dr1002({"result":0,"msg":"无法获取终端MAC地址！"});
   static Future<CampusNetworkAuthResponseCommon> unbind(String userAccount) async {
-    final dio = await AppNetwork.getRedirect2Dio();
+    final dio = await AppNetwork.getDio();
     final resp = await dio.get("http://10.0.1.5:801/eportal/portal/mac/unbind",
         queryParameters: {
           "callback": "dr1002",
@@ -72,7 +72,7 @@ class CampusNetworkAuth {
 
   /// {"result":1,"msg":"Radius注销成功！"}
   static Future<CampusNetworkAuthResponseCommon> logout(String userAccount) async {
-    final dio = await AppNetwork.getRedirect2Dio();
+    final dio = await AppNetwork.getDio();
     final resp = await dio.get("http://10.0.1.5:801/eportal/portal/logout",
         queryParameters: {
           "callback": "dr1003",
@@ -99,7 +99,7 @@ class CampusNetworkAuth {
   /// success: lib/data/json/campus_network/_campus_network_auth_online_list.json5
   /// fail: lib/data/model/campus_network/campus_network_auth_response_common.dart
   static Future<dynamic> onlineList() async {
-    final dio = await AppNetwork.getRedirect2Dio();
+    final dio = await AppNetwork.getDio();
     final resp = await dio.get("http://10.0.1.5:801/eportal/portal/online_list",
         options: Options(extra: {JsonpInterceptor.UseJsonpParser: true}));
     final data = resp.data;

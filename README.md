@@ -1,4 +1,6 @@
-# Guet-Toolbox
+# Guet-Toolbox 一个使用Flutter开发的GUET工具箱，此项目正在开发中
+
+下载地址 [https://github.com/wilinz/guet_toolbox/actions](https://github.com/wilinz/guet_toolbox/actions)
 
 Windows 安装 openssl，安装路径：C:\Program Files\OpenSSL-Win64
 ```powershell

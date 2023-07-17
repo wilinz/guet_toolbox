@@ -31,9 +31,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  dio: ^5.0.1
-  dio_cookie_manager: ^2.1.1
-  cookie_jar: 3.0.1
+  dio: ^5.2.0+1
+  dio_cookie_manager: ^3.1.0
+  cookie_jar: 4.0.3
   sprintf: "^7.0.0"
   shared_preferences: ^2.0.15
   provider: ^6.0.5
@@ -58,6 +58,7 @@ dependencies:
   url_launcher: ^6.1.10
   connectivity_plus: ^3.0.3
   rxdart: ^0.27.7
+  dart_extensions: ^2.2.2
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding.git

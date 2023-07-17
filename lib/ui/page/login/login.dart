@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:guettoolbox/data/service/login.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:kt_dart/kt.dart';
 import 'package:logger/logger.dart';
@@ -119,7 +120,6 @@ class _LoginPageState extends State<_LoginPage> {
                             return v!.trim().length > 0 ? null : "密码不能为空";
                           },
                         ),
-                        if (isShowCodeEditor) buildCodeTextField(vm),
                         Container(
                           height: 16,
                         ),
@@ -161,40 +161,37 @@ class _LoginPageState extends State<_LoginPage> {
     });
   }
 
-  Widget buildCodeTextField(LoginViewModel vm) {
+  Widget buildCodeTextField(BuildContext context, LoginViewModel vm) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          height: 32,
-        ),
+        // Container(
+        //   height: 32,
+        // ),
         TextFormField(
-          controller: _vcodeController,
-          autofocus: true,
-          decoration: InputDecoration(
-            labelText: "验证码",
-            hintText: "验证码",
-            prefixIcon: Icon(Icons.code),
-            suffixIcon: IconButton(
-                onPressed: () {
-                  vm.getDynamicCode(_usernameController.text).then((value) {
-                    if (value["res"] == "success") {
+            controller: _vcodeController,
+            autofocus: true,
+            decoration: InputDecoration(
+              labelText: "验证码",
+              hintText: "验证码",
+              prefixIcon: Icon(Icons.code),
+              suffixIcon: IconButton(
+                  onPressed: () async {
+                    final resp =
+                        await vm.getDynamicCode(_usernameController.text);
+                    if (resp.result == "success") {
                       _loginMessage(context, "发送成功");
                     } else {
-                      _loginMessage(context, "发送失败");
+                      _loginMessage(context, resp.returnMessage);
                     }
-                  });
-                },
-                icon: Icon(Icons.send)),
-            border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(16))),
-          ),
-          validator: (v) {
-            return v!.trim().length > 0 ? null : "验证码不能为空";
-          },
-          onFieldSubmitted: (v){
-            getCodeCompleter.complete(_vcodeController.text);
-          },
-        ),
+                  },
+                  icon: Icon(Icons.send)),
+              border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16))),
+            ),
+            validator: (v) {
+              return v!.trim().length > 0 ? null : "验证码不能为空";
+            }),
       ],
     );
   }
@@ -219,7 +216,6 @@ class _LoginPageState extends State<_LoginPage> {
     });
   }
 
-  Completer<String> getCodeCompleter = Completer();
   bool isShowCodeEditor = false;
 
   Future<void> _login(LoginViewModel loginViewModel, BuildContext context,
@@ -229,32 +225,58 @@ class _LoginPageState extends State<_LoginPage> {
       return;
     }
 
-    // await loginViewModel.setVcode(_vcodeController.text.trim());
-    loginViewModel.login(_usernameController.text, _passwordController.text,
-        () async {
-      setState(() {
-        isShowCodeEditor = true;
-      });
-      Logger().d("");
-      return await getCodeCompleter.future;
-    }).then((value) {
-      _loginMessage(context, value ? "登录成功" : "登录失败");
+    try {
+      final resp = await loginViewModel.login(
+          _usernameController.text, _passwordController.text);
+      _loginMessage(context, resp ? "登录成功" : "登录失败");
       final navigator = Navigator.of(context);
-      if (value && widget.popUpAfterSuccess) {
+      if (resp && widget.popUpAfterSuccess) {
         navigator.pop();
       } else {
         Navigator.pushReplacementNamed(context, AppRoute.mainPage);
       }
-      return value;
-    }).onError((error, stackTrace) {
-      print(stackTrace);
-      _loginMessage(context, error.toString());
-      return false;
-    }).whenComplete(() {
+    } on RequireLoginVerificationCodeException catch (e) {
+      final result = await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("二次验证"),
+            content: buildCodeTextField(context, loginViewModel),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("取消")),
+              TextButton(
+                  onPressed: () async {
+                    final result =
+                        await loginViewModel.reAuthCheck(_vcodeController.text);
+                    if (result.code == "reAuth_success") {
+                      _loginMessage(context, "验证成功");
+                      Navigator.pop(context, true);
+                    } else {
+                      _loginMessage(context, "验证失败");
+                    }
+                  },
+                  child: Text("确定")),
+            ],
+          );
+        },
+      );
+      if (result == true) {
+        _login(loginViewModel, context, currentState);
+        return;
+      }
+    } catch (e) {
+      print(e);
+      _loginMessage(context, e.toString());
+    } finally {
       setState(() {
         loginViewModel.isLoading = false;
         isShowCodeEditor = false;
       });
-    });
+    }
   }
 }

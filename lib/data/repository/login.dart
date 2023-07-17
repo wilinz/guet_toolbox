@@ -1,5 +1,7 @@
 import 'package:guettoolbox/common/key.dart';
 import 'package:guettoolbox/data/database/database.dart';
+import 'package:guettoolbox/data/model/dynamic_code/dynamic_code.dart';
+import 'package:guettoolbox/data/model/dynamic_code/reauth.dart';
 import 'package:guettoolbox/data/model/user/user.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/data/service/login.dart';
@@ -11,8 +13,7 @@ class LoginRepository {
 
   ValueStream<User> get onLoginEvent => _onLoginEvent.stream;
 
-  Future<bool> loginAcademicAffairsSystem(String username, String password,
-      Future<String> Function() onGetCode) async {
+  Future<bool> loginAcademicAffairsSystem(String username, String password) async {
 
     final db = await getDatabase();
     var user = await db.userDao.get(username);
@@ -30,9 +31,9 @@ class LoginRepository {
     bool ok;
     if (isCampusNetwork == true) {
       ok = await LoginService.loginWithCampusNetwork(
-          username, password, onGetCode);
+          username, password);
     } else {
-      ok = await LoginService.loginWithWebVpn(username, password, onGetCode);
+      ok = await LoginService.loginWithWebVpn(username, password);
     }
     user.password = password;
     if (ok){
@@ -46,7 +47,9 @@ class LoginRepository {
     return ok;
   }
 
-  Future<Map<String, dynamic>> getDynamicCode(String username) => LoginService.getDynamicCode(username);
+  Future<DynamicCode> getDynamicCode(String username) => LoginService.getDynamicCode(username);
+
+  Future<ReAuth> reAuthCheck(String code) => LoginService.reAuthCheck(code);
 
   LoginRepository._create();
 

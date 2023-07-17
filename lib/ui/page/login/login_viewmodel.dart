@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:guettoolbox/data/model/dynamic_code/dynamic_code.dart';
+import 'package:guettoolbox/data/model/dynamic_code/reauth.dart';
 import 'package:guettoolbox/data/model/user/user.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/data/repository/user.dart';
@@ -16,11 +18,11 @@ class LoginViewModel extends ChangeNotifier {
   Stream<bool?> get isCampusNetworkState => NetworkDetectionRepository.getInstance().isCampusNetworkState;
 
   Future<bool> login(
-      String username, String password, Future<String> Function() onGetCode) {
+      String username, String password) {
     isLoading = true;
     notifyListeners();
     return LoginRepository.getInstance()
-        .loginAcademicAffairsSystem(username, password, onGetCode)
+        .loginAcademicAffairsSystem(username, password)
         .whenComplete(() {
       isLoading = false;
       notifyListeners();
@@ -29,8 +31,11 @@ class LoginViewModel extends ChangeNotifier {
 
   Map<String, dynamic>? vcode;
 
-  Future<Map<String, dynamic>> getDynamicCode(String username) =>
+  Future<DynamicCode> getDynamicCode(String username) =>
       LoginRepository.getInstance().getDynamicCode(username);
+
+  Future<ReAuth> reAuthCheck(String code) =>
+      LoginRepository.getInstance().reAuthCheck(code);
 
   Future<User?> getRecentUser() async =>
       UserRepository.getInstance().getRecentUser();

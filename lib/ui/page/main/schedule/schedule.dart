@@ -129,6 +129,10 @@ class _SchedulePageState extends State<_SchedulePage>
                         },
                         child: Text(
                           term.termName,
+                          style: TextStyle(
+                              color: term == viewModel.currentTerm
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).colorScheme.onBackground),
                         ),
                       );
                     }).toList(),

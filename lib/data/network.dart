@@ -61,18 +61,7 @@ class AppNetwork {
     );
     dio.interceptors.add(BaseUrlInterceptor());
     dio.interceptors.add(CookieManager(cookieJar));
-    if (!kReleaseMode &&
-        (Platform.isWindows || Platform.isMacOS || Platform.isAndroid)) {
-      (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
-          (client) {
-        client.findProxy = (uri) {
-          // 这里设置代理地址和端口号
-          return "PROXY 192.168.1.5:18888";
-        };
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-      };
-    }
+    // _proxy(dio);
     dio.interceptors.add(RefererInterceptor());
     if (kDebugMode) {
       dio.interceptors.add(PrettyDioLogger(
@@ -87,6 +76,21 @@ class AppNetwork {
     dio.interceptors.add(JsonpInterceptor());
     dio.interceptors.add(LoginInterceptor(dio));
     return dio;
+  }
+
+  static void _proxy(Dio dio) {
+    if (!kReleaseMode &&
+        (Platform.isWindows || Platform.isMacOS || Platform.isAndroid)) {
+      (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
+          (client) {
+        client.findProxy = (uri) {
+          // 这里设置代理地址和端口号
+          return "PROXY 192.168.1.5:18888";
+        };
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+      };
+    }
   }
 
   static Future<String> get baseUrlAutoAdapt async {
@@ -170,11 +174,7 @@ class LoginInterceptor extends Interceptor {
           for (var i = 0; i < 1; i++) {
             try {
               var success = await LoginRepository.getInstance()
-                  .loginAcademicAffairsSystem(username, password, () async {
-                AppRoute.navigatorKey.currentState
-                    ?.pushNamed(AppRoute.loginPage, arguments: true);
-                throw LogonFailedException("登录失败");
-              });
+                  .loginAcademicAffairsSystem(username, password);
               if (!success) throw LogonFailedException("登录失败");
               await Future.delayed(Duration(milliseconds: 500));
               var newResp = await dio.fetch(response.requestOptions);

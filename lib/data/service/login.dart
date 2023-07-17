@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:guettoolbox/common/encrypt/cas_new.dart';
+import 'package:guettoolbox/data/model/dynamic_code/dynamic_code.dart';
+import 'package:guettoolbox/data/model/dynamic_code/reauth.dart';
 import 'package:guettoolbox/data/model/login/login_cas_response.dart';
+import 'package:guettoolbox/data/repository/campus_network.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/util/ext.dart';
 import 'package:guettoolbox/util/js.dart';
@@ -28,8 +31,7 @@ class LoginService {
       final Uri uri = Uri.parse("https://cas.guet.edu.cn/cas/v1/tickets");
       // final cookieJar = (await AppNetwork.getInstance()).cookieJar;
       // cookieJar.delete(uri);
-      var resp = await (await AppNetwork.getDio()).postUri(
-          uri,
+      var resp = await (await AppNetwork.getDio()).postUri(uri,
           options: Options(
               contentType: AppNetwork.typeUrlEncode,
               responseType: ResponseType.plain),
@@ -80,10 +82,8 @@ class LoginService {
 
     Future<String> second(String url, String service) async {
       var data = {"service": service};
-      var resp = await (await AppNetwork.getDio()).post(
-          url,
-          options: Options(contentType: AppNetwork.typeUrlEncode),
-          data: data);
+      var resp = await (await AppNetwork.getDio()).post(url,
+          options: Options(contentType: AppNetwork.typeUrlEncode), data: data);
       var body = resp.data;
       if (resp.statusCode != 200) {
         throw LogonFailedException(
@@ -96,17 +96,15 @@ class LoginService {
     return await second(url, service);
   }
 
-  static Future<bool> loginWithWebVpn(String username, String password,
-      Future<String> Function() onGetCode) async {
-    final resp = await (await AppNetwork.getDio())
-        .get("https://v.guet.edu.cn");
+  static Future<bool> loginWithWebVpn(String username, String password) async {
+    final resp = await (await AppNetwork.getDio()).get("https://v.guet.edu.cn");
 
     var resp1 = await loginNewCas(username, password,
-        "https://v.guet.edu.cn/login?cas_login=true", false, onGetCode);
+        "https://v.guet.edu.cn/login?cas_login=true", false);
 
     if (resp1.data.toString().contains("注销")) {
       var resp2 = await loginNewCas(
-          username, password, "https://bkjw.guet.edu.cn", false, onGetCode);
+          username, password, "https://bkjw.guet.edu.cn", false);
       if (resp2.data.toString().contains("用户类型：学生")) {
         return true;
       }
@@ -115,10 +113,10 @@ class LoginService {
     return false;
   }
 
-  static Future<bool> loginWithCampusNetwork(String username, String password,
-      Future<String> Function() onGetCode) async {
-    var resp = await loginNewCas(
-        username, password, "https://bkjw.guet.edu.cn", true, onGetCode);
+  static Future<bool> loginWithCampusNetwork(
+      String username, String password) async {
+    var resp =
+        await loginNewCas(username, password, "https://bkjw.guet.edu.cn", true);
     if (resp.data.toString().contains("用户类型：学生")) {
       return true;
     }
@@ -132,12 +130,8 @@ class LoginService {
     return baseUri;
   }
 
-  static Future<Response> loginNewCas(
-      String username,
-      String password,
-      String service,
-      bool isCampusNetwork,
-      Future<String> Function() onGetCode) async {
+  static Future<Response> loginNewCas(String username, String password,
+      String service, bool isCampusNetwork) async {
     String getUri() => isCampusNetwork
         ? "https://cas.guet.edu.cn/authserver/login"
         : "${getCasBaseUrl(isCampusNetwork)}authserver/login";
@@ -168,23 +162,7 @@ class LoginService {
     }
 
     if (resp.data.toString().contains("多因子登录")) {
-      final code = await onGetCode();
-      final resp = await (await AppNetwork.getDio()).post(
-          "${getCasBaseUrl(isCampusNetwork)}authserver/reAuthCheck/reAuthSubmit.do",
-          data: {
-            "service": "",
-            "reAuthType": 3,
-            "isMultifactor": true,
-            "password": "",
-            "dynamicCode": code,
-            "uuid": "",
-            "answer1": "",
-            "answer2": "",
-            "otpCode": "",
-          },
-          options: Options(contentType: AppNetwork.typeUrlEncode));
-      return loginNewCas(
-          username, password, service, isCampusNetwork, onGetCode);
+      throw RequireLoginVerificationCodeException("");
     }
 
     final doc = htmlParser.parse(resp.data);
@@ -235,7 +213,7 @@ class LoginService {
   }
 
   /// {"res":"success","mobile":"123****4567","returnMessage":"动态口令已发送到手机","codeTime":120}
-  static Future<Map<String, dynamic>> getDynamicCode(String username) async {
+  static Future<DynamicCode> getDynamicCode(String username) async {
     final isCampusNetwork =
         await NetworkDetectionRepository.getInstance().isCampusNetwork ?? false;
     final resp = await (await AppNetwork.getDio()).post(
@@ -244,26 +222,33 @@ class LoginService {
           "userName": username,
           "authCodeTypeName": "reAuthDynamicCodeType"
         },
-        options: Options(contentType: AppNetwork.typeUrlEncode));
-    return resp.data;
+        options: Options(
+            contentType: AppNetwork.typeUrlEncode,
+            responseType: ResponseType.plain));
+    return DynamicCode.fromJson(json.decode(resp.data));
   }
 
-  static Future<Map<String, dynamic>> getVcode() async {
-    // final resp = await (await AppNetwork.getDio()).get(
-    //     "https://cas.guet.edu.cn/cas/kaptcha?uid=${randomUidString(32)}",
-    //     options: Options(responseType: ResponseType.json));
-    // final base64 = resp.data["content"].toString().split(",")[1];
-    // resp.data["content"] = base64Decode(base64.replaceAll(RegExp(r'\s+'), ''));
-    // return resp.data;
-    TODO("");
-  }
-
-  static Future<Map<String, dynamic>> vcode(String id, String code) async {
-    // final resp = await (await AppNetwork.getDio()).post(
-    //     "https://cas.guet.edu.cn/cas/validateLoginCode",
-    //     data: {"id": id, "code": code});
-    // return resp.data;
-    TODO("");
+  ///{"msg":"动态码错误","code":"reAuth_failed"}
+  static Future<ReAuth> reAuthCheck(String code) async {
+    final isCampusNetwork =
+        await NetworkDetectionRepository.getInstance().isCampusNetwork ?? false;
+    final resp = await (await AppNetwork.getDio()).post(
+        "${getCasBaseUrl(isCampusNetwork)}authserver/reAuthCheck/reAuthSubmit.do",
+        data: {
+          "service": "",
+          "reAuthType": 3,
+          "isMultifactor": true,
+          "password": "",
+          "dynamicCode": code,
+          "uuid": "",
+          "answer1": "",
+          "answer2": "",
+          "otpCode": "",
+        },
+        options: Options(
+            contentType: AppNetwork.typeUrlEncode,
+            responseType: ResponseType.json));
+    return ReAuth.fromJson(resp.data);
   }
 }
 
@@ -271,6 +256,15 @@ class LogonFailedException implements Exception {
   final String msg;
 
   LogonFailedException(this.msg);
+
+  @override
+  String toString() => msg;
+}
+
+class RequireLoginVerificationCodeException implements Exception {
+  final String msg;
+
+  RequireLoginVerificationCodeException(this.msg);
 
   @override
   String toString() => msg;

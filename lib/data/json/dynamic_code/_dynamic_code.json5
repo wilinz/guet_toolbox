@@ -1,0 +1,5 @@
+{
+  "res": "code_time_fail",
+  "returnMessage": "您已重复发送，请53秒后再试",
+  "codeTime": 53
+}

@@ -97,7 +97,7 @@ class LoginService {
   }
 
   static Future<bool> loginWithWebVpn(String username, String password) async {
-    final resp = await (await AppNetwork.getDio()).get("https://v.guet.edu.cn");
+    // final resp = await (await AppNetwork.getDio()).get("https://v.guet.edu.cn");
 
     var resp1 = await loginNewCas(username, password,
         "https://v.guet.edu.cn/login?cas_login=true", false);
@@ -140,8 +140,9 @@ class LoginService {
     if (service == "https://v.guet.edu.cn/login?cas_login=true") {
       uri = "https://v.guet.edu.cn/login?cas_login=true";
     }
-    var resp = await (await AppNetwork.getDio())
-        .get(uri, queryParameters: {"service": service});
+    var resp = await (await AppNetwork.getDio()).get(uri,
+        queryParameters: {"service": service},
+        options: Options(extra: {LoginInterceptor.allowCheckingLogin: false}));
 
     if (service == "https://v.guet.edu.cn/login?cas_login=true") {
       if (resp.data.toString().contains("注销")) {
@@ -149,7 +150,9 @@ class LoginService {
       } else {
         // resp = await (await AppNetwork.getDio())
         //     .get(getUri(), queryParameters: {"service": service});
-        var resp = await (await AppNetwork.getDio()).get(uri);
+        var resp = await (await AppNetwork.getDio()).get(uri,
+            options:
+                Options(extra: {LoginInterceptor.allowCheckingLogin: false}));
         if (resp.data.toString().contains("注销")) {
           return resp;
         }
@@ -190,7 +193,8 @@ class LoginService {
         queryParameters: {"service": service},
         options: Options(
             contentType: AppNetwork.typeUrlEncode,
-            responseType: ResponseType.plain),
+            responseType: ResponseType.plain,
+            extra: {LoginInterceptor.allowCheckingLogin: false}),
         data: {
           "username": username,
           "password": encryptPassword(password, aesKey),

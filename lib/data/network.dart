@@ -152,15 +152,18 @@ class UnauthorizedException implements Exception {
 }
 
 class LoginInterceptor extends Interceptor {
+  static const String allowCheckingLogin = "allowCheckingLogin";
+
   @override
   Future<void> onResponse(
       Response response, ResponseInterceptorHandler handler) async {
+    final isAllowCheckingLogins =
+        response.requestOptions.extra[allowCheckingLogin] as bool? ?? true;
+    if (!isAllowCheckingLogins) {
+      handler.next(response);
+      return;
+    }
     if (!_isRedirect(response.statusCode ?? 0)) return handler.next(response);
-    handler.next(await _onResponse(response, handler));
-  }
-
-  Future<Response> _onResponse(
-      Response response, ResponseInterceptorHandler handler) async {
     var location = response.headers.value("location");
     if (location != null) {
       var uri = Uri.parse(location);
@@ -171,8 +174,9 @@ class LoginInterceptor extends Interceptor {
         var username = user?.username;
         var password = user?.password;
         if (username != null && password != null) {
-          for (var i = 0; i < 1; i++) {
+          for (var i = 0; i < 2; i++) {
             try {
+              print("正在登录");
               var success = await LoginRepository.getInstance()
                   .loginAcademicAffairsSystem(username, password);
               if (!success) throw LogonFailedException("登录失败");
@@ -185,19 +189,20 @@ class LoginInterceptor extends Interceptor {
               if (!isJsonResponse) {
                 throw LogonFailedException("登录失败");
               }
-              return newResp;
+              handler.resolve(newResp);
+              return;
             } catch (e) {
-              if (/*i == 4 && */ AppRoute.currentPage != AppRoute.loginPage) {
-                AppRoute.navigatorKey.currentState
-                    ?.pushNamed(AppRoute.loginPage, arguments: true);
-              }
+              // if (/*i == 4 && */ AppRoute.currentPage != AppRoute.loginPage) {
+              //   AppRoute.navigatorKey.currentState
+              //       ?.pushNamed(AppRoute.loginPage, arguments: true);
+              // }
             }
           }
         }
       }
     }
 
-    return response;
+    handler.next(response);
   }
 
   bool _isRedirect(int statusCode) {
@@ -279,41 +284,74 @@ class JsonpInterceptor extends Interceptor {
   }
 }
 
-class RedirectInterceptor extends Interceptor {
-  final Dio dio;
+typedef RedirectCallback = bool Function(
+    Response response, ResponseInterceptorHandler handler);
 
-  RedirectInterceptor(this.dio);
+class RedirectInterceptor extends Interceptor {
+  final Dio _dio;
+  RedirectCallback? _redirectCallback;
+  static const String followRedirects = "followRedirects";
+  static const String rawUri = "rawUri";
+  static const String redirectCount = "redirectCount";
+
+  RedirectInterceptor(this._dio, {RedirectCallback? onRedirect})
+      : _redirectCallback = onRedirect;
 
   @override
   Future<void> onResponse(
       Response response, ResponseInterceptorHandler handler) async {
+    final isFollowRedirects =
+        response.requestOptions.extra[followRedirects] as bool? ?? true;
+    if (!isFollowRedirects) {
+      handler.next(response);
+      return;
+    }
+
+    final rawUriValue = response.requestOptions.extra[rawUri] as Uri?;
+    if (rawUriValue == null) {
+      response.requestOptions.extra[rawUri] = response.requestOptions.uri;
+    }
+
     if (_isRedirect(response.statusCode ?? 0)) {
       try {
+        final redirectCountValue =
+            response.requestOptions.extra[redirectCount] ?? 0;
+        if (redirectCountValue >= 20) {
+          handler.next(response);
+          return;
+        }
+        if (_redirectCallback != null &&
+            !_redirectCallback!.call(response, handler)) {
+          return;
+        }
         final location = response.headers.value('location');
         if (location == null) throw Exception("Redirect location is null");
         final requestOptions = response.requestOptions;
         final rawUri = requestOptions.uri.toString();
+        final newUri = Uri.parse(_parseHttpLocation(rawUri, location));
+        response.requestOptions.extra[redirectCount] = redirectCountValue + 1;
 
         final option = Options(
-                sendTimeout: requestOptions.sendTimeout,
-                receiveTimeout: requestOptions.receiveTimeout,
-                extra: requestOptions.extra,
-                headers: requestOptions.headers,
-                responseType: requestOptions.responseType,
-                contentType: requestOptions.contentType,
-                validateStatus: requestOptions.validateStatus,
-                receiveDataWhenStatusError: requestOptions.receiveDataWhenStatusError,
-                followRedirects: requestOptions.followRedirects,
-                maxRedirects: requestOptions.maxRedirects,
-                persistentConnection: requestOptions.persistentConnection,
-                requestEncoder: requestOptions.requestEncoder,
-                responseDecoder: requestOptions.responseDecoder,
-                listFormat: requestOptions.listFormat,
-              );
-        final redirectResponse = await dio.get(
-                _parseHttpLocation(rawUri, location),
-                options: option,
-              );
+          sendTimeout: requestOptions.sendTimeout,
+          receiveTimeout: requestOptions.receiveTimeout,
+          extra: requestOptions.extra,
+          headers: requestOptions.headers,
+          responseType: requestOptions.responseType,
+          contentType: requestOptions.contentType,
+          validateStatus: requestOptions.validateStatus,
+          receiveDataWhenStatusError: requestOptions.receiveDataWhenStatusError,
+          followRedirects: requestOptions.followRedirects,
+          maxRedirects: requestOptions.maxRedirects,
+          persistentConnection: requestOptions.persistentConnection,
+          requestEncoder: requestOptions.requestEncoder,
+          responseDecoder: requestOptions.responseDecoder,
+          listFormat: requestOptions.listFormat,
+        );
+
+        final redirectResponse = await _dio.getUri(
+          newUri,
+          options: option,
+        );
         return handler.next(redirectResponse);
       } on DioException catch (e) {
         return handler.reject(e);

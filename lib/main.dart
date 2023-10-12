@@ -4,9 +4,13 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:guettoolbox/data/get_storage.dart';
 import 'package:guettoolbox/data/repository/campus_network.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
+import 'package:guettoolbox/ui/color_schemes.g.dart';
 import 'package:guettoolbox/ui/route.dart';
+import 'package:guettoolbox/ui/settings/settings_controller.dart';
 import 'package:guettoolbox/util/platform.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:window_size/window_size.dart';
@@ -14,6 +18,9 @@ import 'package:window_size/window_size.dart';
 Future<void> main() async {
   //确保组件树初始化
   WidgetsFlutterBinding.ensureInitialized();
+  await Future.wait([
+    initGetStorage(),
+  ]);
   if (PlatformUtil.isDesktop()) {
     final padding = 50;
     final screen = await getCurrentScreen();
@@ -25,6 +32,7 @@ Future<void> main() async {
     WindowOptions windowOptions = WindowOptions(size: Size(height*(0.48), height));
 
     windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
       await windowManager.setMinimizable(true);
       await windowManager.setAlignment(Alignment.centerRight);
       await windowManager.setMaximizable(false);
@@ -57,6 +65,9 @@ class MyApp extends StatefulWidget with WindowListener {
 }
 
 class _MyAppState extends State<MyApp> with WindowListener {
+
+  final settings = Get.put(SettingsController(getStorage));
+
   @override
   Widget build(BuildContext context) {
     if (Platform.isAndroid) {
@@ -66,32 +77,17 @@ class _MyAppState extends State<MyApp> with WindowListener {
       SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     }
-    return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
-          primarySwatch: Colors.blue,
-          useMaterial3: true,
-        ),
-        darkTheme: ThemeData.dark(useMaterial3: true),
-        routes: AppRoute.routes,
+    return GetMaterialApp(
+        title: 'Guet Toolbox',
+        defaultTransition: Transition.cupertino,
+        locale: settings.locale.value ?? Get.deviceLocale,
+        theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+        darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
+        themeMode: settings.themeMode.value,
         debugShowCheckedModeBanner: false,
         navigatorKey: AppRoute.navigatorKey,
-        onGenerateRoute: (RouteSettings settings) {
-          return MaterialPageRoute(builder: (context) {
-            var routeName = settings.name!;
-            AppRoute.currentPage = routeName;
-            return AppRoute.routes[routeName]!.call(context);
-          });
-        });
+        getPages: AppRoute.routes
+    );
   }
 
   @override

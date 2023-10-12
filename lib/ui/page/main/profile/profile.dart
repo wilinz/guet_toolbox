@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:guettoolbox/ui/page/main/profile/profile_vm.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +36,22 @@ class _ProfilePageState extends State<_ProfilePage>
       return Scaffold(
         appBar: AppBar(
           title: Text("个人主页"),
+          actions: [
+            PopupMenuButton(
+              itemBuilder: (BuildContext context) => [
+                PopupMenuItem(
+                  child: Text('settings'),
+                  value: 'settings',
+                ),
+              ],
+              onSelected: (value) {
+                if (value == 'settings') {
+                  // 导航到设置页面
+                  Get.toNamed(AppRoute.settingsPage);
+                }
+              },
+            ),
+          ],
         ),
         body: Center(
           child: ConstrainedBox(

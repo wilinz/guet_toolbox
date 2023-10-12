@@ -1,8 +1,11 @@
+import 'package:dart_extensions/emum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:guettoolbox/data/model/campus_network/campus_network_auth_online_list.dart';
 import 'package:guettoolbox/data/model/campus_network/campus_network_auth_response_common.dart';
+import 'package:guettoolbox/data/model/user/campus_network_user.dart';
 import 'package:guettoolbox/data/model/user/user.dart';
 import 'package:guettoolbox/data/repository/campus_network.dart';
+import 'package:guettoolbox/data/repository/campus_network_user.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/data/repository/user.dart';
 import 'package:guettoolbox/data/service/campus_network_auth.dart';
@@ -10,17 +13,35 @@ import 'package:kt_dart/kt.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CampusNetworkViewModel extends ChangeNotifier {
-
-  ValueStream<CampusNetworkAuthOnlineList?> get campusNetworkAuthState => CampusNetworkRepository.getInstance().campusNetworkAuthState;
+  ValueStream<CampusNetworkAuthOnlineList?> get campusNetworkAuthState =>
+      CampusNetworkRepository.getInstance().campusNetworkAuthState;
 
   var isLoading = false;
 
   ValueStream<bool?> get isCampusNetworkState =>
       NetworkDetectionRepository.getInstance().isCampusNetworkState;
 
-  Future<dynamic> login(String username, String password, ISP isp) {
+  Future<dynamic> login(String username, String password, ISP isp) async {
+    final onLineList = await onlineList();
+    if (onLineList is CampusNetworkAuthOnlineList &&
+        onLineList.onlineList.isNotEmpty) {
+      final userAccount = onLineList.onlineList.first.userAccount;
+      await unbind(userAccount);
+      await logout(userAccount);
+    }
+    final ispName = isp.convertToString();
     isLoading = true;
     notifyListeners();
+    final user = CampusNetworkUser(
+        updateTime: DateTime.now(),
+        username: username,
+        password: password,
+        isDefault: true,
+        isp: ispName);
+
+    CampusNetworkUserRepository.get()
+      ..insertUser(user)
+      ..unsetDefaultOtherUser(username);
     return CampusNetworkRepository.getInstance().login(username, password, isp);
   }
 
@@ -30,16 +51,14 @@ class CampusNetworkViewModel extends ChangeNotifier {
   Future<CampusNetworkAuthResponseCommon> logout(String userAccount) =>
       CampusNetworkRepository.getInstance().logout(userAccount);
 
-  Future<dynamic> onlineList() => CampusNetworkRepository.getInstance().onlineList();
+  Future<dynamic> onlineList() =>
+      CampusNetworkRepository.getInstance().onlineList();
 
   Future<bool> isOnline() async {
     final respData = await onlineList();
-    if(respData is CampusNetworkAuthOnlineList){
-      return true;
-    }
-    return false;
+    return respData is CampusNetworkAuthOnlineList;
   }
 
-  Future<User?> getRecentUser() async =>
-      UserRepository.getInstance().getRecentUser();
+  Future<CampusNetworkUser?> getRecentUser() async =>
+      CampusNetworkUserRepository.get().getRecentUser();
 }

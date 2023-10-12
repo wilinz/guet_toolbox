@@ -10,6 +10,23 @@ enum ISP {
   cmcc,
   unicom,
   campus;
+
+  String displayName() {
+    switch (this) {
+      case telecom:
+        return "中国电信";
+      case cmcc:
+        return "中国移动";
+      case unicom:
+        return "中国联通";
+      case campus:
+        return "校园网";
+    }
+  }
+
+  static ISP valueOf(String value) {
+    return ISP.values.byName(value);
+  }
 }
 
 String getOperatorsUsername(String username, ISP isp) {
@@ -20,7 +37,6 @@ String getOperatorsUsername(String username, ISP isp) {
 }
 
 class CampusNetworkAuth {
-
   /// login
   /// success: lib/data/model/campus_network/campus_network_auth_response_success.dart
   /// fail: lib/data/model/campus_network/campus_network_auth_response_fail.dart
@@ -47,14 +63,15 @@ class CampusNetworkAuth {
         },
         options: Options(extra: {JsonpInterceptor.UseJsonpParser: true}));
     final data = resp.data;
-    if (data["result"]==1){
+    if (data["result"] == 1) {
       return CampusNetworkAuthResponseSuccess.fromJson(data);
     }
     return CampusNetworkAuthResponseFail.fromJson(data);
   }
 
   /// dr1002({"result":0,"msg":"无法获取终端MAC地址！"});
-  static Future<CampusNetworkAuthResponseCommon> unbind(String userAccount) async {
+  static Future<CampusNetworkAuthResponseCommon> unbind(
+      String userAccount) async {
     final dio = await AppNetwork.getDio();
     final resp = await dio.get("http://10.0.1.5:801/eportal/portal/mac/unbind",
         queryParameters: {
@@ -71,7 +88,8 @@ class CampusNetworkAuth {
   }
 
   /// {"result":1,"msg":"Radius注销成功！"}
-  static Future<CampusNetworkAuthResponseCommon> logout(String userAccount) async {
+  static Future<CampusNetworkAuthResponseCommon> logout(
+      String userAccount) async {
     final dio = await AppNetwork.getDio();
     final resp = await dio.get("http://10.0.1.5:801/eportal/portal/logout",
         queryParameters: {
@@ -103,7 +121,7 @@ class CampusNetworkAuth {
     final resp = await dio.get("http://10.0.1.5:801/eportal/portal/online_list",
         options: Options(extra: {JsonpInterceptor.UseJsonpParser: true}));
     final data = resp.data;
-    if (data["result"]==1){
+    if (data["result"] == 1) {
       return CampusNetworkAuthOnlineList.fromJson(data);
     }
     return CampusNetworkAuthResponseCommon.fromJson(data);

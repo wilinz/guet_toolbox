@@ -29,23 +29,7 @@ class CampusNetworkRepository {
   }
 
   Future<dynamic> login(String username, String password, ISP isp) async {
-    final db = await getDatabase();
-    var user = await db.userDao.get(username);
-    if (user == null) {
-      user = User(
-          updateTime: DateTime.now(),
-          username: username,
-          password: password,
-          isActive: false);
-      db.userDao.insertUser(user);
-    }
-    final respData = await CampusNetworkAuth.login(username, password, isp);
-    if (respData is CampusNetworkAuthResponseSuccess) {
-      user.password = password;
-      user.isActive = true;
-      db.userDao.updateUser(user);
-      db.userDao.offlineOtherUser(user.username);
-    }
+    return await CampusNetworkAuth.login(username, password, isp);
   }
 
   Future<CampusNetworkAuthResponseCommon> unbind(String userAccount) =>

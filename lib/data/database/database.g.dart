@@ -69,13 +69,15 @@ class _$AppDatabase extends AppDatabase {
 
   StudentInfoDao? _studentInfoDaoInstance;
 
+  CampusNetworkUserDao? _campusNetworkUserDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
     Callback? callback,
   ]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 1,
+      version: 2,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
         await callback?.onConfigure?.call(database);
@@ -99,9 +101,13 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `terms` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `term` TEXT NOT NULL, `start_date` INTEGER NOT NULL, `end_date` INTEGER NOT NULL, `week_num` INTEGER NOT NULL, `term_name` TEXT NOT NULL, `school_year` INTEGER NOT NULL, `comment` TEXT NOT NULL)');
         await database.execute(
+            'CREATE TABLE IF NOT EXISTS `campus_network_users` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `username` TEXT NOT NULL, `password` TEXT NOT NULL, `isp` TEXT NOT NULL, `is_default` INTEGER NOT NULL, `create_time` INTEGER NOT NULL, `update_time` INTEGER NOT NULL)');
+        await database.execute(
             'CREATE UNIQUE INDEX `index_users_username` ON `users` (`username`)');
         await database.execute(
             'CREATE UNIQUE INDEX `index_student_info_student_id` ON `student_info` (`student_id`)');
+        await database.execute(
+            'CREATE UNIQUE INDEX `index_campus_network_users_username` ON `campus_network_users` (`username`)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -129,6 +135,12 @@ class _$AppDatabase extends AppDatabase {
   StudentInfoDao get studentInfoDao {
     return _studentInfoDaoInstance ??=
         _$StudentInfoDao(database, changeListener);
+  }
+
+  @override
+  CampusNetworkUserDao get campusNetworkUserDao {
+    return _campusNetworkUserDaoInstance ??=
+        _$CampusNetworkUserDao(database, changeListener);
   }
 }
 
@@ -653,6 +665,123 @@ class _$StudentInfoDao extends StudentInfoDao {
   @override
   Future<void> update(StudentInfo info) async {
     await _studentInfoInsertionAdapter.insert(info, OnConflictStrategy.replace);
+  }
+}
+
+class _$CampusNetworkUserDao extends CampusNetworkUserDao {
+  _$CampusNetworkUserDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _campusNetworkUserInsertionAdapter = InsertionAdapter(
+            database,
+            'campus_network_users',
+            (CampusNetworkUser item) => <String, Object?>{
+                  'id': item.id,
+                  'username': item.username,
+                  'password': item.password,
+                  'isp': item.isp,
+                  'is_default': item.isDefault ? 1 : 0,
+                  'create_time': _dateTimeConverter.encode(item.createTime),
+                  'update_time': _dateTimeConverter.encode(item.updateTime)
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<CampusNetworkUser> _campusNetworkUserInsertionAdapter;
+
+  @override
+  Future<CampusNetworkUser?> getActive() async {
+    return _queryAdapter.query(
+        'SELECT * FROM campus_network_users WHERE is_default = 1 LIMIT 1',
+        mapper: (Map<String, Object?> row) => CampusNetworkUser(
+            updateTime: _dateTimeConverter.decode(row['update_time'] as int),
+            createTime:
+                _dateTimeNullableConverter.decode(row['create_time'] as int?),
+            username: row['username'] as String,
+            password: row['password'] as String,
+            isDefault: (row['is_default'] as int) != 0,
+            isp: row['isp'] as String));
+  }
+
+  @override
+  Future<CampusNetworkUser?> get(String username) async {
+    return _queryAdapter.query(
+        'SELECT * FROM campus_network_users WHERE username = ?1 LIMIT 1',
+        mapper: (Map<String, Object?> row) => CampusNetworkUser(
+            updateTime: _dateTimeConverter.decode(row['update_time'] as int),
+            createTime:
+                _dateTimeNullableConverter.decode(row['create_time'] as int?),
+            username: row['username'] as String,
+            password: row['password'] as String,
+            isDefault: (row['is_default'] as int) != 0,
+            isp: row['isp'] as String),
+        arguments: [username]);
+  }
+
+  @override
+  Future<List<CampusNetworkUser>> getRecent() async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM campus_network_users ORDER BY update_time DESC LIMIT 5',
+        mapper: (Map<String, Object?> row) => CampusNetworkUser(
+            updateTime: _dateTimeConverter.decode(row['update_time'] as int),
+            createTime:
+                _dateTimeNullableConverter.decode(row['create_time'] as int?),
+            username: row['username'] as String,
+            password: row['password'] as String,
+            isDefault: (row['is_default'] as int) != 0,
+            isp: row['isp'] as String));
+  }
+
+  @override
+  Future<List<CampusNetworkUser>> searchUsers(String keyword) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM campus_network_users WHERE username LIKE ?1',
+        mapper: (Map<String, Object?> row) => CampusNetworkUser(
+            updateTime: _dateTimeConverter.decode(row['update_time'] as int),
+            createTime:
+                _dateTimeNullableConverter.decode(row['create_time'] as int?),
+            username: row['username'] as String,
+            password: row['password'] as String,
+            isDefault: (row['is_default'] as int) != 0,
+            isp: row['isp'] as String),
+        arguments: [keyword]);
+  }
+
+  @override
+  Future<List<CampusNetworkUser>> getAll() async {
+    return _queryAdapter.queryList('SELECT * FROM campus_network_users',
+        mapper: (Map<String, Object?> row) => CampusNetworkUser(
+            updateTime: _dateTimeConverter.decode(row['update_time'] as int),
+            createTime:
+                _dateTimeNullableConverter.decode(row['create_time'] as int?),
+            username: row['username'] as String,
+            password: row['password'] as String,
+            isDefault: (row['is_default'] as int) != 0,
+            isp: row['isp'] as String));
+  }
+
+  @override
+  Future<void> unsetDefaultOtherUser(String username) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE campus_network_users SET is_default = 0 WHERE username <> ?1',
+        arguments: [username]);
+  }
+
+  @override
+  Future<void> insertUser(CampusNetworkUser user) async {
+    await _campusNetworkUserInsertionAdapter.insert(
+        user, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> updateUser(CampusNetworkUser user) async {
+    await _campusNetworkUserInsertionAdapter.insert(
+        user, OnConflictStrategy.replace);
   }
 }
 

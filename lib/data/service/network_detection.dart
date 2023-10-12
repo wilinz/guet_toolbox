@@ -1,13 +1,21 @@
-
 import 'package:dio/dio.dart';
 
 import '../network.dart';
 
-class NetworkDetectionService{
+class NetworkDetectionService {
   static Future<bool> isCampusNetwork() async {
     final dio = Dio();
     dio.options.validateStatus = (int? status) => status != null;
-    final resp = await dio.get("https://bkjw.guet.edu.cn/");
-    return resp.statusCode != 403;
+    try {
+      final resp1 = await dio.get<String>("http://10.0.1.5/",
+          options: Options(
+              sendTimeout: Duration(seconds: 5),
+              receiveTimeout: Duration(seconds: 5)));
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+    // return resp.statusCode != 403;
   }
 }

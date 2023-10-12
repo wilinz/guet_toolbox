@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'package:floor/floor.dart';
+import 'package:guettoolbox/data/dao/campus_network_user.dart';
 import 'package:guettoolbox/data/database/datetime_converter.dart';
 import 'package:guettoolbox/data/dao/schedule.dart';
 import 'package:guettoolbox/data/dao/student.dart';
 import 'package:guettoolbox/data/dao/term.dart';
 import 'package:guettoolbox/data/dao/user.dart';
+import 'package:guettoolbox/data/database/migration/migration1to2.dart';
 import 'package:guettoolbox/data/model/course/semester_schedule.dart';
 import 'package:guettoolbox/data/model/student/student_info.dart';
 import 'package:guettoolbox/data/model/term/term.dart';
+import 'package:guettoolbox/data/model/user/campus_network_user.dart';
 import 'package:guettoolbox/data/model/user/user.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
@@ -17,7 +20,9 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 part 'database.g.dart'; // the generated code will be there
 
 @TypeConverters([DateTimeConverter, DateTimeNullableConverter])
-@Database(version: 1, entities: [SemesterSchedule, User, StudentInfo, Term])
+@Database(
+    version: 1,
+    entities: [SemesterSchedule, User, StudentInfo, Term, CampusNetworkUser])
 abstract class AppDatabase extends FloorDatabase {
   SemesterScheduleDao get semesterScheduleDao;
 
@@ -26,6 +31,8 @@ abstract class AppDatabase extends FloorDatabase {
   TermDao get termDao;
 
   StudentInfoDao get studentInfoDao;
+
+  CampusNetworkUserDao get campusNetworkUserDao;
 }
 
 // 以下是OnConflictStrategy枚举中可用的选项：
@@ -40,9 +47,14 @@ AppDatabase? _database;
 
 Future<AppDatabase> getDatabase() async => _database ??= await _getDatabase();
 
+final migrationList = [
+  Migration1to2(),
+];
+
 Future<AppDatabase> _getDatabase() async {
   final dir = await getApplicationSupportDirectory();
   return $FloorAppDatabase
       .databaseBuilder(join(dir.path, 'app_database.db'))
+      .addMigrations(migrationList)
       .build();
 }

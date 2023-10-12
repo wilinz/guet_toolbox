@@ -13,9 +13,9 @@ class ReAuth {
   @JsonKey(name: "code", defaultValue: "")
   String code;
 
-  factory ReAuth.fromJson(Map<String, dynamic> json) => _$ReauthFromJson(json);
+  factory ReAuth.fromJson(Map<String, dynamic> json) => _$ReAuthFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ReauthToJson(this);
+  Map<String, dynamic> toJson() => _$ReAuthToJson(this);
 }
 
 

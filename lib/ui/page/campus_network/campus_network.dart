@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:guettoolbox/data/model/campus_network/campus_network_auth_response_fail.dart';
 import 'package:guettoolbox/data/model/campus_network/campus_network_auth_response_success.dart';
@@ -34,6 +36,7 @@ class _CampusNetworkPageState extends State<_CampusNetworkPage> {
       TextEditingController(text: "");
   GlobalKey _formKey = GlobalKey<FormState>();
   bool _passwordVisible = false;
+  ISP isp = ISP.campus;
 
   _loginMessage(BuildContext context, String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -111,26 +114,27 @@ class _CampusNetworkPageState extends State<_CampusNetworkPage> {
                             return v!.trim().length > 0 ? null : "密码不能为空";
                           },
                         ),
-                        Container(
-                          height: 16,
+                        SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          child: DropdownButton<ISP>(
+                            borderRadius: BorderRadius.circular(16),
+                            autofocus: false,
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            value: isp,
+                            onChanged: (ISP? newValue) {
+                              setState(() {
+                                isp = newValue!;
+                              });
+                            },
+                            items: ISP.values.map((isp) {
+                              return DropdownMenuItem(
+                                value: isp,
+                                child: Text(isp.displayName()),
+                              );
+                            }).toList(),
+                          ),
                         ),
-                        StreamBuilder(
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return Text(
-                                    snapshot.data! ? "当前处于校园网" : "当前处于非校园网");
-                              }
-                              return Container();
-                            },
-                            stream: vm.isCampusNetworkState,
-                            initialData: null),
-                        StreamBuilder(
-                            builder: (context, snapshot) {
-                              return Text(
-                                  snapshot.data != null ? "已登录校园网" : "未登录校园网");
-                            },
-                            stream: vm.campusNetworkAuthState,
-                            initialData: null),
                         Container(
                           height: 16,
                         ),
@@ -148,7 +152,39 @@ class _CampusNetworkPageState extends State<_CampusNetworkPage> {
                                   : Text("登录"),
                             );
                           },
-                        )
+                        ),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        StreamBuilder(
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Text(
+                                    snapshot.data! ? "当前处于校园网" : "当前处于非校园网");
+                              }
+                              return Container();
+                            },
+                            stream: vm.isCampusNetworkState,
+                            initialData: null),
+                        StreamBuilder(
+                            builder: (context, snapshot) {
+                              final data = snapshot.data;
+                              return SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Text(data != null ? "已登录校园网" : "未登录校园网"),
+                                    SizedBox(height: 16),
+                                    if (data != null)
+                                      Text(jsonEncode(data.toJson())),
+                                  ],
+                                ),
+                              );
+                            },
+                            stream: vm.campusNetworkAuthState,
+                            initialData: null),
+                        Container(
+                          height: 16,
+                        ),
                       ],
                     )),
               ),
@@ -170,8 +206,11 @@ class _CampusNetworkPageState extends State<_CampusNetworkPage> {
     CampusNetworkViewModel vm = Provider.of(context, listen: false);
     final recentUser = await vm.getRecentUser();
     recentUser?.let((it) {
-      _usernameController.text = it.username;
-      _passwordController.text = it.password;
+      setState(() {
+        _usernameController.text = it.username;
+        _passwordController.text = it.password;
+        isp = ISP.valueOf(it.isp);
+      });
     });
   }
 
@@ -184,7 +223,7 @@ class _CampusNetworkPageState extends State<_CampusNetworkPage> {
 
     try {
       final data = await vm.login(
-          _usernameController.text, _passwordController.text, ISP.campus);
+          _usernameController.text, _passwordController.text, isp);
       if (data is CampusNetworkAuthResponseSuccess) {
         _loginMessage(context, "登录成功");
       } else if (data is CampusNetworkAuthResponseFail) {
@@ -192,6 +231,7 @@ class _CampusNetworkPageState extends State<_CampusNetworkPage> {
       }
     } catch (e) {
       print(e);
+      _loginMessage(context, "登录失败: ${e}");
     } finally {
       setState(() {
         vm.isLoading = false;

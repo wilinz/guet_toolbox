@@ -3,140 +3,142 @@ import 'package:json_annotation/json_annotation.dart';
 part 'exam_scores.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class ExamScores {
-  ExamScores(
-      {required this.success,
-      required this.total,
-      required this.data});
+class ExamScoresResponse {
+  ExamScoresResponse({
+    required this.success,
+    required this.total,
+    required this.data,
+  });
 
-  @JsonKey(name: "success", defaultValue: false)
+  @JsonKey(name: 'success', defaultValue: false)
   bool success;
-  @JsonKey(name: "total", defaultValue: 0)
+  @JsonKey(name: 'total', defaultValue: 0)
   int total;
-  @JsonKey(name: "data", defaultValue: [])
-  List<Data> data;
+  @JsonKey(name: 'data', defaultValue: [])
+  List<ExamScore> data;
 
-  factory ExamScores.fromJson(Map<String, dynamic> json) => _$ExamScoresFromJson(json);
+  factory ExamScoresResponse.fromJson(Map<String, dynamic> json) =>
+      _$ExamScoresResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ExamScoresToJson(this);
+  Map<String, dynamic> toJson() => _$ExamScoresResponseToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class Data {
-  Data(
-      {required this.dptno,
-      required this.dptname,
-      required this.spno,
-      required this.spname,
-      required this.bj,
-      required this.grade,
-      required this.stid,
-      required this.name,
-      required this.term,
-      required this.courseid,
-      required this.courseno,
-      required this.cname,
-      this.courselevel,
-      required this.score,
-      required this.zpxs,
-      required this.kctype,
-      required this.typeno,
-      required this.cid,
-      required this.cno,
-      required this.sycj,
-      required this.qzcj,
-      required this.pscj,
-      required this.khcj,
-      required this.zpcj,
-      required this.kslb,
-      required this.cjlb,
-      required this.kssj,
-      required this.xf,
-      required this.xslb,
-      this.tname1,
-      required this.stage,
-      required this.examt,
-      required this.xs,
-      required this.cjlx,
-      required this.chk,
-      this.comm});
+class ExamScore {
+  ExamScore({
+    required this.departmentNumber,
+    required this.departmentName,
+    required this.specializationNumber,
+    required this.specializationName,
+    required this.classNumber,
+    required this.enrollmentYear,
+    required this.studentId,
+    required this.name,
+    required this.term,
+    required this.courseId,
+    required this.courseNumber,
+    required this.courseName,
+    this.courseLevel,
+    required this.score,
+    required this.overallEvaluationForm,
+    required this.courseType,
+    required this.typeNumber,
+    required this.cid,
+    required this.cno,
+    required this.labScore,
+    required this.midtermScore,
+    required this.regularScore,
+    required this.examScore,
+    required this.overallScore,
+    required this.examCategory,
+    required this.scoreCategory,
+    required this.examTime,
+    required this.credit,
+    required this.studentCategory,
+    this.teacherName,
+    required this.stage,
+    required this.examType,
+    required this.xs,
+    required this.scoreType,
+    required this.chk,
+    this.remarks,
+  });
 
-  @JsonKey(name: "dptno", defaultValue: "")
-  String dptno;
-  @JsonKey(name: "dptname", defaultValue: "")
-  String dptname;
-  @JsonKey(name: "spno", defaultValue: "")
-  String spno;
-  @JsonKey(name: "spname", defaultValue: "")
-  String spname;
-  @JsonKey(name: "bj", defaultValue: "")
-  String bj;
-  @JsonKey(name: "grade", defaultValue: 0)
-  int grade;
-  @JsonKey(name: "stid", defaultValue: "")
-  String stid;
-  @JsonKey(name: "name", defaultValue: "")
+  @JsonKey(name: 'dptno', defaultValue: '')
+  String departmentNumber;
+  @JsonKey(name: 'dptname', defaultValue: '')
+  String departmentName;
+  @JsonKey(name: 'spno', defaultValue: '')
+  String specializationNumber;
+  @JsonKey(name: 'spname', defaultValue: '')
+  String specializationName;
+  @JsonKey(name: 'bj', defaultValue: '')
+  String classNumber;
+  @JsonKey(name: 'grade', defaultValue: 0)
+  int enrollmentYear;
+  @JsonKey(name: 'stid', defaultValue: '')
+  String studentId;
+  @JsonKey(name: 'name', defaultValue: '')
   String name;
-  @JsonKey(name: "term", defaultValue: "")
+  @JsonKey(name: 'term', defaultValue: '')
   String term;
-  @JsonKey(name: "courseid", defaultValue: "")
-  String courseid;
-  @JsonKey(name: "courseno", defaultValue: "")
-  String courseno;
-  @JsonKey(name: "cname", defaultValue: "")
-  String cname;
-  @JsonKey(name: "courselevel")
-  dynamic courselevel;
-  @JsonKey(name: "score", defaultValue: 0)
+  @JsonKey(name: 'courseid', defaultValue: '')
+  String courseId;
+  @JsonKey(name: 'courseno', defaultValue: '')
+  String courseNumber;
+  @JsonKey(name: 'cname', defaultValue: '')
+  String courseName;
+  @JsonKey(name: 'courselevel')
+  dynamic courseLevel;
+  @JsonKey(name: 'score', defaultValue: 0)
   int score;
-  @JsonKey(name: "zpxs", defaultValue: "")
-  String zpxs;
-  @JsonKey(name: "kctype", defaultValue: "")
-  String kctype;
-  @JsonKey(name: "typeno", defaultValue: "")
-  String typeno;
-  @JsonKey(name: "cid", defaultValue: "")
+  @JsonKey(name: 'zpxs', defaultValue: '')
+  String overallEvaluationForm;
+  @JsonKey(name: 'kctype', defaultValue: '')
+  String courseType;
+  @JsonKey(name: 'typeno', defaultValue: '')
+  String typeNumber;
+  @JsonKey(name: 'cid', defaultValue: '')
   String cid;
-  @JsonKey(name: "cno", defaultValue: "")
+  @JsonKey(name: 'cno', defaultValue: '')
   String cno;
-  @JsonKey(name: "sycj", defaultValue: 0.0)
-  double sycj;
-  @JsonKey(name: "qzcj", defaultValue: 0.0)
-  double qzcj;
-  @JsonKey(name: "pscj", defaultValue: 0.0)
-  double pscj;
-  @JsonKey(name: "khcj", defaultValue: 0.0)
-  double khcj;
-  @JsonKey(name: "zpcj", defaultValue: 0.0)
-  double zpcj;
-  @JsonKey(name: "kslb", defaultValue: "")
-  String kslb;
-  @JsonKey(name: "cjlb", defaultValue: "")
-  String cjlb;
-  @JsonKey(name: "kssj", defaultValue: 0)
-  int kssj;
-  @JsonKey(name: "xf", defaultValue: 0.0)
-  double xf;
-  @JsonKey(name: "xslb", defaultValue: "")
-  String xslb;
-  @JsonKey(name: "tname1")
-  dynamic tname1;
-  @JsonKey(name: "stage", defaultValue: 0.0)
+  @JsonKey(name: 'sycj', defaultValue: 0.0)
+  double labScore;
+  @JsonKey(name: 'qzcj', defaultValue: 0.0)
+  double midtermScore;
+  @JsonKey(name: 'pscj', defaultValue: 0.0)
+  double regularScore;
+  @JsonKey(name: 'khcj', defaultValue: 0.0)
+  double examScore;
+  @JsonKey(name: 'zpcj', defaultValue: 0.0)
+  double overallScore;
+  @JsonKey(name: 'kslb', defaultValue: '')
+  String examCategory;
+  @JsonKey(name: 'cjlb', defaultValue: '')
+  String scoreCategory;
+  @JsonKey(name: 'kssj', defaultValue: 0)
+  int examTime;
+  @JsonKey(name: 'xf', defaultValue: 0.0)
+  double credit;
+  @JsonKey(name: 'xslb', defaultValue: '')
+  String studentCategory;
+  @JsonKey(name: 'tname1')
+  String? teacherName;
+  @JsonKey(name: 'stage', defaultValue: 0.0)
   double stage;
-  @JsonKey(name: "examt", defaultValue: "")
-  String examt;
-  @JsonKey(name: "xs", defaultValue: 0)
+  @JsonKey(name: 'examt', defaultValue: '')
+  String examType;
+  @JsonKey(name: 'xs', defaultValue: 0)
   int xs;
-  @JsonKey(name: "cjlx", defaultValue: 0)
-  int cjlx;
-  @JsonKey(name: "chk", defaultValue: 0)
+  @JsonKey(name: 'cjlx', defaultValue: 0)
+  int scoreType;
+  @JsonKey(name: 'chk', defaultValue: 0)
   int chk;
-  @JsonKey(name: "comm")
-  dynamic comm;
+  @JsonKey(name: 'comm')
+  String? remarks;
 
-  factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
+  factory ExamScore.fromJson(Map<String, dynamic> json) =>
+      _$ExamScoreFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DataToJson(this);
+  Map<String, dynamic> toJson() => _$ExamScoreToJson(this);
 }
-
-

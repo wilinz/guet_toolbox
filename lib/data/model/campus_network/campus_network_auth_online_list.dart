@@ -68,9 +68,9 @@ class OnlineUserInfo {
   @JsonKey(name: "is_owner_ip", defaultValue: "")
   String isOwnerIp;
 
-  factory OnlineUserInfo.fromJson(Map<String, dynamic> json) => _$OnlineListFromJson(json);
+  factory OnlineUserInfo.fromJson(Map<String, dynamic> json) => _$OnlineUserInfoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$OnlineListToJson(this);
+  Map<String, dynamic> toJson() => _$OnlineUserInfoToJson(this);
 }
 
 

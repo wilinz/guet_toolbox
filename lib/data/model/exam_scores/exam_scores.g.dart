@@ -53,13 +53,13 @@ ExamScore _$ExamScoreFromJson(Map<String, dynamic> json) => ExamScore(
       examTime: json['kssj'] as int? ?? 0,
       credit: (json['xf'] as num?)?.toDouble() ?? 0.0,
       studentCategory: json['xslb'] as String? ?? '',
-      teacherName: json['tname1'],
+      teacherName: json['tname1'] as String?,
       stage: (json['stage'] as num?)?.toDouble() ?? 0.0,
       examType: json['examt'] as String? ?? '',
       xs: json['xs'] as int? ?? 0,
       scoreType: json['cjlx'] as int? ?? 0,
       chk: json['chk'] as int? ?? 0,
-      remarks: json['comm'],
+      remarks: json['comm'] as String?,
     );
 
 Map<String, dynamic> _$ExamScoreToJson(ExamScore instance) => <String, dynamic>{

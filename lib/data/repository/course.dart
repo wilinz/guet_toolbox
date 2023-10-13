@@ -98,19 +98,13 @@ class CourseRepository {
         await Future.wait([getCourseList(term), getCourseLabList(term)]);
     final user = await UserRepository.getInstance().getActiveUser();
     if (user == null) throw new Exception("未登录");
-    final terms =
+    final semesterSchedule =
         generateSemesterSchedule(responses[0], responses[1], user.username);
 
-    terms.forEach((e) async {
-
-      final data = await db.semesterScheduleDao.find(e.id, user.username);
-      if (data != null) {
-        await db.semesterScheduleDao.updateSemesterSchedule(data);
-      } else {
-        await db.semesterScheduleDao.insertSemesterSchedule(e);
-      }
+    semesterSchedule.forEach((e) async {
+      await db.semesterScheduleDao.insertOrUpdateSemesterSchedule(e);
     });
-    return terms;
+    return semesterSchedule;
   }
 
   Future<List<PlanCourse>> getPlan(

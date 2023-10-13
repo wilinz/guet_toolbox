@@ -423,7 +423,7 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
   }
 
   @override
-  Future<void> insertSemesterSchedule(SemesterSchedule semesterSchedule) async {
+  Future<void> insertOrUpdateSemesterSchedule(SemesterSchedule semesterSchedule) async {
     await _semesterScheduleInsertionAdapter.insert(
         semesterSchedule, OnConflictStrategy.replace);
   }

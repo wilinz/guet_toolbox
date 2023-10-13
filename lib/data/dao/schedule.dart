@@ -17,9 +17,6 @@ abstract class SemesterScheduleDao {
   Future<SemesterSchedule?> deleteNotIn(List<String> ids);
 
   @Insert(onConflict: OnConflictStrategy.replace)
-  Future<void> insertSemesterSchedule(SemesterSchedule semesterSchedule);
-
-  @Update(onConflict: OnConflictStrategy.replace)
-  Future<void> updateSemesterSchedule(SemesterSchedule semesterSchedule);
+  Future<void> insertOrUpdateSemesterSchedule(SemesterSchedule semesterSchedule);
 
 }

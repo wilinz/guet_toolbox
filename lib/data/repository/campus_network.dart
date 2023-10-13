@@ -35,8 +35,8 @@ class CampusNetworkRepository {
   Future<CampusNetworkAuthResponseCommon> unbind(String userAccount) =>
       CampusNetworkAuth.unbind(userAccount);
 
-  Future<CampusNetworkAuthResponseCommon> logout(String userAccount) =>
-      CampusNetworkAuth.logout(userAccount);
+  Future<CampusNetworkAuthResponseCommon> logout(OnlineUserInfo userInfo) =>
+      CampusNetworkAuth.logout(userInfo);
 
   Future<dynamic> onlineList() => CampusNetworkAuth.onlineList();
 

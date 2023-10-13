@@ -12,7 +12,7 @@ CampusNetworkAuthOnlineList _$CampusNetworkAuthOnlineListFromJson(
       result: json['result'] as int? ?? 0,
       msg: json['msg'] as String? ?? '',
       onlineList: (json['list'] as List<dynamic>?)
-              ?.map((e) => OnlineList.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => OnlineUserInfo.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
       total: json['total'] as int? ?? 0,
@@ -27,7 +27,7 @@ Map<String, dynamic> _$CampusNetworkAuthOnlineListToJson(
       'total': instance.total,
     };
 
-OnlineList _$OnlineListFromJson(Map<String, dynamic> json) => OnlineList(
+OnlineUserInfo _$OnlineListFromJson(Map<String, dynamic> json) => OnlineUserInfo(
       onlineSession: json['online_session'] as int? ?? 0,
       onlineTime: json['online_time'] as String? ?? '',
       onlineIp: json['online_ip'] as String? ?? '',
@@ -43,7 +43,7 @@ OnlineList _$OnlineListFromJson(Map<String, dynamic> json) => OnlineList(
       isOwnerIp: json['is_owner_ip'] as String? ?? '',
     );
 
-Map<String, dynamic> _$OnlineListToJson(OnlineList instance) =>
+Map<String, dynamic> _$OnlineListToJson(OnlineUserInfo instance) =>
     <String, dynamic>{
       'online_session': instance.onlineSession,
       'online_time': instance.onlineTime,

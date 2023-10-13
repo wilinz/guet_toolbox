@@ -95,7 +95,7 @@ class CampusNetworkAuth {
 
   /// {"result":1,"msg":"Radius注销成功！"}
   static Future<CampusNetworkAuthResponseCommon> logout(
-      String userAccount) async {
+      OnlineUserInfo userInfo) async {
     final dio = await AppNetwork.getDio();
     final resp = await dio.get("http://10.0.1.5:801/eportal/portal/logout",
         queryParameters: {
@@ -105,10 +105,10 @@ class CampusNetworkAuth {
           "user_password": "123",
           "ac_logout": 1,
           "register_mode": 1,
-          "wlan_user_ip": "10.70.164.95",
+          "wlan_user_ip": userInfo.onlineIp,
           "wlan_user_ipv6": "",
           "wlan_vlan_id": 1,
-          "wlan_user_mac": "000000000000",
+          "wlan_user_mac": userInfo.onlineMac,
           "wlan_ac_ip": "",
           "wlan_ac_name": "",
           "jsVersion": 4.2,

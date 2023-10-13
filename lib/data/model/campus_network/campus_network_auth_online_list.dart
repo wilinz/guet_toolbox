@@ -15,7 +15,7 @@ class CampusNetworkAuthOnlineList {
   @JsonKey(name: "msg", defaultValue: "")
   String msg;
   @JsonKey(name: "list", defaultValue: [])
-  List<OnlineList> onlineList;
+  List<OnlineUserInfo> onlineList;
   @JsonKey(name: "total", defaultValue: 0)
   int total;
 
@@ -25,8 +25,8 @@ class CampusNetworkAuthOnlineList {
 }
 
 @JsonSerializable(explicitToJson: true)
-class OnlineList {
-  OnlineList(
+class OnlineUserInfo {
+  OnlineUserInfo(
       {required this.onlineSession,
       required this.onlineTime,
       required this.onlineIp,
@@ -68,7 +68,7 @@ class OnlineList {
   @JsonKey(name: "is_owner_ip", defaultValue: "")
   String isOwnerIp;
 
-  factory OnlineList.fromJson(Map<String, dynamic> json) => _$OnlineListFromJson(json);
+  factory OnlineUserInfo.fromJson(Map<String, dynamic> json) => _$OnlineListFromJson(json);
 
   Map<String, dynamic> toJson() => _$OnlineListToJson(this);
 }

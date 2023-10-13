@@ -22,9 +22,9 @@ class CampusNetworkViewModel extends GetxController {
     final onLineList = await onlineList();
     if (onLineList is CampusNetworkAuthOnlineList &&
         onLineList.onlineList.isNotEmpty) {
-      final userAccount = onLineList.onlineList.first.userAccount;
-      await unbind(userAccount);
-      await logout(userAccount);
+      final user = onLineList.onlineList.first;
+      await unbind(user.userAccount);
+      await logout(user);
     }
     final ispName = isp.convertToString();
     isLoading.value = true;
@@ -38,14 +38,21 @@ class CampusNetworkViewModel extends GetxController {
     CampusNetworkUserRepository.get()
       ..insertUser(user)
       ..unsetDefaultOtherUser(username);
-    return CampusNetworkRepository.getInstance().login(username, password, isp);
+    await CampusNetworkRepository.getInstance().login(username, password, isp);
+    CampusNetworkRepository.getInstance().refresh();
+  }
+
+  Future<void> exitAccount(OnlineUserInfo userInfo) async {
+    await unbind(userInfo.userAccount);
+    await logout(userInfo);
+    CampusNetworkRepository.getInstance().refresh();
   }
 
   Future<CampusNetworkAuthResponseCommon> unbind(String userAccount) =>
       CampusNetworkRepository.getInstance().unbind(userAccount);
 
-  Future<CampusNetworkAuthResponseCommon> logout(String userAccount) =>
-      CampusNetworkRepository.getInstance().logout(userAccount);
+  Future<CampusNetworkAuthResponseCommon> logout(OnlineUserInfo userInfo) =>
+      CampusNetworkRepository.getInstance().logout(userInfo);
 
   Future<dynamic> onlineList() =>
       CampusNetworkRepository.getInstance().onlineList();
@@ -57,4 +64,9 @@ class CampusNetworkViewModel extends GetxController {
 
   Future<CampusNetworkUser?> getRecentUser() async =>
       CampusNetworkUserRepository.get().getRecentUser();
+
+  void refreshData() async {
+    CampusNetworkRepository.getInstance().refresh();
+    NetworkDetectionRepository.getInstance().refresh();
+  }
 }

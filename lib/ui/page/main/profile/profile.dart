@@ -70,22 +70,27 @@ class _ProfilePageState extends State<ProfilePage>
                           SizedBox(
                             width: 16,
                           ),
-                          Obx(() => Column(
+                          Obx(() {
+                            final info = c.studentInfo.value;
+                            if (info != null) {
+                              return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text((c.studentInfo.value?.studentId ?? "") +
-                                      (c.studentInfo.value?.name ?? "")),
+                                  Text((info.studentId) + (info.name)),
                                   SizedBox(height: 4),
-                                  Text(c.studentInfo.value?.collegeName ?? ""),
+                                  Text(info.collegeName),
                                 ],
-                              ))
+                              );
+                            }
+                            return Text("请登录");
+                          })
                         ],
                       ),
                     ),
                   ),
                 ),
               ),
-              SizedBox(height:16),
+              SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.all(0.0),
                 child: Column(
@@ -93,7 +98,8 @@ class _ProfilePageState extends State<ProfilePage>
                   children: [
                     ListTile(
                       onTap: () {
-                        Navigator.of(context).pushNamed(AppRoute.courseSelectionPage);
+                        Navigator.of(context)
+                            .pushNamed(AppRoute.courseSelectionPage);
                       },
                       leading: Icon(Icons.school_outlined), // Icon for "选课"
                       title: Text("选课"),
@@ -101,15 +107,18 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                     ListTile(
                       onTap: () {
-                        Navigator.of(context).pushNamed(AppRoute.pedagogicalEvaluationPage);
+                        Navigator.of(context)
+                            .pushNamed(AppRoute.pedagogicalEvaluationPage);
                       },
-                      leading: Icon(Icons.rate_review_outlined), // Icon for "评教"
+                      leading: Icon(Icons.rate_review_outlined),
+                      // Icon for "评教"
                       title: Text("评教"),
                       trailing: Icon(Icons.arrow_forward_ios_outlined),
                     ),
                     ListTile(
                       onTap: () {
-                        Navigator.of(context).pushNamed(AppRoute.campusNetworkPage);
+                        Navigator.of(context)
+                            .pushNamed(AppRoute.campusNetworkPage);
                       },
                       leading: Icon(Icons.wifi_outlined), // Icon for "连接校园网"
                       title: Text("连接校园网"),
@@ -127,7 +136,8 @@ class _ProfilePageState extends State<ProfilePage>
                       onTap: () {
                         // Add your functionality for the version tile
                       },
-                      leading: Icon(Icons.info_outline), // Icon for the version tile
+                      leading: Icon(Icons.info_outline),
+                      // Icon for the version tile
                       title: Text("版本: ${packageInfo.version}"),
                       trailing: Icon(Icons.arrow_forward_ios_outlined),
                     ),
@@ -169,7 +179,7 @@ class _ProfilePageState extends State<ProfilePage>
   void initState() {
     super.initState();
     try {
-      // c.getStudentInfo();
+      c.getStudentInfo();
     } catch (e) {
       print(e);
     }

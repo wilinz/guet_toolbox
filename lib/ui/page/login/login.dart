@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       TextFormField(
                         controller: _usernameController,
-                        autofocus: true,
+                        autofocus: false,
                         decoration: InputDecoration(
                           labelText: "用户名",
                           hintText: "您的用户名",
@@ -70,6 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                       TextFormField(
                         controller: _passwordController,
                         obscureText: !_passwordVisible,
+                        autofocus: false,
                         decoration: InputDecoration(
                           labelText: "密码",
                           hintText: "您的登录密码",

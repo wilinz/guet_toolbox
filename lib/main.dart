@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -120,3 +121,8 @@ class _MyAppState extends State<MyApp> with WindowListener {
     super.dispose();
   }
 }
+
+ScrollBehavior myScrollBehavior(BuildContext context) =>
+    ScrollConfiguration.of(context).copyWith(
+      dragDevices: PointerDeviceKind.values.toSet(),
+    );

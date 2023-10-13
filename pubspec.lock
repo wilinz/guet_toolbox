@@ -531,11 +531,12 @@ packages:
   json5_model:
     dependency: "direct dev"
     description:
-      name: json5_model
-      sha256: "45087e170c58598fcfe36539b9fa78452d354d9e910d4499ccdf6c6b9546c764"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.0.1"
+      path: "."
+      ref: "^2.0.3"
+      resolved-ref: "6a4c379d397c5880834a07f2cab547ed9c8f98e9"
+      url: "https://github.com/wilinz/json5_model.git"
+    source: git
+    version: "2.0.3"
   json_annotation:
     dependency: "direct main"
     description:

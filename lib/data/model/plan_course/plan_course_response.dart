@@ -82,9 +82,6 @@ class PlanCourse {
   @JsonKey(ignore: true)
   List<PlanCourseDetail> details = [];
 
-  @JsonKey(ignore: true)
-  bool isExpand = false;
-
   factory PlanCourse.fromJson(Map<String, dynamic> json) =>
       _$PlanCourseFromJson(json);
 

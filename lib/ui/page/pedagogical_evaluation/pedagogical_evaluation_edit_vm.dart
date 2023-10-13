@@ -1,6 +1,6 @@
 import 'package:common_utils/common_utils.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:guettoolbox/data/model/common/common_response.dart';
 import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_data.dart';
 import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_questions_response.dart';
@@ -8,27 +8,36 @@ import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evalua
 import 'package:guettoolbox/data/repository/pedagogical_evaluation.dart';
 import 'package:guettoolbox/util/list.dart';
 
-class PedagogicalEvaluationEditViewModel extends ChangeNotifier {
+class PedagogicalEvaluationEditViewModel extends GetxController {
   final PedagogicalEvaluation pedagogicalEvaluation;
 
-  PedagogicalEvaluationData? data = null;
+  final data = Rx<PedagogicalEvaluationData?>(null);
 
-  bool isLoading = false;
-  List<PedagogicalEvaluationQuestion> questions = [];
+  RxList<PedagogicalEvaluationQuestion> questions =
+      RxList<PedagogicalEvaluationQuestion>.empty(growable: true);
 
   final comment = TextEditingController(text: "");
 
-  PedagogicalEvaluationEditViewModel(this.pedagogicalEvaluation);
+  final isCanSubmit = false.obs;
 
-  notify() => notifyListeners();
+  bool _isCanSubmit() {
+    return pedagogicalEvaluation.chk == 0;
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    isCanSubmit.value = _isCanSubmit();
+  }
+
+  PedagogicalEvaluationEditViewModel(this.pedagogicalEvaluation);
 
   Future<List<PedagogicalEvaluationQuestion>> getOptions() async {
     return PedagogicalEvaluationRepository.getInstance()
         .getQuestions(pedagogicalEvaluation.term,
             pedagogicalEvaluation.courseno, pedagogicalEvaluation.teacherno)
         .then((value) {
-      questions = value;
-      notifyListeners();
+      questions.value = value;
       return value;
     });
   }
@@ -41,9 +50,8 @@ class PedagogicalEvaluationEditViewModel extends ChangeNotifier {
       teacherno: pedagogicalEvaluation.teacherno,
     )
         .then((value) {
-      data = value;
+      data.value = value;
       comment.text = value.bz;
-      notifyListeners();
       return value;
     });
   }
@@ -67,7 +75,8 @@ class PedagogicalEvaluationEditViewModel extends ChangeNotifier {
         questions.where((e) => e.score != null).map((e) => e.score!).average();
     average = double.parse(
         NumUtil.getNumByValueDouble(average.toDouble(), 1)!.toStringAsFixed(1));
-    data?.score = average;
+    data.value?.score = average;
+    update();
     return average;
   }
 

@@ -1,22 +1,19 @@
 import 'package:dart_extensions/emum.dart';
-import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:guettoolbox/data/model/campus_network/campus_network_auth_online_list.dart';
 import 'package:guettoolbox/data/model/campus_network/campus_network_auth_response_common.dart';
 import 'package:guettoolbox/data/model/user/campus_network_user.dart';
-import 'package:guettoolbox/data/model/user/user.dart';
 import 'package:guettoolbox/data/repository/campus_network.dart';
 import 'package:guettoolbox/data/repository/campus_network_user.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
-import 'package:guettoolbox/data/repository/user.dart';
 import 'package:guettoolbox/data/service/campus_network_auth.dart';
-import 'package:kt_dart/kt.dart';
 import 'package:rxdart/rxdart.dart';
 
-class CampusNetworkViewModel extends ChangeNotifier {
+class CampusNetworkViewModel extends GetxController {
   ValueStream<CampusNetworkAuthOnlineList?> get campusNetworkAuthState =>
       CampusNetworkRepository.getInstance().campusNetworkAuthState;
 
-  var isLoading = false;
+  var isLoading = false.obs;
 
   ValueStream<bool?> get isCampusNetworkState =>
       NetworkDetectionRepository.getInstance().isCampusNetworkState;
@@ -30,8 +27,7 @@ class CampusNetworkViewModel extends ChangeNotifier {
       await logout(userAccount);
     }
     final ispName = isp.convertToString();
-    isLoading = true;
-    notifyListeners();
+    isLoading.value = true;
     final user = CampusNetworkUser(
         updateTime: DateTime.now(),
         username: username,

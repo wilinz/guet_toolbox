@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'package:dart_extensions/dart_extensions.dart';
+import 'package:get/get.dart';
 import 'package:guettoolbox/data/model/academy/academy_response.dart';
 import 'package:guettoolbox/data/model/common/common_response.dart';
 import 'package:guettoolbox/data/model/majors/majors_response.dart';
@@ -10,23 +11,29 @@ import 'package:guettoolbox/data/repository/academy.dart';
 import 'package:guettoolbox/data/repository/course.dart';
 import 'package:guettoolbox/data/repository/majors.dart';
 import 'package:guettoolbox/data/repository/student_info.dart';
-import 'package:guettoolbox/data/service/course.dart';
-import 'package:guettoolbox/data/service/student_info.dart';
-import 'package:guettoolbox/util/list.dart';
-import 'package:lpinyin/lpinyin.dart';
 
 typedef Filter<T> = bool Function(T value);
+class ExpandableWrapper<T>{
+  final isExpand = false.obs;
+  final T data ;
 
-class CourseSelectionViewModel extends ChangeNotifier {
+  ExpandableWrapper({required this.data});
+}
+
+class CourseSelectionViewModel extends GetxController {
   StudentInfo? studentInfo;
 
-  List<Term> terms = [];
-  List<Academy> academy = [];
-  List<Major> major = [];
-  List<PlanCourse> planCourses = [];
-  List<PlanCourse> planCoursesBackup = [];
-  List<int> grades = CourseRepository.getInstance().getLastSixYears();
-  Map<String, Filter<PlanCourse>> filterGroup = {};
+  final terms = <Term>[].obs;
+  final academy = <Academy>[].obs;
+  final major = <Major>[].obs;
+  final planCourses = <ExpandableWrapper<PlanCourse>>[].obs;
+  final planCoursesBackup = <ExpandableWrapper<PlanCourse>>[].obs;
+  final grades = CourseRepository.getInstance().getLastSixYears().obs;
+  final filterGroup = <String, Filter<PlanCourse>>{}.obs;
+  final currentTerm = Rx<Term?>(null);
+  final currentGrade = RxnInt(null);
+  final currentAcademy = Rx<Academy?>(null);
+  final currentMajor = Rx<Major?>(null);
 
   filter(String key, Filter<PlanCourse> filter) {
     filterGroup[key] = filter;
@@ -34,10 +41,10 @@ class CourseSelectionViewModel extends ChangeNotifier {
   }
 
   void _filter() {
-    planCourses = planCoursesBackup.where((e) {
+    planCourses.value = planCoursesBackup.where((e) {
       bool result = true;
       filterGroup.forEach((k, f) {
-        result = result & f(e);
+        result = result & f(e.data);
       });
       return result;
     }).toList();
@@ -48,65 +55,26 @@ class CourseSelectionViewModel extends ChangeNotifier {
     _filter();
   }
 
-  Term? _currentTerm;
-
-  Term? get currentTerm => _currentTerm;
-
-  int? _currentGrade;
-
-  int? get currentGrade => _currentGrade;
-
-  set currentGrade(int? v) {
-    _currentGrade = v;
-    notifyListeners();
-  }
-
-  set currentTerm(Term? value) {
-    _currentTerm = value;
-    notifyListeners();
-  }
-
-  Academy? _currentAcademy;
-
-  Academy? get currentAcademy => _currentAcademy;
-
-  set currentAcademy(Academy? value) {
-    _currentAcademy = value;
-    notifyListeners();
-  }
-
-  Major? _currentMajor;
-
-  Major? get currentMajor => _currentMajor;
-
-  set currentMajor(Major? value) {
-    _currentMajor = value;
-    notifyListeners();
-  }
-
   Future<List<Major>> getMajors() async {
     return MajorsRepository.getInstance().getMajors().then((value) {
       value.sort((a, b) {
         return a.shortPinyin.compareTo(b.shortPinyin);
       });
-      major = value;
-      notifyListeners();
+      major.value = value;
       return value;
     });
   }
 
   Future<List<Academy>> getAcademy() async {
     return AcademyRepository.getInstance().getAcademy().then((value) {
-      academy = value;
-      notifyListeners();
+      academy.value = value;
       return value;
     });
   }
 
   Future<List<Term>> getTermList() {
     return CourseRepository.getInstance().getTermList().then((value) {
-      terms = value;
-      notifyListeners();
+      terms..clear()..addAll(value.distinctBy((e)=>e.term));
       return value;
     });
   }
@@ -114,28 +82,27 @@ class CourseSelectionViewModel extends ChangeNotifier {
   Future<StudentInfo> getStudentInfo() async {
     return StudentInfoRepository.getInstance().getStudentInfo().then((value) {
       studentInfo = value;
-      currentTerm = terms.firstWhereOrNull((e) => e.term == value.term);
-      currentGrade = int.parse(value.grade);
-      notifyListeners();
+      currentTerm.value = terms.firstWhereOrNull((e) => e.term == value.term);
+      currentGrade.value = int.parse(value.grade);
       return value;
     });
   }
 
   Future<CommonResponse> select(PlanCourseDetail planCourseDetail) async {
-    return CourseRepository.getInstance().select(planCourseDetail.copyWith(term: currentTerm!.term));
+    return CourseRepository.getInstance().select(planCourseDetail.copyWith(term: currentTerm.value!.term));
   }
 
   Future<CommonResponse> unselect(PlanCourseDetail planCourseDetail) async {
-    return CourseRepository.getInstance().unselect(planCourseDetail.copyWith(term: currentTerm!.term));
+    return CourseRepository.getInstance().unselect(planCourseDetail.copyWith(term: currentTerm.value!.term));
   }
 
-  Future<List<PlanCourseDetail>> getDetail(PlanCourse planCourse) {
+  Future<List<PlanCourseDetail>> getDetail(ExpandableWrapper<PlanCourse> planCourseWrapper) {
+    final planCourse = planCourseWrapper.data;
     return CourseRepository.getInstance()
         .getPlanCourseDetail(planCourse.id, planCourse.courseid)
         .then((value) {
       planCourse.details = value;
-      planCourse.isExpand = true;
-      notifyListeners();
+      planCourseWrapper.isExpand.value = true;
       return value;
     });
   }
@@ -151,8 +118,8 @@ class CourseSelectionViewModel extends ChangeNotifier {
     return CourseRepository.getInstance()
         .getPlan(term, grade, dptno, spno)
         .then((planCourses) async {
-      this.planCourses = planCourses;
-      this.planCoursesBackup = planCourses;
+      this.planCourses.value = planCourses.map((e) => ExpandableWrapper(data: e)).toList();
+      this.planCoursesBackup.value = this.planCourses;
 
       if (networkCourseOnly) {
         filter("networkFilter", (e) {
@@ -166,7 +133,6 @@ class CourseSelectionViewModel extends ChangeNotifier {
       //   if (networkCourseOnly && !planCourse.cname.contains("网络")) return;
       //   getDetail(planCourse);
       // });
-      notifyListeners();
       return planCourses;
     });
   }

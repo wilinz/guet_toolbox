@@ -1,95 +1,24 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:guettoolbox/data/model/course/semester_schedule.dart';
 import 'package:guettoolbox/data/model/schedule_datetime/schedule_datetime.dart';
 import 'package:guettoolbox/data/model/term/term.dart';
 import 'package:guettoolbox/data/repository/course.dart';
 import 'package:kt_dart/kt.dart';
 
-class ScheduleViewModel extends ChangeNotifier {
-  List<Term> termList = List.empty();
-  Term? _currentTerm;
+class ScheduleViewModel extends GetxController {
+  final termList = List<Term>.empty().obs;
+  final currentTerm = Rx<Term?>(null);
+  final scheduleDatetime = Rx<ScheduleDatetime?>(null);
+  final dateList = List.filled(7, "").obs;
+  final weekday = 1.obs;
+  var currentWeekdayIndex = 0.obs;
+  final colorsMap = {}.obs;
+  final courseList = RxList<List<SemesterSchedule>>.empty(growable: true);
+  late RxList<Color> colorsBackup;
 
-  set currentTerm(Term? value) {
-    _currentTerm = value;
-  }
-
-  Term? get currentTerm => _currentTerm;
-
-
-  ScheduleDatetime? scheduleDatetime;
-
-  List<String> dateList = List.filled(7, "");
-  var weekday = 1;
-
-  getWeekday(DateTime dateTime) {
-    var monday = 1;
-    var mondayTime = dateTime;
-
-    //获取本周星期一是几号
-    while (mondayTime.weekday != monday) {
-      mondayTime = mondayTime.subtract(new Duration(days: 1));
-    }
-
-    mondayTime.year; //2020 年
-    mondayTime.month; //6(这里和js中的月份有区别，js中是从0开始，dart则从1开始，我们无需再进行加一处理) 月
-    mondayTime.day; //6 日
-    // nowTime.hour ;//6 时
-    // nowTime.minute ;//6 分
-    // nowTime.second ;//6 秒
-    for (int i = 0; i < 7; i++) {
-      final targetDate = mondayTime.add(Duration(days: i));
-      dateList[i] = ("${targetDate.month}/${targetDate.day}");
-      if ((mondayTime.day + i) == dateTime.day) {
-        weekday = i + 1;
-      }
-    }
-  }
-
-  // int _currentWeek = 0;
-
-  // int get currentWeek => _currentWeek;
-
-  // DateTime _currentDateTime = DateTime.now();
-
-  // DateTime get currentDateTime => _currentDateTime;
-
-  // setCurrentWeek(Term term, DateTime dateTime) {
-  //   // _currentWeek = CourseRepository.getInstance().getWeek(term, dateTime);
-  // }
-
-  toTerm(Term term) {
-    update(term.startDate, term: term);
-  }
-
-  updateToToday() {
-    update(DateTime.now());
-  }
-
-  toNextWeek() {
-    // _currentWeek += 1;
-    // _currentDateTime = currentDateTime.add(Duration(days: 7));
-    // setDate();
-    // getCourseList(currentTerm!.term);
-    scheduleDatetime?.let((it) {
-      update(it.dateTime.add(Duration(days: 7)));
-    });
-  }
-
-  toPreviousWeek() {
-    // _currentWeek -= 1;
-    // _currentDateTime = currentDateTime.subtract(Duration(days: 7));
-    // setDate();
-    // getCourseList(currentTerm!.term);
-    scheduleDatetime?.let((it) {
-      update(it.dateTime.subtract(Duration(days: 7)));
-    });
-  }
-
-  var currentWeekdayIndex = 0;
-
-  final colorsMap = {};
   List<Color> colors = [
     Color(0xFF03DAC5), // Vivid Cyan
     Color(0xFF00B0FF), // Vivid Sky Blue
@@ -112,36 +41,95 @@ class ScheduleViewModel extends ChangeNotifier {
   ];
 
   ScheduleViewModel() {
-    colorsBackup = List.of(colors);
+    colorsBackup = RxList.of(colors);
   }
 
-  List<Color> colorsBackup = [];
+  getWeekday(DateTime dateTime) {
+    var monday = 1;
+    var mondayTime = dateTime;
 
-  List<List<SemesterSchedule>> courseList = [];
+    //获取本周星期一是几号
+    while (mondayTime.weekday != monday) {
+      mondayTime = mondayTime.subtract(new Duration(days: 1));
+    }
 
-  update(DateTime dateTime, {Term? term}) async {
+    mondayTime.year; //2020 年
+    mondayTime.month; //6(这里和js中的月份有区别，js中是从0开始，dart则从1开始，我们无需再进行加一处理) 月
+    mondayTime.day; //6 日
+    // nowTime.hour ;//6 时
+    // nowTime.minute ;//6 分
+    // nowTime.second ;//6 秒
+    for (int i = 0; i < 7; i++) {
+      final targetDate = mondayTime.add(Duration(days: i));
+      dateList[i] = ("${targetDate.month}/${targetDate.day}");
+      if ((mondayTime.day + i) == dateTime.day) {
+        weekday.value = i + 1;
+      }
+    }
+  }
+
+  // int _currentWeek = 0;
+
+  // int get currentWeek => _currentWeek;
+
+  // DateTime _currentDateTime = DateTime.now();
+
+  // DateTime get currentDateTime => _currentDateTime;
+
+  // setCurrentWeek(Term term, DateTime dateTime) {
+  //   // _currentWeek = CourseRepository.getInstance().getWeek(term, dateTime);
+  // }
+
+  toTerm(Term term) {
+    updateData(term.startDate, term: term);
+  }
+
+  updateToToday() {
+    updateData(DateTime.now());
+  }
+
+  toNextWeek() {
+    // _currentWeek += 1;
+    // _currentDateTime = currentDateTime.add(Duration(days: 7));
+    // setDate();
+    // getCourseList(currentTerm!.term);
+    scheduleDatetime.value?.let((it) {
+      updateData(it.dateTime.add(Duration(days: 7)));
+    });
+  }
+
+  toPreviousWeek() {
+    // _currentWeek -= 1;
+    // _currentDateTime = currentDateTime.subtract(Duration(days: 7));
+    // setDate();
+    // getCourseList(currentTerm!.term);
+    scheduleDatetime.value?.let((it) {
+      updateData(it.dateTime.subtract(Duration(days: 7)));
+    });
+  }
+
+  updateData(DateTime dateTime, {Term? term}) async {
     getWeekday(dateTime);
     Term currentTerm;
     if (term == null) {
-      if (this.currentTerm == null) {
+      if (this.currentTerm.value == null) {
         final terms = await getTerms();
-        _currentTerm =
+        this.currentTerm.value =
             CourseRepository.getInstance().getCurrentTerm(terms, true);
       }
-      if (this.currentTerm == null) throw Exception("");
-      currentTerm = this.currentTerm!;
+      if (this.currentTerm.value == null) throw Exception("");
+      currentTerm = this.currentTerm.value!;
     } else {
       currentTerm = term;
     }
 
     final week = CourseRepository.getInstance().getWeek(currentTerm, dateTime);
-    scheduleDatetime = ScheduleDatetime(
+    scheduleDatetime.value = ScheduleDatetime(
         term: currentTerm,
         dateTime: dateTime,
         week: week,
         weekDay: getWeekday1(DateTime.now()));
     await getCourseList(currentTerm.term, week);
-    notifyListeners();
   }
 
   int getWeekday1(DateTime dateTime) {
@@ -169,7 +157,7 @@ class ScheduleViewModel extends ChangeNotifier {
 
   Future<List<Term>> getTerms() {
     return CourseRepository.getInstance().getTermList().then((terms) async {
-      termList = terms;
+      termList.value = terms;
       return terms;
     });
   }
@@ -201,7 +189,6 @@ class ScheduleViewModel extends ChangeNotifier {
           }
         }
       }
-      notifyListeners();
       return value;
     });
   }

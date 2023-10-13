@@ -1,38 +1,27 @@
-import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_response.dart';
 import 'package:guettoolbox/data/model/term/term.dart';
 import 'package:guettoolbox/data/repository/course.dart';
 import 'package:guettoolbox/data/repository/pedagogical_evaluation.dart';
 
-class PedagogicalEvaluationViewModel extends ChangeNotifier {
-  List<Term> terms = [];
-  List<PedagogicalEvaluation> pedagogicalEvaluations = [];
-  Term? _currentTerm;
-
-  Term? get currentTerm => _currentTerm;
-
-  set currentTerm(Term? value) {
-    _currentTerm = value;
-    notifyListeners();
-  }
+class PedagogicalEvaluationViewModel extends GetxController {
+  final terms = <Term>[].obs;
+  final pedagogicalEvaluations = <PedagogicalEvaluation>[].obs;
+  final currentTerm = Rx<Term?>(null);
 
   Future<List<Term>> getTermList() {
     return CourseRepository.getInstance().getTermList().then((value) {
-      terms = value;
-      currentTerm = CourseRepository.getInstance().getCurrentTerm(terms, false);
-      notifyListeners();
+      terms.value = value;
+      currentTerm.value = CourseRepository.getInstance().getCurrentTerm(terms, false);
       return value;
     });
   }
-
-  notify() => notifyListeners();
 
   Future<List<PedagogicalEvaluation>> getList(String term) async {
     return PedagogicalEvaluationRepository.getInstance()
         .getList(term)
         .then((value) {
-      pedagogicalEvaluations = value;
-      notifyListeners();
+      pedagogicalEvaluations.value = value;
       return value;
     });
   }

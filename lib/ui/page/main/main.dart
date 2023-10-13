@@ -3,23 +3,14 @@ import 'package:guettoolbox/ui/page/main/home/home.dart';
 import 'package:guettoolbox/ui/page/main/profile/profile.dart';
 import 'package:guettoolbox/ui/page/main/schedule/schedule.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return _MainPage();
-  }
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _MainPage extends StatefulWidget {
-  const _MainPage({Key? key}) : super(key: key);
-
-  @override
-  State<_MainPage> createState() => _MainPageState();
-}
-
-class _MainPageState extends State<_MainPage> {
+class _MainPageState extends State<MainPage> {
   int selected = 0;
   PageController pageController = PageController();
 
@@ -57,8 +48,9 @@ class _MainPageState extends State<_MainPage> {
               )
             ],
             onDestinationSelected: (index) {
-              pageController.animateToPage(index,
-                  duration: Duration(milliseconds: 200), curve: Curves.linear);
+              pageController.jumpToPage(
+                index, /*duration: Duration(milliseconds: 200), curve: Curves.linear*/
+              );
             },
             selectedIndex: selected));
   }

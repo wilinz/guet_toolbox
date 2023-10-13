@@ -1,143 +1,139 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:guettoolbox/package_info.dart';
 import 'package:guettoolbox/ui/page/main/profile/profile_vm.dart';
 import 'package:guettoolbox/ui/route.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart' as launcher;
 import 'package:url_launcher/url_launcher_string.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ProfileViewModel(),
-      child: _ProfilePage(),
-    );
-  }
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePage extends StatefulWidget {
-  const _ProfilePage({Key? key}) : super(key: key);
-
-  @override
-  State<_ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<_ProfilePage>
+class _ProfilePageState extends State<ProfilePage>
     with AutomaticKeepAliveClientMixin {
+  final c = Get.put(ProfileViewModel());
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
-    return Consumer<ProfileViewModel>(builder: (context, viewModel, child) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("个人主页"),
-          actions: [
-            PopupMenuButton(
-              itemBuilder: (BuildContext context) => [
-                PopupMenuItem(
-                  child: Text('settings'),
-                  value: 'settings',
-                ),
-              ],
-              onSelected: (value) {
-                if (value == 'settings') {
-                  // 导航到设置页面
-                  Get.toNamed(AppRoute.settingsPage);
-                }
-              },
-            ),
-          ],
-        ),
-        body: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 400),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                  child: Card(
-                    child: InkWell(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      onTap: () {
-                        Navigator.of(context)
-                            .pushNamed(AppRoute.loginPage, arguments: true);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            Image(
-                              image: AssetImage("images/logo.png"),
-                              width: 48,
-                              height: 48,
-                              fit: BoxFit.contain,
-                            ),
-                            SizedBox(
-                              width: 16,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text((viewModel.studentInfo?.studentId ?? "") +
-                                    (viewModel.studentInfo?.name ?? "")),
-                                SizedBox(height: 4),
-                                Text(viewModel.studentInfo?.collegeName ?? ""),
-                              ],
-                            )
-                          ],
-                        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("个人主页"),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) => [
+              PopupMenuItem(
+                child: Text('settings'),
+                value: 'settings',
+              ),
+            ],
+            onSelected: (value) {
+              if (value == 'settings') {
+                // 导航到设置页面
+                Get.toNamed(AppRoute.settingsPage);
+              }
+            },
+          ),
+        ],
+      ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 400),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                margin: EdgeInsets.fromLTRB(8, 8, 8, 0),
+                child: Card(
+                  child: InkWell(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    onTap: () {
+                      Navigator.of(context)
+                          .pushNamed(AppRoute.loginPage, arguments: true);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Image(
+                            image: AssetImage("images/logo.png"),
+                            width: 48,
+                            height: 48,
+                            fit: BoxFit.contain,
+                          ),
+                          SizedBox(
+                            width: 16,
+                          ),
+                          Obx(() => Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text((c.studentInfo.value?.studentId ?? "") +
+                                      (c.studentInfo.value?.name ?? "")),
+                                  SizedBox(height: 4),
+                                  Text(c.studentInfo.value?.collegeName ?? ""),
+                                ],
+                              ))
+                        ],
                       ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed(AppRoute.courseSelectionPage);
-                            },
-                            child: Text("选课")),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                  AppRoute.pedagogicalEvaluationPage);
-                            },
-                            child: Text("评教")),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                  AppRoute.campusNetworkPage);
-                            },
-                            child: Text("连接校园网")),
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Center(
+              ),
+              SizedBox(height:16),
+              Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ListTile(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(AppRoute.courseSelectionPage);
+                      },
+                      leading: Icon(Icons.school_outlined), // Icon for "选课"
+                      title: Text("选课"),
+                      trailing: Icon(Icons.arrow_forward_ios_outlined),
+                    ),
+                    ListTile(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(AppRoute.pedagogicalEvaluationPage);
+                      },
+                      leading: Icon(Icons.rate_review_outlined), // Icon for "评教"
+                      title: Text("评教"),
+                      trailing: Icon(Icons.arrow_forward_ios_outlined),
+                    ),
+                    ListTile(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(AppRoute.campusNetworkPage);
+                      },
+                      leading: Icon(Icons.wifi_outlined), // Icon for "连接校园网"
+                      title: Text("连接校园网"),
+                      trailing: Icon(Icons.arrow_forward_ios_outlined),
+                    ),
+                    ListTile(
+                      onTap: () {
+                        // Add your functionality for the "关于" tile
+                      },
+                      leading: Icon(Icons.info_outlined), // Icon for "关于"
+                      title: Text("关于"),
+                      trailing: Icon(Icons.arrow_forward_ios_outlined),
+                    ),
+                    ListTile(
+                      onTap: () {
+                        // Add your functionality for the version tile
+                      },
+                      leading: Icon(Icons.info_outline), // Icon for the version tile
+                      title: Text("版本: ${packageInfo.version}"),
+                      trailing: Icon(Icons.arrow_forward_ios_outlined),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Center(
                         child: Text.rich(
                           TextSpan(children: [
                             TextSpan(
@@ -158,22 +154,25 @@ class _ProfilePageState extends State<_ProfilePage>
                           ]),
                         ),
                       ),
-                    ],
-                  ),
-                )
-              ],
-            ),
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 
   @override
   void initState() {
     super.initState();
-    final vm = Provider.of<ProfileViewModel>(context, listen: false);
-    vm.getStudentInfo();
+    try {
+      // c.getStudentInfo();
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override

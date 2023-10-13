@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:guettoolbox/data/model/course/semester_schedule.dart';
 import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evaluation_response.dart';
 import 'package:guettoolbox/ui/page/campus_network/campus_network.dart';
@@ -89,33 +87,39 @@ class WindowTopBarMiddleWare extends GetMiddleware {
   //该函数将在调用 GetPage.page 函数后立即调用，并为您提供函数的结果。并获取将显示的小部件
   @override
   Widget onPageBuilt(Widget page) {
-    if (GetPlatform.isDesktop && !GetPlatform.isWeb) {
-      return Scaffold(
-        appBar: buildWindowTopBar('app_name'.tr),
-        body: page,
-      );
-    } else {
-      return page;
-    }
+    return GetPlatform.isDesktop && !GetPlatform.isWeb
+        ? DesktopWindow(page: page, title: Text('app_name'.tr))
+        : page;
   }
+}
 
-  PreferredSizeWidget buildWindowTopBar(String title) {
-    if (GetPlatform.isMacOS) {
-      return PreferredSize(
-        child: SizedBox(
-          height: kWindowCaptionHeight,
-          child: Center(child: Text(title)),
-        ),
+class DesktopWindow extends StatefulWidget {
+  const DesktopWindow({super.key, required this.page, required this.title});
+
+  final Widget page;
+  final Widget title;
+
+  @override
+  State<DesktopWindow> createState() => _DesktopWindowState();
+}
+
+class _DesktopWindowState extends State<DesktopWindow> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        child: GetPlatform.isMacOS
+            ? SizedBox(
+                height: kWindowCaptionHeight,
+                child: Center(child: widget.title),
+              )
+            : WindowCaption(
+                brightness: Get.theme.brightness,
+                title: widget.title,
+              ),
         preferredSize: const Size.fromHeight(kWindowCaptionHeight),
-      );
-    } else {
-      return PreferredSize(
-        child: WindowCaption(
-          brightness: Get.theme.brightness,
-          title: Text(title),
-        ),
-        preferredSize: const Size.fromHeight(kWindowCaptionHeight),
-      );
-    }
+      ),
+      body: widget.page,
+    );
   }
 }

@@ -66,6 +66,9 @@ dependencies:
       ref: 6c66ad23ee79749f30a8eece542cf54eaf157ed8
   get: ^4.6.5
   get_storage: ^2.1.1
+  copy_with_extension: ^5.0.4
+  package_info_plus: ^5.0.0
+
 
 
 dev_dependencies:
@@ -83,6 +86,7 @@ dev_dependencies:
   json_serializable: ^6.5.4
   msix: ^3.7.0
   floor_generator: ^1.4.0
+  copy_with_extension_gen: ^5.0.4
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

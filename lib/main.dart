@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:guettoolbox/data/get_storage.dart';
 import 'package:guettoolbox/data/repository/campus_network.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
+import 'package:guettoolbox/package_info.dart';
 import 'package:guettoolbox/ui/color_schemes.g.dart';
 import 'package:guettoolbox/ui/route.dart';
 import 'package:guettoolbox/ui/settings/settings_controller.dart';
@@ -20,6 +21,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Future.wait([
     initGetStorage(),
+    initPackageInfo(),
   ]);
   if (PlatformUtil.isDesktop()) {
     final padding = 50;

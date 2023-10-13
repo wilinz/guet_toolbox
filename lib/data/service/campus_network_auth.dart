@@ -61,7 +61,10 @@ class CampusNetworkAuth {
           "v": 8996,
           "lang": "zh",
         },
-        options: Options(extra: {JsonpInterceptor.UseJsonpParser: true}));
+        options: Options(
+            extra: {JsonpInterceptor.UseJsonpParser: true},
+            sendTimeout: Duration(seconds: 5),
+            receiveTimeout: Duration(seconds: 5)));
     final data = resp.data;
     if (data["result"] == 1) {
       return CampusNetworkAuthResponseSuccess.fromJson(data);
@@ -83,7 +86,10 @@ class CampusNetworkAuth {
           "v": 7321,
           "lang": "zh"
         },
-        options: Options(extra: {JsonpInterceptor.UseJsonpParser: true}));
+        options: Options(
+            extra: {JsonpInterceptor.UseJsonpParser: true},
+            sendTimeout: Duration(seconds: 5),
+            receiveTimeout: Duration(seconds: 5)));
     return CampusNetworkAuthResponseCommon.fromJson(resp.data);
   }
 
@@ -109,7 +115,10 @@ class CampusNetworkAuth {
           "v": 9130,
           "lang": "zh",
         },
-        options: Options(extra: {JsonpInterceptor.UseJsonpParser: true}));
+        options: Options(
+            extra: {JsonpInterceptor.UseJsonpParser: true},
+            sendTimeout: Duration(seconds: 5),
+            receiveTimeout: Duration(seconds: 5)));
     return CampusNetworkAuthResponseCommon.fromJson(resp.data);
   }
 
@@ -119,7 +128,10 @@ class CampusNetworkAuth {
   static Future<dynamic> onlineList() async {
     final dio = await AppNetwork.getDio();
     final resp = await dio.get("http://10.0.1.5:801/eportal/portal/online_list",
-        options: Options(extra: {JsonpInterceptor.UseJsonpParser: true}));
+        options: Options(
+            extra: {JsonpInterceptor.UseJsonpParser: true},
+            sendTimeout: Duration(seconds: 5),
+            receiveTimeout: Duration(seconds: 5)));
     final data = resp.data;
     if (data["result"] == 1) {
       return CampusNetworkAuthOnlineList.fromJson(data);

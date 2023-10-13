@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:guettoolbox/data/model/user/user.dart';
 import 'package:guettoolbox/data/repository/login.dart';
 import 'package:guettoolbox/ui/route.dart';
@@ -8,41 +9,29 @@ import 'package:provider/provider.dart';
 
 import 'schedule_viewmodel.dart';
 
-class SchedulePage extends StatelessWidget {
+class SchedulePage extends StatefulWidget {
   const SchedulePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ScheduleViewModel>(
-      create: (context) => ScheduleViewModel(),
-      child: _SchedulePage(),
-    );
-    ;
-  }
+  State<SchedulePage> createState() => _SchedulePageState();
 }
 
-class _SchedulePage extends StatefulWidget {
-  const _SchedulePage({Key? key}) : super(key: key);
-
-  @override
-  State<_SchedulePage> createState() => _SchedulePageState();
-}
-
-class _SchedulePageState extends State<_SchedulePage>
+class _SchedulePageState extends State<SchedulePage>
     with AutomaticKeepAliveClientMixin {
   var weekdayList = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
   StreamSubscription<User>? onLoginEvent;
+
+  final viewModel = Get.put(ScheduleViewModel());
 
   @override
   void initState() {
     super.initState();
 
-    var vm = Provider.of<ScheduleViewModel>(context, listen: false);
     onLoginEvent = LoginRepository.getInstance().onLoginEvent.listen((user) {
-      vm.updateToToday();
+      viewModel.updateToToday();
     });
-    vm.getWeekday(DateTime.now());
-    vm.updateToToday();
+    viewModel.getWeekday(DateTime.now());
+    viewModel.updateToToday();
 
     // print('Recent monday '+DateTime.now().day.toString());
   }
@@ -60,52 +49,50 @@ class _SchedulePageState extends State<_SchedulePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Container(child:
-        Consumer<ScheduleViewModel>(builder: (context, viewModel, child) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(
-              "${_getDateString(viewModel.scheduleDatetime?.dateTime ?? DateTime.now())} 第${viewModel.scheduleDatetime?.week ?? 1}周"),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  viewModel.toPreviousWeek();
-                },
-                icon: Icon(Icons.navigate_before)),
-            IconButton(
-                onPressed: () {
-                  viewModel.toNextWeek();
-                },
-                icon: Icon(Icons.navigate_next)),
-            buildTermIconButton(context, viewModel),
-          ],
-        ),
-        body: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(),
-            child: Column(
-              children: [
-                buildWeekGridView(viewModel),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: buildSectionGridView(),
-                      ),
-                      Expanded(
-                        flex: 7,
-                        child: buildContentGridView(viewModel),
-                      )
-                    ],
-                  ),
+    return Container(
+        child: Scaffold(
+      appBar: AppBar(
+        title: Obx(() => Text(
+            "${_getDateString(viewModel.scheduleDatetime.value?.dateTime ?? DateTime.now())} 第${viewModel.scheduleDatetime.value?.week ?? 1}周")),
+        actions: [
+          IconButton(
+              onPressed: () {
+                viewModel.toPreviousWeek();
+              },
+              icon: Icon(Icons.navigate_before)),
+          IconButton(
+              onPressed: () {
+                viewModel.toNextWeek();
+              },
+              icon: Icon(Icons.navigate_next)),
+          buildTermIconButton(context, viewModel),
+        ],
+      ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(),
+          child: Column(
+            children: [
+              buildWeekGridView(viewModel),
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: buildSectionGridView(),
+                    ),
+                    Expanded(
+                      flex: 7,
+                      child: buildContentGridView(viewModel),
+                    )
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      );
-    }));
+      ),
+    ));
   }
 
   IconButton buildTermIconButton(
@@ -118,66 +105,76 @@ class _SchedulePageState extends State<_SchedulePage>
             showDialog(
                 context: context,
                 builder: (context) {
-                  return SimpleDialog(
-                    title: Text("请选择学期"),
-                    children: viewModel.termList.map((term) {
-                      return SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          viewModel.currentTerm = term;
-                          viewModel.toTerm(term);
-                        },
-                        child: Text(
-                          term.termName,
-                          style: TextStyle(
-                              color: term == viewModel.currentTerm
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(context).colorScheme.onBackground),
-                        ),
-                      );
-                    }).toList(),
-                  );
+                  return Obx(() => SimpleDialog(
+                        title: Text("请选择学期"),
+                        children: viewModel.termList.map((term) {
+                          return SimpleDialogOption(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              viewModel.currentTerm.value = term;
+                              viewModel.toTerm(term);
+                            },
+                            child: Text(
+                              term.termName,
+                              style: TextStyle(
+                                  color: term == viewModel.currentTerm
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .onBackground),
+                            ),
+                          );
+                        }).toList(),
+                      ));
                 });
         },
         icon: Icon(Icons.date_range));
   }
 
-  Widget buildWeekdayList(ScheduleViewModel vm, int index) {
-    return Container(
-      color: index == vm.currentWeekdayIndex ? Color(0xf7f7f7) : null,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 8, bottom: 8),
-          child: buildWeekdayItem(index, vm),
-        ),
-      ),
-    );
+  Widget buildWeekdayList(int index) {
+    return Obx(() => Container(
+          color: index == viewModel.currentWeekdayIndex.value
+              ? Color(0xf7f7f7)
+              : null,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              child: buildWeekdayItem(index),
+            ),
+          ),
+        ));
   }
 
-  Column buildWeekdayItem(int index, ScheduleViewModel vm) {
-    return index == 0
-        ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("星期", style: TextStyle(fontSize: 14)),
-              // SpaceWidget(height: 5),
-              Text("日期", style: TextStyle(fontSize: 12)),
-            ],
-          )
-        : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(weekdayList[index - 1],
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: index == vm.weekday ? Colors.lightBlue : null)),
-              // SpaceWidget(height: 5),
-              Text(vm.dateList[index - 1],
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: index == vm.weekday ? Colors.lightBlue : null)),
-            ],
-          );
+  Widget buildWeekdayItem(int index) {
+    return Container(
+      child: index == 0
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("星期", style: TextStyle(fontSize: 14)),
+                // SpaceWidget(height: 5),
+                Text("日期", style: TextStyle(fontSize: 12)),
+              ],
+            )
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Obx(() => Text(weekdayList[index - 1],
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: index == viewModel.weekday.value
+                            ? Colors.lightBlue
+                            : null))),
+                // SpaceWidget(height: 5),
+                Obx(() => Text(viewModel.dateList[index - 1],
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: index == viewModel.weekday.value
+                            ? Colors.lightBlue
+                            : null))),
+              ],
+            ),
+    );
   }
 
   bor() {
@@ -237,7 +234,7 @@ class _SchedulePageState extends State<_SchedulePage>
               ),
             ],
           ),
-          Builder(builder: (context) {
+          Obx(() {
             if (viewModel.courseList.length - 1 < index ||
                 viewModel.courseList[index].isEmpty) {
               return Container();
@@ -262,8 +259,7 @@ class _SchedulePageState extends State<_SchedulePage>
                 ),
               ),
               onTap: () {
-                Navigator.pushNamed(context, AppRoute.courseDetailPage,
-                    arguments: course);
+                Get.toNamed(AppRoute.courseDetailPage, arguments: course);
               },
             );
           })
@@ -307,7 +303,7 @@ class _SchedulePageState extends State<_SchedulePage>
     return Row(
       children: [
         for (var index = 0; index < 8; index++)
-          Expanded(flex: 1, child: buildWeekdayList(vm, index))
+          Expanded(flex: 1, child: buildWeekdayList(index))
       ],
     );
   }

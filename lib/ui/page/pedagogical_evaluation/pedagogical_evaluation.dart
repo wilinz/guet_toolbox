@@ -1,30 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:guettoolbox/data/model/term/term.dart';
 import 'package:guettoolbox/ui/page/pedagogical_evaluation/pedagogical_evaluation_vm.dart';
 import 'package:guettoolbox/ui/route.dart';
-import 'package:provider/provider.dart';
 
-class PedagogicalEvaluationPage extends StatelessWidget {
+class PedagogicalEvaluationPage extends StatefulWidget {
   const PedagogicalEvaluationPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<PedagogicalEvaluationViewModel>(
-      create: (context) => PedagogicalEvaluationViewModel(),
-      child: _PedagogicalEvaluationPage(),
-    );
-  }
-}
-
-class _PedagogicalEvaluationPage extends StatefulWidget {
-  const _PedagogicalEvaluationPage({Key? key}) : super(key: key);
-
-  @override
-  State<_PedagogicalEvaluationPage> createState() =>
+  State<PedagogicalEvaluationPage> createState() =>
       _PedagogicalEvaluationPageState();
 }
 
-class _PedagogicalEvaluationPageState
-    extends State<_PedagogicalEvaluationPage> {
+class _PedagogicalEvaluationPageState extends State<PedagogicalEvaluationPage> {
+
+  final viewModel = Get.put(PedagogicalEvaluationViewModel());
+
   // var isB
   @override
   Widget build(BuildContext context) {
@@ -32,34 +23,32 @@ class _PedagogicalEvaluationPageState
       appBar: AppBar(
         title: Text("评教"),
       ),
-      body: Consumer<PedagogicalEvaluationViewModel>(
-          builder: (context, viewModel, child) {
-        return Container(
-          // padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                child: Wrap(
-                    spacing: 8.0,
-                    // 主轴(水平)方向间距
-                    runSpacing: 4.0,
-                    // 纵轴（垂直）方向间距
-                    alignment: WrapAlignment.start,
-                    //沿主轴方向居中
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: <Widget>[
-                      buildTermDropdownButton(viewModel),
-                      ElevatedButton(
-                          onPressed: () {
-                            viewModel.getList(viewModel.currentTerm!.term);
-                          },
-                          child: Text("查询")),
-                    ]),
-              ),
-              Expanded(
-                  child: ListView.builder(
+      body: Container(
+        // padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
+              child: Wrap(
+                  spacing: 8.0,
+                  // 主轴(水平)方向间距
+                  runSpacing: 4.0,
+                  // 纵轴（垂直）方向间距
+                  alignment: WrapAlignment.start,
+                  //沿主轴方向居中
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: <Widget>[
+                    buildTermDropdownButton(),
+                    ElevatedButton(
+                        onPressed: () {
+                          viewModel.getList(viewModel.currentTerm.value!.term);
+                        },
+                        child: Text("查询")),
+                  ]),
+            ),
+            Expanded(
+                child: Obx(() => ListView.builder(
                       padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
                       itemCount: viewModel.pedagogicalEvaluations.length,
                       itemBuilder: (context, index) {
@@ -80,7 +69,7 @@ class _PedagogicalEvaluationPageState
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                           children: [
                                             Text(item.courseno +
                                                 " " +
@@ -102,34 +91,33 @@ class _PedagogicalEvaluationPageState
                             ),
                           ),
                         );
-                      }))
-            ],
-          ),
-        );
-      }),
+                      })))
+          ],
+        ),
+      ),
     );
   }
 
-  DropdownButton<String> buildTermDropdownButton(
-      PedagogicalEvaluationViewModel viewModel) {
-    return DropdownButton(
-        items: createTermItemList(viewModel),
-        hint: Container(
-            padding: EdgeInsets.all(8), child: Center(child: Text("请选择学期"))),
-        value: viewModel.currentTerm?.term,
-        onChanged: (v) {
-          v as String;
-          viewModel.currentTerm =
-              viewModel.terms.firstWhere((e) => e.term == v);
-        });
+  Widget buildTermDropdownButton() {
+    return Obx(() =>
+        DropdownButton<Term>(
+            items: createTermItemList(viewModel),
+            hint: Container(
+                padding: EdgeInsets.all(8),
+                child: Center(child: Text("请选择学期"))),
+            value: viewModel.currentTerm.value,
+            onChanged: (v) {
+              viewModel.currentTerm.value =
+                  viewModel.terms.firstWhere((e) => e == v);
+            }));
   }
 
   createTermItemList(PedagogicalEvaluationViewModel viewModel) {
     return viewModel.terms.map((t) {
-      return DropdownMenuItem(
+      return DropdownMenuItem<Term>(
         child: Container(
             padding: EdgeInsets.all(8), child: Center(child: Text(t.termName))),
-        value: t.term,
+        value: t,
       );
     }).toList();
   }
@@ -137,10 +125,8 @@ class _PedagogicalEvaluationPageState
   @override
   void initState() {
     super.initState();
-    var vm =
-        Provider.of<PedagogicalEvaluationViewModel>(context, listen: false);
-    vm.getTermList().then((value){
-      vm.getList(vm.currentTerm!.term);
+    viewModel.getTermList().then((value) {
+      viewModel.getList(viewModel.currentTerm.value!.term);
     });
   }
 }

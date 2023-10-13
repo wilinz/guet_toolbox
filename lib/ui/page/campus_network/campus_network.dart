@@ -149,7 +149,7 @@ class _CampusNetworkPageState extends State<CampusNetworkPage> {
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   return Text(
-                                      snapshot.data!
+                                      snapshot.data == true
                                           ? "当前处于校园网"
                                           : "当前处于非校园网");
                                 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dart_extensions/emum.dart';
 import 'package:get/get.dart';
 import 'package:guettoolbox/data/model/campus_network/campus_network_auth_online_list.dart';
@@ -17,6 +19,25 @@ class CampusNetworkViewModel extends GetxController {
 
   ValueStream<bool?> get isCampusNetworkState =>
       NetworkDetectionRepository.getInstance().isCampusNetworkState;
+
+  StreamSubscription<bool?>? _sub;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _sub = isCampusNetworkState.listen((status) {
+      if (status == true) {
+        CampusNetworkRepository.getInstance().refresh();
+      }
+    });
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    _sub?.cancel();
+  }
 
   Future<dynamic> login(String username, String password, ISP isp) async {
     final onLineList = await onlineList();

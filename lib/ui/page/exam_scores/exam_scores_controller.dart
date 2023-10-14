@@ -10,7 +10,7 @@ class ExamScoresController extends GetxController {
   final examScores = <ExamScore>[].obs;
 
   getTermList() async {
-    terms.value = await CourseRepository.get().getTermList();
+    terms.value = (await CourseRepository.get().getTermList()).reversed.toList();
     currentTerm.value = CourseRepository.get().getCurrentTerm(terms, false);
   }
 

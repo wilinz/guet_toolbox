@@ -91,7 +91,7 @@ class ExamScore {
   @JsonKey(name: 'courselevel')
   dynamic courseLevel;
   @JsonKey(name: 'score', defaultValue: 0)
-  int score;
+  double score;
   @JsonKey(name: 'zpxs', defaultValue: '')
   String overallEvaluationForm;
   @JsonKey(name: 'kctype', defaultValue: '')

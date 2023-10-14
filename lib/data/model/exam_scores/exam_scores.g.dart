@@ -37,7 +37,7 @@ ExamScore _$ExamScoreFromJson(Map<String, dynamic> json) => ExamScore(
       courseNumber: json['courseno'] as String? ?? '',
       courseName: json['cname'] as String? ?? '',
       courseLevel: json['courselevel'],
-      score: json['score'] as int? ?? 0,
+      score: (json['score'] as num?)?.toDouble() ?? 0,
       overallEvaluationForm: json['zpxs'] as String? ?? '',
       courseType: json['kctype'] as String? ?? '',
       typeNumber: json['typeno'] as String? ?? '',

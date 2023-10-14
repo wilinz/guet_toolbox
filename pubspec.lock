@@ -416,6 +416,22 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.2.0"
+  functional_widget:
+    dependency: "direct dev"
+    description:
+      name: functional_widget
+      sha256: "58af369f6b882b5433e2232eaca0b86505167727c94975dd1bdac0f75c90d0b7"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.10.1"
+  functional_widget_annotation:
+    dependency: "direct main"
+    description:
+      name: functional_widget_annotation
+      sha256: f0612079cb7e226b7be32b473bdaf85fe680370886c0c13ea69a102ccc17a0c7
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.10.0"
   get:
     dependency: "direct main"
     description:
@@ -531,11 +547,10 @@ packages:
   json5_model:
     dependency: "direct dev"
     description:
-      path: "."
-      ref: "^2.0.3"
-      resolved-ref: "6a4c379d397c5880834a07f2cab547ed9c8f98e9"
-      url: "https://github.com/wilinz/json5_model.git"
-    source: git
+      name: json5_model
+      sha256: "7c5f302032d525d688655cf613826d2aa1b708de274b775222c211dd2f609169"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
     version: "2.0.3"
   json_annotation:
     dependency: "direct main"

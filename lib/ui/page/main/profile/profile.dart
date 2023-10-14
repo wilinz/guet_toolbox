@@ -117,6 +117,14 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                     ListTile(
                       onTap: () {
+                        Get.toNamed(AppRoute.examScoresPage);
+                      },
+                      leading: Icon(Icons.assignment_outlined), // Icon for "关于"
+                      title: Text("成绩单"),
+                      trailing: Icon(Icons.arrow_forward_ios_outlined),
+                    ),
+                    ListTile(
+                      onTap: () {
                         Navigator.of(context)
                             .pushNamed(AppRoute.campusNetworkPage);
                       },

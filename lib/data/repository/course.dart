@@ -6,6 +6,7 @@ import 'package:guettoolbox/data/model/course/semester_schedule.dart';
 import 'package:guettoolbox/data/model/plan_course/plan_course_detail_response.dart';
 import 'package:guettoolbox/data/model/plan_course/plan_course_response.dart';
 import 'package:guettoolbox/data/model/term/term.dart';
+import 'package:guettoolbox/data/repository/student_info.dart';
 import 'package:guettoolbox/data/repository/user.dart';
 import 'package:guettoolbox/data/service/term.dart';
 import 'package:guettoolbox/util/list.dart';
@@ -77,6 +78,13 @@ class CourseRepository {
     return terms;
   }
 
+  // 2022
+  // 2022 - 2023_1, 2025 - 2026_1
+  // Future<List<Term>> getMyTermList() async {
+  //   final info = await StudentInfoRepository.get().getStudentInfo();
+  //   info.grade.to
+  // }
+
   Future<List<Course>> getCourseList(String term) =>
       CourseService.getCourseList(term);
 
@@ -96,7 +104,7 @@ class CourseRepository {
     // if (dbCache.isNotEmpty) return dbCache;
     List responses =
         await Future.wait([getCourseList(term), getCourseLabList(term)]);
-    final user = await UserRepository.getInstance().getActiveUser();
+    final user = await UserRepository.get().getActiveUser();
     if (user == null) throw new Exception("未登录");
     final semesterSchedule =
         generateSemesterSchedule(responses[0], responses[1], user.username);
@@ -126,5 +134,5 @@ class CourseRepository {
 
   static CourseRepository? _instance;
 
-  factory CourseRepository.getInstance() => _instance ??= CourseRepository._();
+  factory CourseRepository.get() => _instance ??= CourseRepository._();
 }

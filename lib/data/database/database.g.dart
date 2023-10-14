@@ -189,48 +189,6 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
                   'section': item.section,
                   'create_time': _dateTimeConverter.encode(item.createTime),
                   'update_time': _dateTimeConverter.encode(item.updateTime)
-                }),
-        _semesterScheduleUpdateAdapter = UpdateAdapter(
-            database,
-            'semester_schedule',
-            ['id'],
-            (SemesterSchedule item) => <String, Object?>{
-                  'id': item.id,
-                  'username': item.username,
-                  'is_manually_add': item.isManuallyAdd ? 1 : 0,
-                  'type': item.type,
-                  'typename': item.typename,
-                  'exam_type': item.examType,
-                  'college_name': item.collegeName,
-                  'college_no': item.collegeNo,
-                  'major_name': item.majorName,
-                  'major_no': item.majorNo,
-                  'grade': item.grade,
-                  'name': item.name,
-                  'course_no': item.courseNo,
-                  'teacher_no': item.teacherNo,
-                  'teacher': item.teacher,
-                  'term': item.term,
-                  'course_id': item.courseId,
-                  'capacity': item.capacity,
-                  'selected': item.selected,
-                  'credits': item.credits,
-                  'is_lab': item.isLab ? 1 : 0,
-                  'lab_lesson_id': item.labLessonId,
-                  'batch': item.batch,
-                  'assistant_no': item.assistantNo,
-                  'comment': item.comment,
-                  'experiment': item.experiment,
-                  'classroom': item.classroom,
-                  'classroom_alias': item.classroomAlias,
-                  'classroom_id': item.classroomId,
-                  'start_week': item.startWeek,
-                  'end_week': item.endWeek,
-                  'odd_week': item.oddWeek ? 1 : 0,
-                  'weekday': item.weekday,
-                  'section': item.section,
-                  'create_time': _dateTimeConverter.encode(item.createTime),
-                  'update_time': _dateTimeConverter.encode(item.updateTime)
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -240,8 +198,6 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
   final QueryAdapter _queryAdapter;
 
   final InsertionAdapter<SemesterSchedule> _semesterScheduleInsertionAdapter;
-
-  final UpdateAdapter<SemesterSchedule> _semesterScheduleUpdateAdapter;
 
   @override
   Future<List<SemesterSchedule>> getAll() async {
@@ -423,14 +379,9 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
   }
 
   @override
-  Future<void> insertOrUpdateSemesterSchedule(SemesterSchedule semesterSchedule) async {
+  Future<void> insertOrUpdateSemesterSchedule(
+      SemesterSchedule semesterSchedule) async {
     await _semesterScheduleInsertionAdapter.insert(
-        semesterSchedule, OnConflictStrategy.replace);
-  }
-
-  @override
-  Future<void> updateSemesterSchedule(SemesterSchedule semesterSchedule) async {
-    await _semesterScheduleUpdateAdapter.update(
         semesterSchedule, OnConflictStrategy.replace);
   }
 }

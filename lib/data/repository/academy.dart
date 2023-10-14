@@ -18,6 +18,6 @@ class AcademyRepository {
 
   static AcademyRepository? _instance = null;
 
-  factory AcademyRepository.getInstance() =>
+  factory AcademyRepository.get() =>
       _instance ??= AcademyRepository._();
 }

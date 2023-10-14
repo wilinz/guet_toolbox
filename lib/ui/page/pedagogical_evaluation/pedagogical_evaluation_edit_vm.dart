@@ -33,7 +33,7 @@ class PedagogicalEvaluationEditViewModel extends GetxController {
   PedagogicalEvaluationEditViewModel(this.pedagogicalEvaluation);
 
   Future<List<PedagogicalEvaluationQuestion>> getOptions() async {
-    return PedagogicalEvaluationRepository.getInstance()
+    return PedagogicalEvaluationRepository.get()
         .getQuestions(pedagogicalEvaluation.term,
             pedagogicalEvaluation.courseno, pedagogicalEvaluation.teacherno)
         .then((value) {
@@ -43,7 +43,7 @@ class PedagogicalEvaluationEditViewModel extends GetxController {
   }
 
   Future<PedagogicalEvaluationData> getCurrent() async {
-    return PedagogicalEvaluationRepository.getInstance()
+    return PedagogicalEvaluationRepository.get()
         .getCurrent(
       term: pedagogicalEvaluation.term,
       courseno: pedagogicalEvaluation.courseno,
@@ -61,7 +61,7 @@ class PedagogicalEvaluationEditViewModel extends GetxController {
     if (data.isEmpty) {
       throw Exception("您还没选择任何选项");
     }
-    return PedagogicalEvaluationRepository.getInstance().submitQuestions(
+    return PedagogicalEvaluationRepository.get().submitQuestions(
         term: pedagogicalEvaluation.term,
         courseid: pedagogicalEvaluation.courseid,
         courseno: pedagogicalEvaluation.courseno,
@@ -83,7 +83,7 @@ class PedagogicalEvaluationEditViewModel extends GetxController {
   Future<CommonResponse> submit(
       {required String comment, required bool isSaveOnly}) async {
     final average = calculateTheScore();
-    return PedagogicalEvaluationRepository.getInstance().submit(
+    return PedagogicalEvaluationRepository.get().submit(
         data: pedagogicalEvaluation,
         comment: comment,
         score: average,

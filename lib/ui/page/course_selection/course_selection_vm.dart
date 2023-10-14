@@ -28,7 +28,7 @@ class CourseSelectionViewModel extends GetxController {
   final major = <Major>[].obs;
   final planCourses = <ExpandableWrapper<PlanCourse>>[].obs;
   final planCoursesBackup = <ExpandableWrapper<PlanCourse>>[].obs;
-  final grades = CourseRepository.getInstance().getLastSixYears().obs;
+  final grades = CourseRepository.get().getLastSixYears().obs;
   final filterGroup = <String, Filter<PlanCourse>>{}.obs;
   final currentTerm = Rx<Term?>(null);
   final currentGrade = RxnInt(null);
@@ -56,7 +56,7 @@ class CourseSelectionViewModel extends GetxController {
   }
 
   Future<List<Major>> getMajors() async {
-    return MajorsRepository.getInstance().getMajors().then((value) {
+    return MajorsRepository.get().getMajors().then((value) {
       value.sort((a, b) {
         return a.shortPinyin.compareTo(b.shortPinyin);
       });
@@ -66,21 +66,21 @@ class CourseSelectionViewModel extends GetxController {
   }
 
   Future<List<Academy>> getAcademy() async {
-    return AcademyRepository.getInstance().getAcademy().then((value) {
+    return AcademyRepository.get().getAcademy().then((value) {
       academy.value = value;
       return value;
     });
   }
 
   Future<List<Term>> getTermList() {
-    return CourseRepository.getInstance().getTermList().then((value) {
+    return CourseRepository.get().getTermList().then((value) {
       terms..clear()..addAll(value.distinctBy((e)=>e.term));
       return value;
     });
   }
 
   Future<StudentInfo> getStudentInfo() async {
-    return StudentInfoRepository.getInstance().getStudentInfo().then((value) {
+    return StudentInfoRepository.get().getStudentInfo().then((value) {
       studentInfo = value;
       currentTerm.value = terms.firstWhereOrNull((e) => e.term == value.term);
       currentGrade.value = int.parse(value.grade);
@@ -89,16 +89,16 @@ class CourseSelectionViewModel extends GetxController {
   }
 
   Future<CommonResponse> select(PlanCourseDetail planCourseDetail) async {
-    return CourseRepository.getInstance().select(planCourseDetail.copyWith(term: currentTerm.value!.term));
+    return CourseRepository.get().select(planCourseDetail.copyWith(term: currentTerm.value!.term));
   }
 
   Future<CommonResponse> unselect(PlanCourseDetail planCourseDetail) async {
-    return CourseRepository.getInstance().unselect(planCourseDetail.copyWith(term: currentTerm.value!.term));
+    return CourseRepository.get().unselect(planCourseDetail.copyWith(term: currentTerm.value!.term));
   }
 
   Future<List<PlanCourseDetail>> getDetail(ExpandableWrapper<PlanCourse> planCourseWrapper) {
     final planCourse = planCourseWrapper.data;
-    return CourseRepository.getInstance()
+    return CourseRepository.get()
         .getPlanCourseDetail(planCourse.id, planCourse.courseid)
         .then((value) {
       planCourse.details = value;
@@ -115,7 +115,7 @@ class CourseSelectionViewModel extends GetxController {
       bool networkCourseOnly = false}) async {
     planCourses.clear();
     planCoursesBackup.clear();
-    return CourseRepository.getInstance()
+    return CourseRepository.get()
         .getPlan(term, grade, dptno, spno)
         .then((planCourses) async {
       this.planCourses.value = planCourses.map((e) => ExpandableWrapper(data: e)).toList();

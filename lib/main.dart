@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:guettoolbox/data/get_storage.dart';
+import 'package:guettoolbox/data/network.dart';
 import 'package:guettoolbox/data/repository/campus_network.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/package_info.dart';
@@ -23,6 +24,7 @@ Future<void> main() async {
   await Future.wait([
     initGetStorage(),
     initPackageInfo(),
+    AppNetwork.init()
   ]);
   if (PlatformUtil.isDesktop()) {
     final padding = 50;
@@ -47,8 +49,8 @@ Future<void> main() async {
       await windowManager.focus();
     });
   }
-  NetworkDetectionRepository.getInstance().refresh();
-  CampusNetworkRepository.getInstance().refresh();
+  NetworkDetectionRepository.get().refresh();
+  CampusNetworkRepository.get().refresh();
 
   runApp(const MyApp());
 }
@@ -109,8 +111,8 @@ class _MyAppState extends State<MyApp> with WindowListener {
     subscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
-      NetworkDetectionRepository.getInstance().refresh();
-      CampusNetworkRepository.getInstance().refresh();
+      NetworkDetectionRepository.get().refresh();
+      CampusNetworkRepository.get().refresh();
     });
   }
 

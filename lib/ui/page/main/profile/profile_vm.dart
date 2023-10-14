@@ -7,7 +7,7 @@ class ProfileViewModel extends GetxController{
   final studentInfo = Rx<StudentInfo?>(null);
 
   Future<StudentInfo> getStudentInfo() async {
-    return StudentInfoRepository.getInstance().getStudentInfo().then((value) {
+    return StudentInfoRepository.get().getStudentInfo().then((value) {
       studentInfo.value = value;
       return value;
     });

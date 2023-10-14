@@ -10,15 +10,15 @@ class PedagogicalEvaluationViewModel extends GetxController {
   final currentTerm = Rx<Term?>(null);
 
   Future<List<Term>> getTermList() {
-    return CourseRepository.getInstance().getTermList().then((value) {
+    return CourseRepository.get().getTermList().then((value) {
       terms.value = value;
-      currentTerm.value = CourseRepository.getInstance().getCurrentTerm(terms, false);
+      currentTerm.value = CourseRepository.get().getCurrentTerm(terms, false);
       return value;
     });
   }
 
   Future<List<PedagogicalEvaluation>> getList(String term) async {
-    return PedagogicalEvaluationRepository.getInstance()
+    return PedagogicalEvaluationRepository.get()
         .getList(term)
         .then((value) {
       pedagogicalEvaluations.value = value;

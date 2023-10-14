@@ -14,7 +14,7 @@ class PedagogicalEvaluationPage extends StatefulWidget {
 
 class _PedagogicalEvaluationPageState extends State<PedagogicalEvaluationPage> {
 
-  final viewModel = Get.put(PedagogicalEvaluationViewModel());
+  final c = Get.put(PedagogicalEvaluationViewModel());
 
   // var isB
   @override
@@ -42,7 +42,7 @@ class _PedagogicalEvaluationPageState extends State<PedagogicalEvaluationPage> {
                     buildTermDropdownButton(),
                     ElevatedButton(
                         onPressed: () {
-                          viewModel.getList(viewModel.currentTerm.value!.term);
+                          c.getList(c.currentTerm.value!.term);
                         },
                         child: Text("查询")),
                   ]),
@@ -50,9 +50,9 @@ class _PedagogicalEvaluationPageState extends State<PedagogicalEvaluationPage> {
             Expanded(
                 child: Obx(() => ListView.builder(
                       padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
-                      itemCount: viewModel.pedagogicalEvaluations.length,
+                      itemCount: c.pedagogicalEvaluations.length,
                       itemBuilder: (context, index) {
-                        final item = viewModel.pedagogicalEvaluations[index];
+                        final item = c.pedagogicalEvaluations[index];
                         return Container(
                           margin: EdgeInsets.only(top: 4, bottom: 4),
                           child: GestureDetector(
@@ -101,19 +101,19 @@ class _PedagogicalEvaluationPageState extends State<PedagogicalEvaluationPage> {
   Widget buildTermDropdownButton() {
     return Obx(() =>
         DropdownButton<Term>(
-            items: createTermItemList(viewModel),
+            items: createTermItemList(),
             hint: Container(
                 padding: EdgeInsets.all(8),
                 child: Center(child: Text("请选择学期"))),
-            value: viewModel.currentTerm.value,
+            value: c.currentTerm.value,
             onChanged: (v) {
-              viewModel.currentTerm.value =
-                  viewModel.terms.firstWhere((e) => e == v);
+              c.currentTerm.value =
+                  c.terms.firstWhere((e) => e == v);
             }));
   }
 
-  createTermItemList(PedagogicalEvaluationViewModel viewModel) {
-    return viewModel.terms.map((t) {
+  createTermItemList() {
+    return c.terms.map((t) {
       return DropdownMenuItem<Term>(
         child: Container(
             padding: EdgeInsets.all(8), child: Center(child: Text(t.termName))),
@@ -125,8 +125,8 @@ class _PedagogicalEvaluationPageState extends State<PedagogicalEvaluationPage> {
   @override
   void initState() {
     super.initState();
-    viewModel.getTermList().then((value) {
-      viewModel.getList(viewModel.currentTerm.value!.term);
+    c.getTermList().then((value) {
+      c.getList(c.currentTerm.value!.term);
     });
   }
 }

@@ -51,6 +51,6 @@ class PedagogicalEvaluationRepository {
 
   static PedagogicalEvaluationRepository? _instance = null;
 
-  factory PedagogicalEvaluationRepository.getInstance() =>
+  factory PedagogicalEvaluationRepository.get() =>
       _instance ??= PedagogicalEvaluationRepository._();
 }

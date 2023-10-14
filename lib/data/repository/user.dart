@@ -18,6 +18,6 @@ class UserRepository {
 
   static UserRepository? _instance;
 
-  factory UserRepository.getInstance() =>
+  factory UserRepository.get() =>
       _instance ??= UserRepository._create();
 }

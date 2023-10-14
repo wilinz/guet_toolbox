@@ -219,7 +219,7 @@ class LoginService {
   /// {"res":"success","mobile":"123****4567","returnMessage":"动态口令已发送到手机","codeTime":120}
   static Future<DynamicCode> getDynamicCode(String username) async {
     final isCampusNetwork =
-        await NetworkDetectionRepository.getInstance().isCampusNetwork ?? false;
+        await NetworkDetectionRepository.get().isCampusNetwork ?? false;
     final resp = await (await AppNetwork.getDio()).post(
         "${getCasBaseUrl(isCampusNetwork)}authserver/dynamicCode/getDynamicCodeByReauth.do",
         data: {
@@ -235,7 +235,7 @@ class LoginService {
   ///{"msg":"动态码错误","code":"reAuth_failed"}
   static Future<ReAuth> reAuthCheck(String code) async {
     final isCampusNetwork =
-        await NetworkDetectionRepository.getInstance().isCampusNetwork ?? false;
+        await NetworkDetectionRepository.get().isCampusNetwork ?? false;
     final resp = await (await AppNetwork.getDio()).post(
         "${getCasBaseUrl(isCampusNetwork)}authserver/reAuthCheck/reAuthSubmit.do",
         data: {

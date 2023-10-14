@@ -27,7 +27,7 @@ class _SchedulePageState extends State<SchedulePage>
   void initState() {
     super.initState();
 
-    onLoginEvent = LoginRepository.getInstance().onLoginEvent.listen((user) {
+    onLoginEvent = LoginRepository.get().onLoginEvent.listen((user) {
       viewModel.updateToToday();
     });
     viewModel.getWeekday(DateTime.now());

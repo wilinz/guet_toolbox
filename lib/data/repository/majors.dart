@@ -14,5 +14,5 @@ class MajorsRepository {
 
   static MajorsRepository? _instance = null;
 
-  factory MajorsRepository.getInstance() => _instance ??= MajorsRepository._();
+  factory MajorsRepository.get() => _instance ??= MajorsRepository._();
 }

@@ -208,7 +208,7 @@ class _CampusNetworkPageState extends State<CampusNetworkPage> {
   void initState() {
     super.initState();
     initAsync();
-    CampusNetworkRepository.getInstance().refresh();
+    CampusNetworkRepository.get().refresh();
   }
 
   void initAsync() async {

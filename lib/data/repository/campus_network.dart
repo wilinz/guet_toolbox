@@ -50,6 +50,6 @@ class CampusNetworkRepository {
 
   static CampusNetworkRepository? _instance;
 
-  factory CampusNetworkRepository.getInstance() =>
+  factory CampusNetworkRepository.get() =>
       _instance ??= CampusNetworkRepository._create();
 }

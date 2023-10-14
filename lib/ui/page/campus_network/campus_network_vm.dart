@@ -13,12 +13,12 @@ import 'package:rxdart/rxdart.dart';
 
 class CampusNetworkViewModel extends GetxController {
   ValueStream<CampusNetworkAuthOnlineList?> get campusNetworkAuthState =>
-      CampusNetworkRepository.getInstance().campusNetworkAuthState;
+      CampusNetworkRepository.get().campusNetworkAuthState;
 
   var isLoading = false.obs;
 
   ValueStream<bool?> get isCampusNetworkState =>
-      NetworkDetectionRepository.getInstance().isCampusNetworkState;
+      NetworkDetectionRepository.get().isCampusNetworkState;
 
   StreamSubscription<bool?>? _sub;
 
@@ -27,7 +27,7 @@ class CampusNetworkViewModel extends GetxController {
     super.onInit();
     _sub = isCampusNetworkState.listen((status) {
       if (status == true) {
-        CampusNetworkRepository.getInstance().refresh();
+        CampusNetworkRepository.get().refresh();
       }
     });
   }
@@ -59,24 +59,24 @@ class CampusNetworkViewModel extends GetxController {
     CampusNetworkUserRepository.get()
       ..insertUser(user)
       ..unsetDefaultOtherUser(username);
-    await CampusNetworkRepository.getInstance().login(username, password, isp);
-    CampusNetworkRepository.getInstance().refresh();
+    await CampusNetworkRepository.get().login(username, password, isp);
+    CampusNetworkRepository.get().refresh();
   }
 
   Future<void> exitAccount(OnlineUserInfo userInfo) async {
     await unbind(userInfo.userAccount);
     await logout(userInfo);
-    CampusNetworkRepository.getInstance().refresh();
+    CampusNetworkRepository.get().refresh();
   }
 
   Future<CampusNetworkAuthResponseCommon> unbind(String userAccount) =>
-      CampusNetworkRepository.getInstance().unbind(userAccount);
+      CampusNetworkRepository.get().unbind(userAccount);
 
   Future<CampusNetworkAuthResponseCommon> logout(OnlineUserInfo userInfo) =>
-      CampusNetworkRepository.getInstance().logout(userInfo);
+      CampusNetworkRepository.get().logout(userInfo);
 
   Future<dynamic> onlineList() =>
-      CampusNetworkRepository.getInstance().onlineList();
+      CampusNetworkRepository.get().onlineList();
 
   Future<bool> isOnline() async {
     final respData = await onlineList();
@@ -87,7 +87,7 @@ class CampusNetworkViewModel extends GetxController {
       CampusNetworkUserRepository.get().getRecentUser();
 
   void refreshData() async {
-    CampusNetworkRepository.getInstance().refresh();
-    NetworkDetectionRepository.getInstance().refresh();
+    CampusNetworkRepository.get().refresh();
+    NetworkDetectionRepository.get().refresh();
   }
 }

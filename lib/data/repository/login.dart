@@ -27,7 +27,7 @@ class LoginRepository {
     }
 
     final isCampusNetwork =
-        await NetworkDetectionRepository.getInstance().isCampusNetwork;
+        await NetworkDetectionRepository.get().isCampusNetwork;
     bool ok;
     if (isCampusNetwork == true) {
       ok = await LoginService.loginWithCampusNetwork(
@@ -55,6 +55,6 @@ class LoginRepository {
 
   static LoginRepository? _instance;
 
-  factory LoginRepository.getInstance() =>
+  factory LoginRepository.get() =>
       _instance ??= LoginRepository._create();
 }

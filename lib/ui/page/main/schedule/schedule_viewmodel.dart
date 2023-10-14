@@ -115,7 +115,7 @@ class ScheduleViewModel extends GetxController {
       if (this.currentTerm.value == null) {
         final terms = await getTerms();
         this.currentTerm.value =
-            CourseRepository.getInstance().getCurrentTerm(terms, true);
+            CourseRepository.get().getCurrentTerm(terms, true);
       }
       if (this.currentTerm.value == null) throw Exception("");
       currentTerm = this.currentTerm.value!;
@@ -123,7 +123,7 @@ class ScheduleViewModel extends GetxController {
       currentTerm = term;
     }
 
-    final week = CourseRepository.getInstance().getWeek(currentTerm, dateTime);
+    final week = CourseRepository.get().getWeek(currentTerm, dateTime);
     scheduleDatetime.value = ScheduleDatetime(
         term: currentTerm,
         dateTime: dateTime,
@@ -156,40 +156,37 @@ class ScheduleViewModel extends GetxController {
   }
 
   Future<List<Term>> getTerms() {
-    return CourseRepository.getInstance().getTermList().then((terms) async {
+    return CourseRepository.get().getTermList().then((terms) async {
       termList.value = terms;
       return terms;
     });
   }
 
-  Future<List<SemesterSchedule>> getCourseList(String term, int week) {
-    return CourseRepository.getInstance()
-        .getSemesterSchedule(term)
-        .then((value) {
-      courseList.clear();
-      for (var i = 0; i < 35; i++) {
-        var column = (i + 1) % 7;
-        if (column == 0) column = 7;
-        var row = i ~/ 7 + 1;
-        var courses = value
-            .where((e) =>
-                e.weekday == column &&
-                e.section == row &&
-                e.startWeek <= week &&
-                e.endWeek >= week)
-            .toList();
-        courseList.add(courses);
-        if (courses.isNotEmpty) {
-          if (colorsMap[courses.first.courseNo] == null) {
-            final index = Random().nextInt(colors.length);
-            final color = colors[index];
-            colorsMap[courses.first.courseNo] = color;
-            colors.removeAt(index);
-            if (colors.isEmpty) colors = colorsBackup;
-          }
+  getCourseList(String term, int week) async {
+    final value = await CourseRepository.get().getSemesterSchedule(term);
+    courseList.clear();
+    for (var i = 0; i < 35; i++) {
+      var column = (i + 1) % 7;
+      if (column == 0) column = 7;
+      var row = i ~/ 7 + 1;
+      var courses = value
+          .where((e) =>
+              e.weekday == column &&
+              e.section == row &&
+              e.startWeek <= week &&
+              e.endWeek >= week)
+          .toList();
+      courseList.add(courses);
+      if (courses.isNotEmpty) {
+        if (colorsMap[courses.first.courseNo] == null) {
+          final index = Random().nextInt(colors.length);
+          final color = colors[index];
+          colorsMap[courses.first.courseNo] = color;
+          colors.removeAt(index);
+          if (colors.isEmpty) colors = colorsBackup;
         }
       }
-      return value;
-    });
+    }
   }
+
 }

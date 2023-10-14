@@ -29,6 +29,6 @@ class NetworkDetectionRepository {
 
   static NetworkDetectionRepository? _instance = null;
 
-  factory NetworkDetectionRepository.getInstance() =>
+  factory NetworkDetectionRepository.get() =>
       _instance ??= NetworkDetectionRepository._();
 }

@@ -8,7 +8,7 @@ class StudentInfoRepository {
 
   Future<StudentInfo> getStudentInfo() async {
     final db = await getDatabase();
-    final user = await UserRepository.getInstance().getActiveUser();
+    final user = await UserRepository.get().getActiveUser();
     if (user != null) {
       final userInfo = await db.studentInfoDao.get(user.username);
       if (userInfo != null) {
@@ -24,6 +24,6 @@ class StudentInfoRepository {
 
   static StudentInfoRepository? _instance = null;
 
-  factory StudentInfoRepository.getInstance() =>
+  factory StudentInfoRepository.get() =>
       _instance ??= StudentInfoRepository._();
 }

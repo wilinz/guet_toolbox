@@ -11,14 +11,14 @@ class LoginViewModel extends GetxController {
   var isLoading = false.obs;
 
   Future<bool?> get isCampusNetwork =>
-      NetworkDetectionRepository.getInstance().isCampusNetwork;
+      NetworkDetectionRepository.get().isCampusNetwork;
 
-  Stream<bool?> get isCampusNetworkState => NetworkDetectionRepository.getInstance().isCampusNetworkState;
+  Stream<bool?> get isCampusNetworkState => NetworkDetectionRepository.get().isCampusNetworkState;
 
   Future<bool> login(
       String username, String password) {
     isLoading.value = true;
-    return LoginRepository.getInstance()
+    return LoginRepository.get()
         .loginAcademicAffairsSystem(username, password)
         .whenComplete(() {
       isLoading.value = false;
@@ -28,11 +28,11 @@ class LoginViewModel extends GetxController {
   Map<String, dynamic>? vcode;
 
   Future<DynamicCode> getDynamicCode(String username) =>
-      LoginRepository.getInstance().getDynamicCode(username);
+      LoginRepository.get().getDynamicCode(username);
 
   Future<ReAuth> reAuthCheck(String code) =>
-      LoginRepository.getInstance().reAuthCheck(code);
+      LoginRepository.get().reAuthCheck(code);
 
   Future<User?> getRecentUser() async =>
-      UserRepository.getInstance().getRecentUser();
+      UserRepository.get().getRecentUser();
 }

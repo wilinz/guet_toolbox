@@ -95,7 +95,7 @@ class AppNetwork {
 
   static Future<String> get baseUrlAutoAdapt async {
     final isCampusNetwork =
-        await NetworkDetectionRepository.getInstance().isCampusNetwork;
+        await NetworkDetectionRepository.get().isCampusNetwork;
     if (isCampusNetwork == true) return baseUrl;
     return Uri.parse(baseUrl).toWebVpnUrl().toString();
   }
@@ -114,11 +114,17 @@ class AppNetwork {
     return dio;
   }
 
-  get redirectDio => _dio;
+  factory AppNetwork.get() => _instance!;
 
-  get dio => _dio1;
+  static Future<void> init() async {
+    getInstance();
+  }
 
-  get redirect2Dio => _dio2;
+  Dio get redirectDio => _dio;
+
+  Dio get dio => _dio1;
+
+  Dio get redirect2Dio => _dio2;
 
   late CookieJar cookieJar;
 
@@ -170,14 +176,14 @@ class LoginInterceptor extends Interceptor {
       var path = uri.path;
       if ((path.endsWith("/login") || path.endsWith("/Login")) &&
           (uri.query.isEmpty || uri.queryParameters["ReturnUrl"] != null)) {
-        var user = await UserRepository.getInstance().getActiveUser();
+        var user = await UserRepository.get().getActiveUser();
         var username = user?.username;
         var password = user?.password;
         if (username != null && password != null) {
           for (var i = 0; i < 2; i++) {
             try {
               print("正在登录");
-              var success = await LoginRepository.getInstance()
+              var success = await LoginRepository.get()
                   .loginAcademicAffairsSystem(username, password);
               if (!success) throw LogonFailedException("登录失败");
               await Future.delayed(Duration(milliseconds: 500));
@@ -226,7 +232,7 @@ class BaseUrlInterceptor extends Interceptor {
       RequestOptions options, RequestInterceptorHandler handler) async {
     if (hosts.contains(options.uri.host)) {
       final isCampusNetwork =
-          await NetworkDetectionRepository.getInstance().isCampusNetwork;
+          await NetworkDetectionRepository.get().isCampusNetwork;
       if (isCampusNetwork != true) {
         final newOptions = options.copyWith(
             baseUrl: Uri.parse(options.baseUrl).toWebVpnUrl().toString());

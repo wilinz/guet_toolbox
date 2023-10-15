@@ -6,17 +6,15 @@ import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart';
-import 'package:guettoolbox/common/key.dart';
 import 'package:guettoolbox/data/repository/login.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/data/repository/user.dart';
 import 'package:guettoolbox/data/service/login.dart';
-import 'package:guettoolbox/ui/route.dart';
 import 'package:guettoolbox/util/ext.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 extension DioExt on Dio {
   Dio setFollowRedirects(bool followRedirects) {
@@ -51,6 +49,33 @@ class AppNetwork {
     return cookieJar;
   }
 
+  static Future<Dio> setupUstcGuetDio(Dio dio, CookieJar cookieJar) async {
+    dio.options = BaseOptions(
+      baseUrl: "http://utsc.guet.edu.cn/",
+      headers: {"User-Agent": userAgent,"Referer":"http://utsc.guet.edu.cn/EmptyClassRoom.aspx"},
+      followRedirects: true,
+      validateStatus: (int? status) =>
+      status != null,
+    );
+    dio.interceptors.add(CookieManager(cookieJar));
+    // _proxy(dio);
+    if (kDebugMode) {
+      // setDioLogger(dio);
+    }
+    return dio;
+  }
+
+  static void setDioLogger(Dio dio) {
+    dio.interceptors.add(PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+        responseHeader: true,
+        error: true,
+        compact: true,
+        maxWidth: 200));
+  }
+
   static Future<Dio> setupDio(Dio dio, CookieJar cookieJar) async {
     dio.options = BaseOptions(
       baseUrl: await baseUrl,
@@ -64,14 +89,7 @@ class AppNetwork {
     // _proxy(dio);
     dio.interceptors.add(RefererInterceptor());
     if (kDebugMode) {
-      dio.interceptors.add(PrettyDioLogger(
-          requestHeader: true,
-          requestBody: true,
-          responseBody: true,
-          responseHeader: true,
-          error: true,
-          compact: true,
-          maxWidth: 200));
+      setDioLogger(dio);
     }
     dio.interceptors.add(JsonpInterceptor());
     dio.interceptors.add(LoginInterceptor(dio));
@@ -103,6 +121,7 @@ class AppNetwork {
   late Dio _dio;
   late Dio _dio1;
   late Dio _dio2;
+  late Dio utscGuetDio;
 
   AppNetwork._create();
 
@@ -117,7 +136,7 @@ class AppNetwork {
   factory AppNetwork.get() => _instance!;
 
   static Future<void> init() async {
-    getInstance();
+    await getInstance();
   }
 
   Dio get redirectDio => _dio;
@@ -138,6 +157,8 @@ class AppNetwork {
 
       _instance!._dio1 = await setupDio(Dio(), _instance!.cookieJar);
       _instance!._dio1.setFollowRedirects(false);
+
+      _instance!.utscGuetDio = await setupUstcGuetDio(Dio(), _instance!.cookieJar);
 
       final dio2 = Dio();
       _instance!._dio2 = await setupDio(dio2, _instance!.cookieJar);

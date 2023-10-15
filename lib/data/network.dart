@@ -52,10 +52,12 @@ class AppNetwork {
   static Future<Dio> setupUstcGuetDio(Dio dio, CookieJar cookieJar) async {
     dio.options = BaseOptions(
       baseUrl: "http://utsc.guet.edu.cn/",
-      headers: {"User-Agent": userAgent,"Referer":"http://utsc.guet.edu.cn/EmptyClassRoom.aspx"},
+      headers: {
+        "User-Agent": userAgent,
+        "Referer": "http://utsc.guet.edu.cn/EmptyClassRoom.aspx"
+      },
       followRedirects: true,
-      validateStatus: (int? status) =>
-      status != null,
+      validateStatus: (int? status) => status != null,
     );
     dio.interceptors.add(CookieManager(cookieJar));
     // _proxy(dio);
@@ -135,8 +137,8 @@ class AppNetwork {
 
   factory AppNetwork.get() => _instance!;
 
-  static Future<void> init() async {
-    await getInstance();
+  static Future<void> init({bool isTest = false}) async {
+    await getInstance(isTest: isTest);
   }
 
   Dio get redirectDio => _dio;
@@ -147,10 +149,10 @@ class AppNetwork {
 
   late CookieJar cookieJar;
 
-  static Future<AppNetwork> getInstance() async {
+  static Future<AppNetwork> getInstance({bool isTest = false}) async {
     if (_instance == null) {
       _instance = AppNetwork._create();
-      _instance!.cookieJar = await getCookieJar();
+      _instance!.cookieJar = !isTest ? await getCookieJar() : CookieJar();
 
       _instance!._dio = await setupDio(Dio(), _instance!.cookieJar);
       _instance!._dio.setFollowRedirects(true);
@@ -158,7 +160,8 @@ class AppNetwork {
       _instance!._dio1 = await setupDio(Dio(), _instance!.cookieJar);
       _instance!._dio1.setFollowRedirects(false);
 
-      _instance!.utscGuetDio = await setupUstcGuetDio(Dio(), _instance!.cookieJar);
+      _instance!.utscGuetDio =
+          await setupUstcGuetDio(Dio(), _instance!.cookieJar);
 
       final dio2 = Dio();
       _instance!._dio2 = await setupDio(dio2, _instance!.cookieJar);

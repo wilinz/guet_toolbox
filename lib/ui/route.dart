@@ -5,6 +5,7 @@ import 'package:guettoolbox/data/model/pedagogical_evaluation/pedagogical_evalua
 import 'package:guettoolbox/ui/page/campus_network/campus_network.dart';
 import 'package:guettoolbox/ui/page/course_detail/course_detail.dart';
 import 'package:guettoolbox/ui/page/course_selection/course_selection.dart';
+import 'package:guettoolbox/ui/page/empty_classroom/empty_classroom.dart';
 import 'package:guettoolbox/ui/page/exam_scores/exam_scores_page.dart';
 import 'package:guettoolbox/ui/page/login/login.dart';
 import 'package:guettoolbox/ui/page/main/main.dart';
@@ -41,6 +42,8 @@ class AppRoute {
   static const String courseDetailPage = "/CourseDetailPage";
 
   static const String examScoresPage = "/ExamScoresPage";
+
+  static const String emptyClassroomPage = "/EmptyClassroomPage";
 
   static List<GetPage> routes = [
     GetPage(
@@ -83,6 +86,10 @@ class AppRoute {
     GetPage(
       name: examScoresPage,
       page: () => ExamScoresPage(),
+    ),
+    GetPage(
+      name: emptyClassroomPage,
+      page: () => EmptyClassroomPage(),
     ),
   ].map((e) => e.copy(middlewares: [WindowTopBarMiddleWare()])).toList();
 }

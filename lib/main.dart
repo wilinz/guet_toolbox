@@ -41,7 +41,7 @@ Future<void> main() async {
       await windowManager.setMinimizable(true);
       await windowManager.setAlignment(Alignment.centerRight);
       await windowManager.setMaximizable(false);
-      await windowManager.setResizable(false);
+      await windowManager.setResizable(true);
       final position = await windowManager.getPosition();
       await windowManager.setPosition(Offset(position.dx - padding, position.dy));
       // await windowManager.setTitleBarStyle(TitleBarStyle.normal,windowButtonVisibility: true);

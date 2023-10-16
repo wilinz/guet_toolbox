@@ -1,6 +1,7 @@
 import 'package:dart_extensions/dart_extensions.dart';
 import 'package:dio/dio.dart';
 import 'package:guettoolbox/common/list.dart';
+import 'package:guettoolbox/data/model/empty_classroom/empty_classroom.dart';
 import 'package:html/parser.dart' as htmlParser;
 import 'package:guettoolbox/data/network.dart';
 
@@ -29,8 +30,11 @@ class EmptyClassRoom {
 
   /// classroom: eg. "17211"
   /// date: eg. "2023-10-16"
-  static Future<List<Map<String, String>>> getEmptyClassRoom(
-      String classroom, String date, int startSequence, int endSequence) async {
+  static Future<List<EmptyClassroomData>> getEmptyClassRoom(
+      {required String classroom,
+      required String date,
+      required int startSequence,
+      required int endSequence}) async {
     final parameters = await getEmptyClassRoomPageParameters();
     final resp = await AppNetwork.get().utscGuetDio.post(_url,
         options: Options(
@@ -47,27 +51,32 @@ class EmptyClassRoom {
           "txtendsequence": endSequence,
           "Button1": "确定"
         });
-    final doc = htmlParser.parse(resp.data);
-    final table = doc.getElementById("GridView1")!;
-    final children = table.getElementsByTagName("tbody")[0].children;
-    List<String> header = [];
-    List<Map<String, String>> dataList = [];
+    try {
+      final doc = htmlParser.parse(resp.data);
+      final table = doc.getElementById("GridView1")!;
+      final children = table.getElementsByTagName("tbody")[0].children;
+      List<String> header = [];
+      List<Map<String, String>> dataList = [];
 
-    for (int i = 0; i < children.length; i++) {
-      final row = children[i];
-      if (i == 0) {
-        header = row.children.mapList((e) => e.text.trim());
-        continue;
-      }
-      final data =
-          row.children.mapIndexed((i, e) => {header[i]: e.text.trim()}).toList();
-      final resultMap = data.fold<Map<String, String>>(
-        {},
-        (previousValue, element) => previousValue..addAll(element),
-      );
-      dataList.add(resultMap);
+      for (int i = 0; i < children.length; i++) {
+            final row = children[i];
+            if (i == 0) {
+              header = row.children.mapList((e) => e.text.trim());
+              continue;
+            }
+            final data = row.children
+                .mapIndexed((i, e) => {header[i]: e.text.trim()})
+                .toList();
+            final resultMap = data.fold<Map<String, String>>(
+              {},
+              (previousValue, element) => previousValue..addAll(element),
+            );
+            dataList.add(resultMap);
+          }
+
+      return emptyClassroomListFromJson(dataList);
+    } catch (e) {
+      return [];
     }
-
-    return dataList;
   }
 }

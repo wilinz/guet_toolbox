@@ -59,7 +59,8 @@ class AppNetwork {
       followRedirects: true,
       validateStatus: (int? status) => status != null,
     );
-    dio.interceptors.add(CookieManager(cookieJar));
+    dio.interceptors.addAll(
+        [BaseUrlInterceptor(), CookieManager(cookieJar), RefererInterceptor()]);
     // _proxy(dio);
     if (kDebugMode) {
       // setDioLogger(dio);
@@ -88,7 +89,7 @@ class AppNetwork {
     );
     dio.interceptors.add(BaseUrlInterceptor());
     dio.interceptors.add(CookieManager(cookieJar));
-    // _proxy(dio);
+    _proxy(dio);
     dio.interceptors.add(RefererInterceptor());
     if (kDebugMode) {
       setDioLogger(dio);
@@ -105,7 +106,7 @@ class AppNetwork {
           (client) {
         client.findProxy = (uri) {
           // 这里设置代理地址和端口号
-          return "PROXY 192.168.1.5:18888";
+          return "PROXY 127.0.0.1:18888";
         };
         client.badCertificateCallback =
             (X509Certificate cert, String host, int port) => true;
@@ -249,17 +250,20 @@ class LoginInterceptor extends Interceptor {
 }
 
 class BaseUrlInterceptor extends Interceptor {
-  final hosts = ["bkjw.guet.edu.cn"];
+  final hosts = ["bkjw.guet.edu.cn", "utsc.guet.edu.cn"];
 
   @override
   Future<void> onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
+    print(hosts.contains(options.uri.host));
     if (hosts.contains(options.uri.host)) {
       final isCampusNetwork =
           await NetworkDetectionRepository.get().isCampusNetwork;
       if (isCampusNetwork != true) {
-        final newOptions = options.copyWith(
-            baseUrl: Uri.parse(options.baseUrl).toWebVpnUrl().toString());
+        final uri = Uri.parse(options.baseUrl).toWebVpnUrl().toString();
+        print(options.baseUrl);
+        print(uri);
+        final newOptions = options.copyWith(baseUrl: uri);
         handler.next(newOptions);
         return;
       }

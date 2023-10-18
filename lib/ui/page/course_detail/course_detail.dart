@@ -1,28 +1,95 @@
+import 'package:dart_extensions/dart_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:guettoolbox/data/model/course/semester_schedule.dart';
 import 'package:guettoolbox/ui/widget/selection_transformer.dart';
 
 class CourseDetailPage extends StatefulWidget {
-  const CourseDetailPage({Key? key, required this.schedule}) : super(key: key);
-  final SemesterSchedule schedule;
+  CourseDetailPage({super.key, required this.schedule});
+
+  final List<SemesterSchedule> schedule;
 
   @override
   State<CourseDetailPage> createState() => _CourseDetailPageState();
 }
 
 class _CourseDetailPageState extends State<CourseDetailPage> {
-  SemesterSchedule get schedule => widget.schedule;
+  final pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
+    return PageView.builder(
+      itemCount: widget.schedule.length,
+      itemBuilder: (_,i){
+        return CourseDetailPageContent(
+          schedule: widget.schedule[i],
+          toNext: () {
+            pageController.nextPage(
+                duration: Duration(milliseconds: 200), curve: Curves.ease);
+          },
+          toPrevious: () {
+            pageController.previousPage(
+                duration: Duration(milliseconds: 200), curve: Curves.ease);
+          },
+          pageCount: () => widget.schedule.length,
+        );
+      },
+      controller: pageController,
+    );
+  }
+}
+
+class CourseDetailPageContent extends StatefulWidget {
+  const CourseDetailPageContent(
+      {Key? key,
+      required this.schedule,
+      this.toPrevious,
+      this.toNext,
+      this.pageCount})
+      : super(key: key);
+  final SemesterSchedule schedule;
+  final Function()? toPrevious;
+  final Function()? toNext;
+  final int Function()? pageCount;
+
+  @override
+  State<CourseDetailPageContent> createState() =>
+      _CourseDetailPageContentState();
+}
+
+class _CourseDetailPageContentState extends State<CourseDetailPageContent>
+    with AutomaticKeepAliveClientMixin {
+  SemesterSchedule get schedule => widget.schedule;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(schedule.name, overflow: TextOverflow.ellipsis),
-      ),
+          title: Text(schedule.name, overflow: TextOverflow.ellipsis),
+          actions: (widget.pageCount?.call() ?? 1) > 1
+              ? [
+                  IconButton(
+                      onPressed: () {
+                        widget.toPrevious?.call();
+                      },
+                      icon: Icon(Icons.navigate_before)),
+                  IconButton(
+                      onPressed: () {
+                        widget.toNext?.call();
+                      },
+                      icon: Icon(Icons.navigate_next)),
+                ]
+              : []),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Card(
+          padding: EdgeInsets.fromLTRB(16,0,16,16),
+          child: Container(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Builder(builder: (context) {
@@ -96,4 +163,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

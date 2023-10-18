@@ -1,0 +1,61 @@
+//https://bkjw.guet.edu.cn/student/getexamap?_dc=1678532122260&term=2022-2023_2&page=1&start=0&limit=25
+{
+  "success": true, // 请求是否成功的标志
+  "total": 0, // 考试记录的总数
+  "data": [ // 考试记录的数组
+    {
+      "croomno": "11A110*", // 考试地点编号
+      "croomname": null, // 考试地点名称（未提供）
+      "tch": null, // 教师（未提供）
+      "tch1": null, // 额外的教师信息1（未提供）
+      "tch2": null, // 额外的教师信息2（未提供）
+      "js": null, // JS（未提供）
+      "js1": null, // JS1（未提供）
+      "js2": null, // JS2（未提供）
+      "stid1": null, // 学生ID1（未提供）
+      "stid2": null, // 学生ID2（未提供）
+      "roomrs": 42, // 考场座位数
+      "pc": 2, // PC（未提供）
+      "term": "2022-2023_2", // 学期
+      "grade": "2022", // 年级
+      "dpt": null, // 院系（未提供）
+      "spno": "080717T", // 专业编号
+      "spname": "人工智能", // 专业名称
+      "courseid": "BT3301004X0", // 课程ID
+      "courseno": "2213545", // 课程编号
+      "labno": null, // 实验室编号（未提供）
+      "labname": null, // 实验室名称（未提供）
+      "dptno": "22", // 院系编号
+      "teacherno": "21016005", // 教师编号
+      "name": "教师", // 教师姓名
+      "xf": null, // 学分（未提供）
+      "cname": "课程名称", // 课程名称
+      "sctcnt": "84", // 选课人数
+      "stucnt": "84", // 学生人数
+      "scoretype": null, // 成绩类型（未提供）
+      "examt": null, // 考试类型（未提供）
+      "kctype": null, // 考试分类（未提供）
+      "typeno": null, // 类型编号（未提供）
+      "examdate": "2023-02-16", // 考试日期
+      "examtime": null, // 考试时间（未提供）
+      "examstate": 1, // 考试状态
+      "exammode": null, // 考试模式（未提供）
+      "xm": null, // XM（未提供）
+      "refertime": null, // 参考时间（未提供）
+      "zc": 1, // 周次
+      "xq": 4, // 星期
+      "ksjc": "3", // 考试节次
+      "jsjc": "3", // 结束节次
+      "bkzt": "1", // BKZT（未提供）
+      "kssj": "14:00-16:00", // 考试时间
+      "comm": "", // 备注
+      "rooms": "ls44901.480829", // 考场信息
+      "lsh": "20633", // 流水号
+      "zone": 2, // 区域
+      "checked1": null, // 已检查1（未提供）
+      "postdate": null, // 发布日期（未提供）
+      "operator": null, // 操作人员（未提供）
+      "pk": null // PK（未提供）
+    }
+  ]
+}

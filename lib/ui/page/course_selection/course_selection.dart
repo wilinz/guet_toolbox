@@ -1,9 +1,11 @@
 import 'dart:ffi';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:dart_extensions/dart_extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:guettoolbox/common/list.dart';
 import 'package:guettoolbox/data/model/majors/majors_response.dart';
 import 'package:guettoolbox/data/model/plan_course/plan_course_response.dart';
 import 'package:guettoolbox/data/model/term/term.dart';
@@ -37,11 +39,14 @@ class _CourseSelectionPageState extends State<CourseSelectionPage> {
         appBar: AppBar(
           title: Text("选课"),
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            buildCourses(context),
-          ],
+        body: Padding(
+          padding: EdgeInsets.fromLTRB(8.0, 0, 8, 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildCourses(context),
+            ],
+          ),
         ));
   }
 
@@ -158,7 +163,7 @@ class _CourseSelectionPageState extends State<CourseSelectionPage> {
       padding: const EdgeInsets.only(left: 16),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: item.details.toImmutableList().mapIndexed((i, detail) {
+          children: item.details.mapIndexed((i, detail) {
             return Row(
               children: [
                 Expanded(
@@ -167,16 +172,17 @@ class _CourseSelectionPageState extends State<CourseSelectionPage> {
                 ),
                 TextButton(
                     onPressed: () {
-                      viewModel.select(detail).then((value) {
-                        showSnackBar(context, value.msg, 2000);
-                      }).onError((error, stackTrace) {
-                        showSnackBar(context, "失败：$error", 2000);
-                      });
+                      Get.snackbar("失败", "此功能暂不可用！");
+                      // viewModel.select(detail).then((value) {
+                      //   showSnackBar(context, value.msg, 2000);
+                      // }).onError((error, stackTrace) {
+                      //   showSnackBar(context, "失败：$error", 2000);
+                      // });
                     },
                     child: Text("选课")),
               ],
             );
-          }).asList()),
+          }).toList()),
     );
   }
 
@@ -193,27 +199,27 @@ class _CourseSelectionPageState extends State<CourseSelectionPage> {
           Container(
             width: 4,
           ),
-          Obx(() => _isGeneralStudiesClass(viewModel)
-              ? ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 200),
-                  child: CheckboxListTile(
-                      title: Text("只看网课"),
-                      controlAffinity: ListTileControlAffinity.leading,
-                      value: isNetworkOnly,
-                      onChanged: (v) {
-                        setState(() {
-                          isNetworkOnly = v!;
-                          if (isNetworkOnly) {
-                            viewModel.filter("networkFilter", (e) {
-                              return e.cname.contains("网络");
-                            });
-                          } else {
-                            viewModel.undoFilter("networkFilter");
-                          }
-                        });
-                      }),
-                )
-              : SizedBox())
+          // Obx(() => _isGeneralStudiesClass(viewModel)
+          //     ? ConstrainedBox(
+          //         constraints: BoxConstraints(maxWidth: 200),
+          //         child: CheckboxListTile(
+          //             title: Text("只看网课"),
+          //             controlAffinity: ListTileControlAffinity.leading,
+          //             value: isNetworkOnly,
+          //             onChanged: (v) {
+          //               setState(() {
+          //                 isNetworkOnly = v!;
+          //                 if (isNetworkOnly) {
+          //                   viewModel.filter("networkFilter", (e) {
+          //                     return e.cname.contains("网络");
+          //                   });
+          //                 } else {
+          //                   viewModel.undoFilter("networkFilter");
+          //                 }
+          //               });
+          //             }),
+          //       )
+          //     : SizedBox())
           // ConstrainedBox(
           //   constraints: BoxConstraints(maxWidth: 200),
           //   child: CheckboxListTile(
@@ -239,40 +245,51 @@ class _CourseSelectionPageState extends State<CourseSelectionPage> {
   Container buildButtons() {
     return Container(
       padding: EdgeInsets.all(8),
-      child: Wrap(
-          spacing: 8.0,
-          // 主轴(水平)方向间距
-          runSpacing: 4.0,
-          // 纵轴（垂直）方向间距
-          alignment: WrapAlignment.start,
-          //沿主轴方向居中
-          crossAxisAlignment: WrapCrossAlignment.center,
+      child: Column(
+          // spacing: 8.0,
+          // // 主轴(水平)方向间距
+          // runSpacing: 4.0,
+          // // 纵轴（垂直）方向间距
+          // alignment: WrapAlignment.start,
+          // //沿主轴方向居中
+          // crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            ElevatedButton(
-                onPressed: () {
-                  viewModel.currentAcademy.value = viewModel.academy
-                      .firstWhereOrNull(
-                          (e) => e.dptno == viewModel.studentInfo?.collegeNo);
-                  viewModel.currentMajor.value = viewModel.major
-                      .firstWhereOrNull(
-                          (e) => e.spno == viewModel.studentInfo?.majorNo);
-                  viewModel.studentInfo?.grade.let((it) {
-                    viewModel.currentGrade.value = int.parse(it);
-                  });
-                },
-                child: Text("选择所在学院及专业")),
-            ElevatedButton(
-                onPressed: () {
-                  viewModel.currentAcademy.value =
-                      viewModel.academy.firstWhereOrNull((e) => e.dptno == "0");
-                  viewModel.currentMajor.value = viewModel.major
-                      .firstWhereOrNull((e) => e.spno == "000000");
-                  if (viewModel.studentInfo?.grade == "2022") {
-                    viewModel.currentGrade.value = 2021;
-                  }
-                },
-                child: Text("选择通识课")),
-            Obx(() => ElevatedButton(
+        ElevatedButton(
+            onPressed: () {
+              viewModel.currentAcademy.value = viewModel.academy
+                  .firstWhereOrNull(
+                      (e) => e.dptno == viewModel.studentInfo?.collegeNo);
+              viewModel.currentMajor.value = viewModel.major.firstWhereOrNull(
+                  (e) => e.spno == viewModel.studentInfo?.majorNo);
+              viewModel.studentInfo?.grade.let((it) {
+                viewModel.currentGrade.value = int.parse(it);
+              });
+            },
+            child: Text("选择所在学院及专业")),
+        SizedBox(height: 16),
+        ElevatedButton(
+            onPressed: () {
+              viewModel.currentAcademy.value =
+                  viewModel.academy.firstWhereOrNull((e) => e.dptno == "0");
+              viewModel.currentMajor.value =
+                  viewModel.major.firstWhereOrNull((e) => e.spno == "000000");
+            },
+            child: Text("选择通识课")),
+        SizedBox(height: 16),
+        Obx(() => ElevatedButton(
+            onPressed: !_isCanQuery(viewModel)
+                ? null
+                : () {
+                    viewModel.getPlan(
+                        term: viewModel.currentTerm.value!.term,
+                        grade: viewModel.currentGrade.value!.toString(),
+                        dptno: viewModel.currentAcademy.value!.dptno,
+                        spno: viewModel.currentMajor.value!.spno);
+                  },
+            child: Text("查询"))),
+        SizedBox(height: 16),
+        Obx(() => _isGeneralStudiesClass(viewModel)
+            ? ElevatedButton(
                 onPressed: !_isCanQuery(viewModel)
                     ? null
                     : () {
@@ -280,47 +297,41 @@ class _CourseSelectionPageState extends State<CourseSelectionPage> {
                             term: viewModel.currentTerm.value!.term,
                             grade: viewModel.currentGrade.value!.toString(),
                             dptno: viewModel.currentAcademy.value!.dptno,
-                            spno: viewModel.currentMajor.value!.spno);
+                            spno: viewModel.currentMajor.value!.spno,
+                            networkCourseOnly: true);
                       },
-                child: Text("查询"))),
-            Obx(() {
-              return _isGeneralStudiesClass(viewModel)
-                  ? ElevatedButton(
-                      onPressed: !_isCanQuery(viewModel)
-                          ? null
-                          : () {
-                              viewModel.getPlan(
-                                  term: viewModel.currentTerm.value!.term,
-                                  grade:
-                                      viewModel.currentGrade.value!.toString(),
-                                  dptno: viewModel.currentAcademy.value!.dptno,
-                                  spno: viewModel.currentMajor.value!.spno,
-                                  networkCourseOnly: true);
-                            },
-                      child: Text("仅查询网课"))
-                  : Container();
-            })
-          ]),
+                child: Text("仅查询网课"))
+            : Container())
+      ].mapList((e) => SizedBox(
+                width: double.infinity,
+                child: e,
+              ))),
     );
   }
 
   Container buildDropdownButtons() {
     return Container(
       padding: EdgeInsets.all(8),
-      child: Wrap(
-          spacing: 8.0,
-          // 主轴(水平)方向间距
-          runSpacing: 4.0,
-          // 纵轴（垂直）方向间距
-          alignment: WrapAlignment.start,
-          //沿主轴方向居中
-          crossAxisAlignment: WrapCrossAlignment.center,
+      child: Column(
+          // spacing: 8.0,
+          // // 主轴(水平)方向间距
+          // runSpacing: 4.0,
+          // // 纵轴（垂直）方向间距
+          // alignment: WrapAlignment.start,
+          // //沿主轴方向居中
+          // crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            buildGradeDropdownButton(),
-            buildTermDropdownButton(),
-            buildAcademyDropdownButton(),
-            buildMajorDropdownButton(),
-          ]),
+        buildGradeDropdownButton(),
+        SizedBox(height: 8),
+        buildTermDropdownButton(),
+        SizedBox(height: 8),
+        buildAcademyDropdownButton(),
+        SizedBox(height: 8),
+        buildMajorDropdownButton(),
+      ].mapList((e) => SizedBox(
+                width: double.infinity,
+                child: e,
+              ))),
     );
   }
 
@@ -338,6 +349,7 @@ class _CourseSelectionPageState extends State<CourseSelectionPage> {
 
   Widget buildTermDropdownButton() {
     return Obx(() => DropdownButton<Term>(
+        borderRadius: BorderRadius.circular(16),
         items: createTermItemList(viewModel),
         hint: Container(
             padding: EdgeInsets.all(8), child: Center(child: Text("请选择学期"))),
@@ -361,6 +373,7 @@ class _CourseSelectionPageState extends State<CourseSelectionPage> {
 
   Widget buildGradeDropdownButton() {
     return Obx(() => DropdownButton<int?>(
+        borderRadius: BorderRadius.circular(16),
         items: createGradeItemList(viewModel),
         hint: Container(
             padding: EdgeInsets.all(8), child: Center(child: Text("请选择年级"))),
@@ -383,6 +396,7 @@ class _CourseSelectionPageState extends State<CourseSelectionPage> {
 
   Widget buildAcademyDropdownButton() {
     return Obx(() => DropdownButton(
+        borderRadius: BorderRadius.circular(16),
         items: createAcademyItemList(viewModel),
         hint: Container(
             padding: EdgeInsets.all(8),
@@ -407,6 +421,7 @@ class _CourseSelectionPageState extends State<CourseSelectionPage> {
 
   Widget buildMajorDropdownButton() {
     return Obx(() => DropdownButton<Major>(
+        borderRadius: BorderRadius.circular(16),
         items: createMajorItemList(viewModel),
         hint: Container(
             padding: EdgeInsets.all(8), child: Center(child: Text("请选择专业"))),

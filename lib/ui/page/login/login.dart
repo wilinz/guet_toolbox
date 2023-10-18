@@ -48,6 +48,10 @@ class _LoginPageState extends State<LoginPage> {
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   child: Column(
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 48.0),
+                        child: Text("GuetToolbox",style: Theme.of(context).textTheme.titleLarge),
+                      ),
                       TextFormField(
                         controller: _usernameController,
                         autofocus: false,

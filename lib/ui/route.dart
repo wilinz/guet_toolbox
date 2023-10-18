@@ -81,7 +81,7 @@ class AppRoute {
     ),
     GetPage(
       name: courseDetailPage,
-      page: () => CourseDetailPage(schedule: Get.arguments as SemesterSchedule),
+      page: () => CourseDetailPage(schedule: Get.arguments as List<SemesterSchedule>),
     ),
     GetPage(
       name: examScoresPage,

@@ -69,6 +69,8 @@ dependencies:
   copy_with_extension: ^5.0.4
   package_info_plus: ^5.0.0
   functional_widget_annotation: ^0.10.0
+  intl: ^0.18.1
+  flutter_localization: ^0.1.14
 
 
 

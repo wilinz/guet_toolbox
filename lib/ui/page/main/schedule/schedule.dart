@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:guettoolbox/data/model/user/user.dart';
 import 'package:guettoolbox/data/repository/login.dart';
 import 'package:guettoolbox/ui/route.dart';
+import 'package:guettoolbox/util/string_ext.dart';
 import 'package:provider/provider.dart';
 
 import 'schedule_viewmodel.dart';
@@ -216,7 +217,7 @@ class _SchedulePageState extends State<SchedulePage>
     return Container(
       child: Stack(
         children: [
-          Column(
+          /*Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
@@ -233,33 +234,39 @@ class _SchedulePageState extends State<SchedulePage>
                     )),
               ),
             ],
-          ),
+          ),*/
           Obx(() {
             if (viewModel.courseList.length - 1 < index ||
                 viewModel.courseList[index].isEmpty) {
               return Container();
             }
             final courses = viewModel.courseList[index];
-            final course = courses.first;
+            final text = courses.map((course)  {
+              return course.classroom + "#" + course.name.truncateCodePoint(7) + "@" + course.teacher;
+            }).join(" | ");
             return InkWell(
+              radius: 18,
               child: Container(
-                margin: EdgeInsets.all(0.5),
+                margin: EdgeInsets.all(1),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(6),
                   color: viewModel.colorsMap[courses.first.courseNo],
                 ),
-                child: Center(
-                  child: Text(
-                    // infoList[index % 2],
-                    course.classroom + "#" + course.name + "@" + course.teacher,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.white, fontSize: 11, letterSpacing: 1),
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Center(
+                    child: Text(
+                      // infoList[index % 2],
+                      text,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.white, fontSize: 10, letterSpacing: 1),
+                    ),
                   ),
                 ),
               ),
               onTap: () {
-                Get.toNamed(AppRoute.courseDetailPage, arguments: course);
+                Get.toNamed(AppRoute.courseDetailPage, arguments: courses);
               },
             );
           })
@@ -286,14 +293,14 @@ class _SchedulePageState extends State<SchedulePage>
                     style: TextStyle(fontSize: 10),
                   ),
                 ),
-                decoration: BoxDecoration(
+                /*decoration: BoxDecoration(
                   color: Color(0xff5ff5),
                   // border: Border.all(color: Colors.black12, width: 0.5),
                   border: Border(
                     bottom: BorderSide(color: Colors.black12, width: 0.5),
                     right: BorderSide(color: Colors.black12, width: 0.5),
                   ),
-                )),
+                )*/),
           )
       ],
     );

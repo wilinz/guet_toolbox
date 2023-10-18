@@ -9,7 +9,7 @@ import 'package:guettoolbox/data/service/exam_scores.dart';
 class ExamScoresRepository {
 
   Future<ExamScoresResponse> getExamScores({
-    required String term,
+    String term = "",
     List<ExamScoresSort>? sort = null,
     int page = 1,
     int start = 0,

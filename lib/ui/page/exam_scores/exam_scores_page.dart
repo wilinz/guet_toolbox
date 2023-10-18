@@ -10,8 +10,8 @@ class ExamScoresPage extends StatelessWidget {
     final c = Get.put(ExamScoresController());
     return Scaffold(
       appBar: AppBar(
-        title: Obx(() => Text(c.currentTerm.value?.termName ?? "")),
-        actions: [
+        title: Text("成绩单"),
+       /* actions: [
           IconButton(
               onPressed: () {
                 c.toPrevious();
@@ -22,7 +22,7 @@ class ExamScoresPage extends StatelessWidget {
                 c.toNext();
               },
               icon: Icon(Icons.navigate_next)),
-        ],
+        ],*/
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -40,7 +40,7 @@ class ExamScoresPage extends StatelessWidget {
                       child: ListTile(
                         title: Text(item.courseName),
                         subtitle: Text(
-                            "考核：${item.examScore} | 平时：${item.regularScore} | 期中：${item.midtermScore} | 实验：${item.labScore}"),
+                            "${item.term} | 考核：${item.examScore} | 平时：${item.regularScore} | 期中：${item.midtermScore} | 实验：${item.labScore}"),
                         trailing: Text(
                           "成绩：${item.overallScore}",
                           style: TextStyle(

@@ -50,11 +50,12 @@ class AppNetwork {
   }
 
   static Future<Dio> setupUstcGuetDio(Dio dio, CookieJar cookieJar) async {
+    final url = "http://utsc.guet.edu.cn/";
     dio.options = BaseOptions(
-      baseUrl: "http://utsc.guet.edu.cn/",
+      baseUrl: url,
       headers: {
         "User-Agent": userAgent,
-        "Referer": "http://utsc.guet.edu.cn/EmptyClassRoom.aspx"
+        "Referer": url
       },
       followRedirects: true,
       validateStatus: (int? status) => status != null,
@@ -89,7 +90,7 @@ class AppNetwork {
     );
     dio.interceptors.add(BaseUrlInterceptor());
     dio.interceptors.add(CookieManager(cookieJar));
-    _proxy(dio);
+    // _proxy(dio);
     dio.interceptors.add(RefererInterceptor());
     if (kDebugMode) {
       setDioLogger(dio);
@@ -350,7 +351,7 @@ class RedirectInterceptor extends Interceptor {
       try {
         final redirectCountValue =
             response.requestOptions.extra[redirectCount] ?? 0;
-        if (redirectCountValue >= 20) {
+        if (redirectCountValue >= 5) {
           handler.next(response);
           return;
         }

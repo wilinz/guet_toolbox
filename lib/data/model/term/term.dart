@@ -1,5 +1,6 @@
 import 'package:floor/floor.dart';
 import 'package:guettoolbox/util/datetime.dart';
+import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'term.g.dart';
@@ -22,7 +23,9 @@ class TermResponse {
   Map<String, dynamic> toJson() => _$TermResponseToJson(this);
 }
 
-_parseDateTime(v) => DateTimeUtil.parseDate(v);
+final _dateFormat = DateFormat('yyyy/M/d H:mm:ss');
+
+_parseDateTime(v) => _dateFormat.parse(v);
 
 _parseStringToInt(v) => int.parse(v);
 

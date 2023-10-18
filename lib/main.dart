@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +18,8 @@ import 'package:guettoolbox/ui/settings/settings_controller.dart';
 import 'package:guettoolbox/util/platform.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:window_size/window_size.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 
 Future<void> main() async {
   //确保组件树初始化
@@ -85,6 +88,11 @@ class _MyAppState extends State<MyApp> with WindowListener {
     return GetMaterialApp(
         title: 'Guet Toolbox',
         defaultTransition: Transition.cupertino,
+        localizationsDelegates: GlobalMaterialLocalizations.delegates,
+        supportedLocales: [
+          // if(Get.locale != null) Get.locale!
+          Locale("zh","CN"),
+        ],
         locale: settings.locale.value ?? Get.deviceLocale,
         theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
         darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),

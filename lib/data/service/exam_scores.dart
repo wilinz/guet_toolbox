@@ -7,7 +7,7 @@ import 'package:guettoolbox/data/network.dart';
 
 class ExamScoresService {
   static Future<ExamScoresResponse> getExamScores({
-    required String term,
+    String term = "",
     List<ExamScoresSort>? sort = null,
     int page = 1,
     int start = 0,

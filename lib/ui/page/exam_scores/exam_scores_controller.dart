@@ -15,17 +15,15 @@ class ExamScoresController extends GetxController {
   }
 
   getExamScores() async {
-    final term = currentTerm.value;
-    if (term == null) return;
     final resp =
-    await ExamScoresRepository.get().getExamScores(term: term.term);
+    await ExamScoresRepository.get().getExamScores();
     examScores.value = resp.data;
   }
 
   @override
   void onInit() {
     super.onInit();
-    getTermList();
+    getExamScores();
   }
 
   void toPrevious() {

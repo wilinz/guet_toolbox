@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:guettoolbox/data/network.dart';
 import 'package:guettoolbox/data/service/empty_classroom.dart';
+import 'package:guettoolbox/util/datetime.dart';
 
 Future<void> main() async {
   await AppNetwork.init(isTest: true);

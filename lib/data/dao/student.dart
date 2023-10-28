@@ -12,7 +12,7 @@ abstract class StudentInfoDao {
   Future<List<StudentInfo>> getAll();
 
   @Insert(onConflict: OnConflictStrategy.replace)
-  Future<void> insert(StudentInfo info);
+  Future<void> insertOrUpdate(StudentInfo info);
 
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> update(StudentInfo info);

@@ -16,6 +16,7 @@ import '../model/common/common_response.dart';
 import '../service/course.dart';
 
 class CourseRepository {
+
   Term? getCurrentTerm(List<Term> terms, bool holidayForward) {
     final now = DateTime.now();
     final term = terms.firstWhereOrNull(
@@ -24,10 +25,12 @@ class CourseRepository {
       final sortedList = List.of(terms)
         ..sort((a, b) => a.startDate.compareTo(b.startDate));
       if (holidayForward) {
-        final nextTerm = sortedList.firstWhereOrNull((e) => e.endDate.isAfter(now));
+        final nextTerm =
+            sortedList.firstWhereOrNull((e) => e.endDate.isAfter(now));
         return nextTerm;
       }
-      final lastTerm = sortedList.lastWhereOrNull((e) => e.endDate.isBefore(now));
+      final lastTerm =
+          sortedList.lastWhereOrNull((e) => e.endDate.isBefore(now));
       return lastTerm;
     }
     return term;
@@ -92,26 +95,34 @@ class CourseRepository {
     return CourseService.getCourseLabList(term);
   }
 
-  Future<List<SemesterSchedule>> getSemesterSchedule(String term) async {
+  Future<List<SemesterSchedule>> getSemesterSchedule(String term,
+      {bool isFlush = false}) async {
+    final user = await UserRepository.get().getActiveUser();
+    if (user == null) throw new Exception("未登录");
 
-    final db = await getDatabase();
-    final dbCache = (await db.semesterScheduleDao.getAllByTerm(term));
-    if (dbCache.isNotEmpty) {
-      return dbCache;
+    print(user);
+
+    if (!isFlush) {
+      final dbCache = (await appDatabase.semesterScheduleDao
+          .getAllByTermAndUsername(term, user.username));
+      if (dbCache.isNotEmpty) {
+        return dbCache;
+      }
     }
 
     // final dbCache = await db.semesterScheduleDao.getAll();
     // if (dbCache.isNotEmpty) return dbCache;
     List responses =
         await Future.wait([getCourseList(term), getCourseLabList(term)]);
-    final user = await UserRepository.get().getActiveUser();
-    if (user == null) throw new Exception("未登录");
     final semesterSchedule =
         generateSemesterSchedule(responses[0], responses[1], user.username);
 
-    semesterSchedule.forEach((e) async {
-      await db.semesterScheduleDao.insertOrUpdateSemesterSchedule(e);
-    });
+    await appDatabase.semesterScheduleDao
+        .deleteByUsernameAndSourceAndTerm(user.username, false, term);
+
+    await appDatabase.semesterScheduleDao
+        .insertOrUpdateSemesterSchedules(semesterSchedule);
+
     return semesterSchedule;
   }
 

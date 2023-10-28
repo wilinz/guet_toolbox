@@ -7,15 +7,15 @@ import 'package:guettoolbox/data/model/db/base.dart';
 class Migration1to2 extends Migration {
   Migration1to2() :super(1, 2, (database) async {
     await database.execute('''
-      CREATE TABLE campus_network_users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL,
-        password TEXT NOT NULL,
-        isp TEXT NOT NULL,
-        is_default INTEGER NOT NULL,
-        update_time INTEGER NOT NULL,
-        create_time INTEGER
-      )
+      CREATE TABLE IF NOT EXISTS campus_network_users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    password TEXT NOT NULL,
+    isp TEXT NOT NULL,
+    is_default INTEGER NOT NULL,
+    update_time INTEGER NOT NULL,
+    create_time INTEGER
+)
     ''');
   });
 

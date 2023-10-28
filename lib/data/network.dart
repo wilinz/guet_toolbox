@@ -10,7 +10,9 @@ import 'package:guettoolbox/data/repository/login.dart';
 import 'package:guettoolbox/data/repository/network_detection.dart';
 import 'package:guettoolbox/data/repository/user.dart';
 import 'package:guettoolbox/data/service/login.dart';
+import 'package:guettoolbox/path.dart';
 import 'package:guettoolbox/util/ext.dart';
+import 'package:kt_dart/kt.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -37,26 +39,23 @@ class AppNetwork {
   static const String userAgent =
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36";
 
-  static Future<CookieJar> getCookieJar() async {
+  static CookieJar getCookieJar({required String username}) {
     CookieJar cookieJar;
     if (!kIsWeb) {
-      var dir = await getApplicationSupportDirectory();
-      cookieJar =
-          PersistCookieJar(storage: FileStorage(join(dir.path, "cookies")));
+      cookieJar = PersistCookieJar(
+          storage: FileStorage(join(
+              applicationSupportDirectory.path, "cookies", username + "/")));
     } else {
       cookieJar = CookieJar();
     }
     return cookieJar;
   }
 
-  static Future<Dio> setupUstcGuetDio(Dio dio, CookieJar cookieJar) async {
+  static setupUstcGuetDio(Dio dio, CookieJar cookieJar) {
     final url = "http://utsc.guet.edu.cn/";
     dio.options = BaseOptions(
       baseUrl: url,
-      headers: {
-        "User-Agent": userAgent,
-        "Referer": url
-      },
+      headers: {"User-Agent": userAgent, "Referer": url},
       followRedirects: true,
       validateStatus: (int? status) => status != null,
     );
@@ -80,9 +79,9 @@ class AppNetwork {
         maxWidth: 200));
   }
 
-  static Future<Dio> setupDio(Dio dio, CookieJar cookieJar) async {
+  static Dio setupDio(Dio dio, CookieJar cookieJar) {
     dio.options = BaseOptions(
-      baseUrl: await baseUrl,
+      baseUrl: baseUrl,
       headers: {"User-Agent": userAgent},
       followRedirects: false,
       validateStatus: (int? status) =>
@@ -129,48 +128,58 @@ class AppNetwork {
 
   AppNetwork._create();
 
-  static AppNetwork? _instance = null;
+  static Map<String, AppNetwork> _instances = {};
 
-  static Future<Dio> getDio() async {
-    var appNetwork = await getInstance();
-    Dio dio = appNetwork.redirect2Dio;
-    return dio;
+  static String currentUsername = "default";
+
+  static Future<void> init() async {
+    final user = await UserRepository.get().getActiveUser();
+    if (user != null) {
+      AppNetwork.get(username: user.username);
+    }
   }
 
-  factory AppNetwork.get() => _instance!;
-
-  static Future<void> init({bool isTest = false}) async {
-    await getInstance(isTest: isTest);
+  factory AppNetwork.get({String? username}) {
+    return getInstance(username: username);
   }
 
-  Dio get redirectDio => _dio;
+  Dio get dio0 => _dio;
 
-  Dio get dio => _dio1;
+  Dio get dio1 => _dio1;
 
-  Dio get redirect2Dio => _dio2;
+  Dio get dio2 => _dio2;
 
   late CookieJar cookieJar;
 
-  static Future<AppNetwork> getInstance({bool isTest = false}) async {
-    if (_instance == null) {
-      _instance = AppNetwork._create();
-      _instance!.cookieJar = !isTest ? await getCookieJar() : CookieJar();
+  static AppNetwork getInstance({bool isTest = false, String? username}) {
+    if (username == null) {
+      username = currentUsername;
+    } else {
+      currentUsername = username;
+    }
 
-      _instance!._dio = await setupDio(Dio(), _instance!.cookieJar);
-      _instance!._dio.setFollowRedirects(true);
+    print("Appnetwork username: ${username}");
 
-      _instance!._dio1 = await setupDio(Dio(), _instance!.cookieJar);
-      _instance!._dio1.setFollowRedirects(false);
+    if (_instances[username] == null) {
+      final _instance = AppNetwork._create();
+      _instance.cookieJar =
+          !isTest ? getCookieJar(username: username) : CookieJar();
 
-      _instance!.utscGuetDio =
-          await setupUstcGuetDio(Dio(), _instance!.cookieJar);
+      _instance._dio = setupDio(Dio(), _instance.cookieJar);
+      _instance._dio.setFollowRedirects(true);
+
+      _instance._dio1 = setupDio(Dio(), _instance.cookieJar);
+      _instance._dio1.setFollowRedirects(false);
+
+      _instance.utscGuetDio = setupUstcGuetDio(Dio(), _instance.cookieJar);
 
       final dio2 = Dio();
-      _instance!._dio2 = await setupDio(dio2, _instance!.cookieJar);
-      _instance!._dio2.setFollowRedirects(false);
-      _instance!._dio2.interceptors.add(RedirectInterceptor(dio2));
+      _instance._dio2 = setupDio(dio2, _instance.cookieJar);
+      _instance._dio2.setFollowRedirects(false);
+      _instance._dio2.interceptors.add(RedirectInterceptor(dio2));
+      _instances[username] = _instance;
     }
-    return Future(() => _instance!);
+    return _instances[username]!;
   }
 }
 

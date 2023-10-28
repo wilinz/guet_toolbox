@@ -7,7 +7,7 @@ import 'package:guettoolbox/data/network.dart';
 
 class TermService {
   static Future<List<Term>> getTermList() async {
-    final resp = await (await AppNetwork.getDio()).get("comm/getlabarrangeterm");
+    final resp = await AppNetwork.get().dio2.get("comm/getlabarrangeterm");
     final respData = TermResponse.fromJson(resp.data);
     return respData.data;
   }

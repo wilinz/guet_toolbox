@@ -80,12 +80,14 @@ class ScheduleViewModel extends GetxController {
   //   // _currentWeek = CourseRepository.getInstance().getWeek(term, dateTime);
   // }
 
-  toTerm(Term term) {
-    updateData(term.startDate, term: term);
+  isCurrentTerm() => currentTerm.value?.term == CourseRepository.get().getCurrentTerm(termList.value, true)?.term;
+
+  toTerm(Term? term, {bool isFlush = false}) {
+    updateData(term?.startDate ?? DateTime.now(), term: term, isFlush: isFlush);
   }
 
-  updateToToday() {
-    updateData(DateTime.now());
+  updateToToday({bool isFlush = false}) {
+    updateData(DateTime.now(), isFlush: isFlush);
   }
 
   toNextWeek() {
@@ -108,7 +110,7 @@ class ScheduleViewModel extends GetxController {
     });
   }
 
-  updateData(DateTime dateTime, {Term? term}) async {
+  updateData(DateTime dateTime, {Term? term, bool isFlush = false}) async {
     getWeekday(dateTime);
     Term currentTerm;
     if (term == null) {
@@ -129,7 +131,7 @@ class ScheduleViewModel extends GetxController {
         dateTime: dateTime,
         week: week,
         weekDay: getWeekday1(DateTime.now()));
-    await getCourseList(currentTerm.term, week);
+    await getCourseList(currentTerm.term, week, isFlush: isFlush);
   }
 
   int getWeekday1(DateTime dateTime) {
@@ -162,8 +164,9 @@ class ScheduleViewModel extends GetxController {
     });
   }
 
-  getCourseList(String term, int week) async {
-    final value = await CourseRepository.get().getSemesterSchedule(term);
+  getCourseList(String term, int week, {bool isFlush = false}) async {
+    final value = await CourseRepository.get()
+        .getSemesterSchedule(term, isFlush: isFlush);
     courseList.clear();
     for (var i = 0; i < 35; i++) {
       var column = (i + 1) % 7;
@@ -187,6 +190,8 @@ class ScheduleViewModel extends GetxController {
         }
       }
     }
+    if (isFlush) {
+      Get.snackbar("成功", "同步成功");
+    }
   }
-
 }

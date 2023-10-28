@@ -20,7 +20,7 @@ abstract class UserDao {
   Future<List<User>> getAll();
 
   @Insert(onConflict: OnConflictStrategy.replace)
-  Future<void> insertUser(User user);
+  Future<void> insertOrUpdateUser(User user);
 
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> updateUser(User user);

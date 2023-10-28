@@ -58,6 +58,16 @@ class _SchedulePageState extends State<SchedulePage>
         actions: [
           IconButton(
               onPressed: () {
+                final term = viewModel.currentTerm.value;
+                if(viewModel.isCurrentTerm()){
+                  viewModel.updateToToday(isFlush: true);
+                }else {
+                  viewModel.toTerm(term, isFlush: true);
+                }
+              },
+              icon: Icon(Icons.sync)),
+          IconButton(
+              onPressed: () {
                 viewModel.toPreviousWeek();
               },
               icon: Icon(Icons.navigate_before)),

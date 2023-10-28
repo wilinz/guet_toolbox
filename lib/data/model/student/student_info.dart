@@ -51,6 +51,10 @@ class StudentInfo {
   @JsonKey(name: "name", defaultValue: "")
   String name;
 
+  @override
+  String toString() =>
+      'StudentInfo{id: $id, term: $term, grade: $grade, collegeNo: $collegeNo, collegeName: $collegeName, majorNo: $majorNo, majorName: $majorName, studentId: $studentId, name: $name}';
+
   factory StudentInfo.fromJson(Map<String, dynamic> json) =>
       _$StudentInfoFromJson(json);
 

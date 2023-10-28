@@ -6,7 +6,7 @@ import 'package:guettoolbox/data/network.dart';
 
 class AcademyService{
   static Future<List<Academy>> get() async {
-    final resp = await (await AppNetwork.getDio()).get(
+    final resp = await AppNetwork.get().dio2.get(
         "Comm/GetDepart");
     final respData = AcademyResponse.fromJson(resp.data);
     return respData.data;

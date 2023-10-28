@@ -7,6 +7,7 @@ import 'package:guettoolbox/data/dao/student.dart';
 import 'package:guettoolbox/data/dao/term.dart';
 import 'package:guettoolbox/data/dao/user.dart';
 import 'package:guettoolbox/data/database/migration/migration1to2.dart';
+import 'package:guettoolbox/data/database/migration/migration2to3.dart';
 import 'package:guettoolbox/data/model/course/semester_schedule.dart';
 import 'package:guettoolbox/data/model/student/student_info.dart';
 import 'package:guettoolbox/data/model/term/term.dart';
@@ -21,7 +22,7 @@ part 'database.g.dart'; // the generated code will be there
 
 @TypeConverters([DateTimeConverter, DateTimeNullableConverter])
 @Database(
-    version: 1,
+    version: 3,
     entities: [SemesterSchedule, User, StudentInfo, Term, CampusNetworkUser])
 abstract class AppDatabase extends FloorDatabase {
   SemesterScheduleDao get semesterScheduleDao;
@@ -43,12 +44,17 @@ abstract class AppDatabase extends FloorDatabase {
 // OnConflictStrategy.ignore: 忽略冲突并继续执行操作，不会抛出异常或撤销操作。
 // OnConflictStrategy.replace: 替换现有记录的值，并继续执行操作，不会抛出异常或撤销操作。
 
-AppDatabase? _database;
+late AppDatabase appDatabase;
 
-Future<AppDatabase> getDatabase() async => _database ??= await _getDatabase();
+Future<AppDatabase> getDatabase() async => appDatabase;
+
+Future<void> initAppDatabase() async {
+  appDatabase = await _getDatabase();
+}
 
 final migrationList = [
   Migration1to2(),
+  Migration2to3()
 ];
 
 Future<AppDatabase> _getDatabase() async {

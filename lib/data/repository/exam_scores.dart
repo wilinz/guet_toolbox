@@ -19,9 +19,34 @@ class ExamScoresRepository {
         term: term, sort: sort, page: page, start: start, limit: limit);
   }
 
+  calculateCreditGrades(List<ExamScore> scores) {
+
+  }
+
   ExamScoresRepository._();
 
   static ExamScoresRepository? _instance;
 
   factory ExamScoresRepository.get() => _instance ??= ExamScoresRepository._();
+
+
+  // a(ExamScoresRepository Function() a){
+  //
+  // }
+  //
+  // b(){
+  //   a(ExamScoresRepository.get);
+  // }
 }
+
+// class Response<T>{
+//   final int code;
+//   final String msg;
+//   final T data;
+//
+//   Response({required this.code, required this.msg, required this.data});
+//
+//   factory Response.fromJson(Map<String, dynamic> json){
+//
+//   }
+// }

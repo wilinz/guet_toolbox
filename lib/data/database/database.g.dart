@@ -77,7 +77,7 @@ class _$AppDatabase extends AppDatabase {
     Callback? callback,
   ]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 1,
+      version: 3,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
         await callback?.onConfigure?.call(database);
@@ -241,9 +241,12 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
   }
 
   @override
-  Future<List<SemesterSchedule>> getAllByTerm(String term) async {
+  Future<List<SemesterSchedule>> getAllByTermAndUsername(
+    String term,
+    String username,
+  ) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM semester_schedule WHERE term = ?1',
+        'SELECT * FROM semester_schedule WHERE term = ?1 AND username = ?2',
         mapper: (Map<String, Object?> row) => SemesterSchedule(
             id: row['id'] as String,
             username: row['username'] as String,
@@ -280,7 +283,7 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
             classroomAlias: row['classroom_alias'] as String,
             classroomId: row['classroom_id'] as String,
             comment: row['comment'] as String),
-        arguments: [term]);
+        arguments: [term, username]);
   }
 
   @override
@@ -379,10 +382,28 @@ class _$SemesterScheduleDao extends SemesterScheduleDao {
   }
 
   @override
+  Future<void> deleteByUsernameAndSourceAndTerm(
+    String username,
+    bool is_manually_add,
+    String term,
+  ) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE * FROM semester_schedule WHERE username = ?1 AND is_manually_add = ?2 AND term = ?3',
+        arguments: [username, is_manually_add ? 1 : 0, term]);
+  }
+
+  @override
   Future<void> insertOrUpdateSemesterSchedule(
       SemesterSchedule semesterSchedule) async {
     await _semesterScheduleInsertionAdapter.insert(
         semesterSchedule, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> insertOrUpdateSemesterSchedules(
+      List<SemesterSchedule> semesterSchedules) async {
+    await _semesterScheduleInsertionAdapter.insertList(
+        semesterSchedules, OnConflictStrategy.replace);
   }
 }
 
@@ -484,7 +505,7 @@ class _$UserDao extends UserDao {
   }
 
   @override
-  Future<void> insertUser(User user) async {
+  Future<void> insertOrUpdateUser(User user) async {
     await _userInsertionAdapter.insert(user, OnConflictStrategy.replace);
   }
 
@@ -609,7 +630,7 @@ class _$StudentInfoDao extends StudentInfoDao {
   }
 
   @override
-  Future<void> insert(StudentInfo info) async {
+  Future<void> insertOrUpdate(StudentInfo info) async {
     await _studentInfoInsertionAdapter.insert(info, OnConflictStrategy.replace);
   }
 

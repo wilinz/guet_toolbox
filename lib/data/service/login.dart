@@ -31,7 +31,7 @@ class LoginService {
       final Uri uri = Uri.parse("https://cas.guet.edu.cn/cas/v1/tickets");
       // final cookieJar = (await AppNetwork.getInstance()).cookieJar;
       // cookieJar.delete(uri);
-      var resp = await (await AppNetwork.getDio()).postUri(uri,
+      var resp = await AppNetwork.get().dio2.postUri(uri,
           options: Options(
               contentType: AppNetwork.typeUrlEncode,
               responseType: ResponseType.plain),
@@ -82,7 +82,7 @@ class LoginService {
 
     Future<String> second(String url, String service) async {
       var data = {"service": service};
-      var resp = await (await AppNetwork.getDio()).post(url,
+      var resp = await AppNetwork.get().dio2.post(url,
           options: Options(contentType: AppNetwork.typeUrlEncode), data: data);
       var body = resp.data;
       if (resp.statusCode != 200) {
@@ -140,7 +140,7 @@ class LoginService {
     if (service == "https://v.guet.edu.cn/login?cas_login=true") {
       uri = "https://v.guet.edu.cn/login?cas_login=true";
     }
-    var resp = await (await AppNetwork.getDio()).get(uri,
+    var resp = await AppNetwork.get(username: username).dio2.get(uri,
         queryParameters: {"service": service},
         options: Options(extra: {LoginInterceptor.allowCheckingLogin: false}));
 
@@ -150,7 +150,7 @@ class LoginService {
       } else {
         // resp = await (await AppNetwork.getDio())
         //     .get(getUri(), queryParameters: {"service": service});
-        var resp = await (await AppNetwork.getDio()).get(uri,
+        var resp = await AppNetwork.get().dio2.get(uri,
             options:
                 Options(extra: {LoginInterceptor.allowCheckingLogin: false}));
         if (resp.data.toString().contains("注销")) {
@@ -189,7 +189,7 @@ class LoginService {
       }
     }
     final uri1 = getUri();
-    final resp1 = await (await AppNetwork.getDio()).post(uri1,
+    final resp1 = await AppNetwork.get().dio2.post(uri1,
         queryParameters: {"service": service},
         options: Options(
             contentType: AppNetwork.typeUrlEncode,
@@ -220,7 +220,7 @@ class LoginService {
   static Future<DynamicCode> getDynamicCode(String username) async {
     final isCampusNetwork =
         await NetworkDetectionRepository.get().isCampusNetwork ?? false;
-    final resp = await (await AppNetwork.getDio()).post(
+    final resp = await AppNetwork.get().dio2.post(
         "${getCasBaseUrl(isCampusNetwork)}authserver/dynamicCode/getDynamicCodeByReauth.do",
         data: {
           "userName": username,
@@ -236,7 +236,7 @@ class LoginService {
   static Future<ReAuth> reAuthCheck(String code) async {
     final isCampusNetwork =
         await NetworkDetectionRepository.get().isCampusNetwork ?? false;
-    final resp = await (await AppNetwork.getDio()).post(
+    final resp = await AppNetwork.get().dio2.post(
         "${getCasBaseUrl(isCampusNetwork)}authserver/reAuthCheck/reAuthSubmit.do",
         data: {
           "service": "",

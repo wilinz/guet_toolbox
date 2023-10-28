@@ -16,6 +16,10 @@ class User extends BaseEntity {
   @ColumnInfo(name: "is_active")
   bool isActive;
 
+
+  @override
+  String toString() => 'User{id: $id, username: $username, password: $password, isActive: $isActive}';
+
   User(
       {required DateTime updateTime,
       DateTime? createTime,

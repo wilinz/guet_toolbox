@@ -13,7 +13,7 @@ class ExamScoresService {
     int start = 0,
     int limit = 100,
   }) async {
-    final result = await AppNetwork.get().dio.get("Student/GetStuScore", queryParameters: {
+    final result = await AppNetwork.get().dio2.get("Student/GetStuScore", queryParameters: {
       "_dc": DateTime.timestamp().millisecondsSinceEpoch,
       "term": term,
       "page": page,

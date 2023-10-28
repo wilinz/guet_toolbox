@@ -16,7 +16,8 @@ class StudentInfoRepository {
       }
     }
     final userInfo = await StudioInfoService.get();
-    db.studentInfoDao.insert(userInfo);
+    print(userInfo);
+    db.studentInfoDao.insertOrUpdate(userInfo);
     return userInfo;
   }
 

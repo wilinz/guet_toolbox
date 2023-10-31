@@ -143,6 +143,15 @@ class _ProfilePageState extends State<ProfilePage>
                       ),
                       ListTile(
                         onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(AppRoute.examSchedulePage);
+                        },
+                        leading: Icon(Icons.calendar_today_outlined), // Icon for "连接校园网"
+                        title: Text("考试安排"),
+                        trailing: Icon(Icons.arrow_forward_ios_outlined),
+                      ),
+                      ListTile(
+                        onTap: () {
                           // Add your functionality for the "关于" tile
                         },
                         leading: Icon(Icons.info_outlined), // Icon for "关于"

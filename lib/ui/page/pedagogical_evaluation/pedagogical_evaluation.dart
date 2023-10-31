@@ -30,13 +30,6 @@ class _PedagogicalEvaluationPageState extends State<PedagogicalEvaluationPage> {
             Container(
               margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
               child: Row(
-                  // spacing: 8.0,
-                  // // 主轴(水平)方向间距
-                  // runSpacing: 4.0,
-                  // // 纵轴（垂直）方向间距
-                  // alignment: WrapAlignment.start,
-                  // //沿主轴方向居中
-                  // crossAxisAlignment: WrapCrossAlignment.center,
                   children: <Widget>[
                     Expanded(child: buildTermDropdownButton()),
                     SizedBox(width: 8),

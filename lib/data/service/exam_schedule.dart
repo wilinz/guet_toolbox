@@ -1,8 +1,8 @@
 import 'package:guettoolbox/data/model/exam_scheduling/exam_schedule.dart';
 import 'package:guettoolbox/data/network.dart';
 
-class ExamSchedule {
-  Future<ExamScheduleResponse> getExamSchedule({
+class ExamScheduleService {
+  static Future<ExamScheduleResponse> getExamSchedule({
     String term = "",
     int page = 1,
     int start = 0,

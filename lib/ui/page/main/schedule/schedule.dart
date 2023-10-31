@@ -47,6 +47,38 @@ class _SchedulePageState extends State<SchedulePage>
     return "${dateTime.year}/${dateTime.month}/${dateTime.day}";
   }
 
+  termDialog() async {
+    if (viewModel.termList.isEmpty) {
+      viewModel.getTerms();
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return Obx(() => SimpleDialog(
+                title: Text("请选择学期"),
+                children: viewModel.termList.map((term) {
+                  return SimpleDialogOption(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      viewModel.currentTerm.value = term;
+                      viewModel.toTerm(term);
+                    },
+                    child: Text(
+                      term.termName,
+                      style: TextStyle(
+                        color: term == viewModel.currentTerm
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onBackground,
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ));
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -57,26 +89,49 @@ class _SchedulePageState extends State<SchedulePage>
             "${_getDateString(viewModel.scheduleDatetime.value?.dateTime ?? DateTime.now())} 第${viewModel.scheduleDatetime.value?.week ?? 1}周")),
         actions: [
           IconButton(
-              onPressed: () {
-                final term = viewModel.currentTerm.value;
-                if(viewModel.isCurrentTerm()){
-                  viewModel.updateToToday(isFlush: true);
-                }else {
-                  viewModel.toTerm(term, isFlush: true);
-                }
-              },
-              icon: Icon(Icons.sync)),
+            onPressed: () {
+              viewModel.toPreviousWeek();
+            },
+            icon: Icon(Icons.navigate_before),
+          ),
           IconButton(
-              onPressed: () {
-                viewModel.toPreviousWeek();
-              },
-              icon: Icon(Icons.navigate_before)),
-          IconButton(
-              onPressed: () {
-                viewModel.toNextWeek();
-              },
-              icon: Icon(Icons.navigate_next)),
-          buildTermIconButton(context, viewModel),
+            onPressed: () {
+              viewModel.toNextWeek();
+            },
+            icon: Icon(Icons.navigate_next),
+          ),
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) => [
+              PopupMenuItem(
+                value: "sync",
+                child: ListTile(
+                  leading: Icon(Icons.sync),
+                  title: Text('同步'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    final term = viewModel.currentTerm.value;
+                    if (viewModel.isCurrentTerm()) {
+                      viewModel.updateToToday(isFlush: true);
+                    } else {
+                      viewModel.toTerm(term, isFlush: true);
+                    }
+                  },
+                ),
+              ),
+              PopupMenuItem(
+                value: "select",
+                child: ListTile(
+                  leading: Icon(Icons.date_range),
+                  title: Text('选择学期'),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    await termDialog();
+                  },
+                ),
+              ),
+            ],
+            onSelected: (value) {},
+          ),
         ],
       ),
       body: Center(
@@ -106,40 +161,36 @@ class _SchedulePageState extends State<SchedulePage>
     ));
   }
 
-  IconButton buildTermIconButton(
-      BuildContext context, ScheduleViewModel viewModel) {
-    return IconButton(
-        onPressed: () async {
-          if (viewModel.termList.isEmpty)
-            viewModel.getTerms();
-          else
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return Obx(() => SimpleDialog(
-                        title: Text("请选择学期"),
-                        children: viewModel.termList.map((term) {
-                          return SimpleDialogOption(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              viewModel.currentTerm.value = term;
-                              viewModel.toTerm(term);
-                            },
-                            child: Text(
-                              term.termName,
-                              style: TextStyle(
-                                  color: term == viewModel.currentTerm
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .onBackground),
-                            ),
-                          );
-                        }).toList(),
-                      ));
-                });
-        },
-        icon: Icon(Icons.date_range));
+  void name(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Obx(() => SimpleDialog(
+              title: Text("请选择学期"),
+              children: viewModel.termList.map((term) {
+                return SimpleDialogOption(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    viewModel.currentTerm.value = term;
+                    viewModel.toTerm(term);
+                  },
+                  child: Text(
+                    term.termName,
+                    style: TextStyle(
+                      color: term == viewModel.currentTerm
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.onBackground,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ));
+      },
+    );
+  }
+
+  void selectTermDialog(BuildContext context) {
+    name(context);
   }
 
   Widget buildWeekdayList(int index) {
@@ -188,24 +239,6 @@ class _SchedulePageState extends State<SchedulePage>
     );
   }
 
-  bor() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final parentWidth = constraints.maxWidth;
-        final parentHeight = constraints.maxHeight;
-        final aspectRatio = parentWidth / parentHeight;
-
-        return GridView.count(
-          crossAxisCount: 2,
-          childAspectRatio: aspectRatio,
-          children: [
-            // your grid items here
-          ],
-        );
-      },
-    );
-  }
-
   Widget buildContentGridView(ScheduleViewModel viewModel) {
     return Column(
       children: [
@@ -225,54 +258,65 @@ class _SchedulePageState extends State<SchedulePage>
 
   Widget buildTableItem(ScheduleViewModel viewModel, int index) {
     return Container(
+      margin: EdgeInsets.all(1),
       child: Stack(
         children: [
-          /*Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                flex: 1,
-                child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    decoration: BoxDecoration(
-                      // border: Border.all(color: Colors.black12, width: 0.5),
-                      border: Border(
-                        bottom: BorderSide(color: Colors.black12, width: 0.5),
-                        right: BorderSide(color: Colors.black12, width: 0.5),
-                      ),
-                    )),
-              ),
-            ],
-          ),*/
           Obx(() {
             if (viewModel.courseList.length - 1 < index ||
                 viewModel.courseList[index].isEmpty) {
               return Container();
             }
             final courses = viewModel.courseList[index];
-            final text = courses.map((course)  {
-              return course.classroom + "#" + course.name.truncateCodePoint(7) + "@" + course.teacher;
-            }).join(" | ");
+            final text = courses.map((course) {
+              return course.classroom +
+                  "#" +
+                  course.name.truncateCodePoint(7) +
+                  "@" +
+                  course.teacher;
+            }).join(" || ");
+
             return InkWell(
-              radius: 18,
+              borderRadius: BorderRadius.circular(6),
               child: Container(
-                margin: EdgeInsets.all(1),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
                   color: viewModel.colorsMap[courses.first.courseNo],
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Center(
-                    child: Text(
-                      // infoList[index % 2],
-                      text,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.white, fontSize: 10, letterSpacing: 1),
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Center(
+                        child: Text(
+                          text,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              letterSpacing: 1),
+                        ),
+                      ),
                     ),
-                  ),
+                    if (courses.length >= 2)
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        child: Container(
+                          padding: EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(1),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(6),
+                              bottomRight: Radius.circular(6),
+                            ),
+                          ),
+                          child: Text(
+                            '${courses.length}',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
               onTap: () {
@@ -292,25 +336,24 @@ class _SchedulePageState extends State<SchedulePage>
           Expanded(
             flex: 1,
             child: Container(
-                // width: 25,
-                // height:s 80,
-                child: Center(
-                  child: Text(
-                    textAlign: TextAlign.center,
-                    (index + 1).toString() +
-                        "\n\n" +
-                        getTimeBySection(index + 1),
-                    style: TextStyle(fontSize: 10),
-                  ),
+              // width: 25,
+              // height:s 80,
+              child: Center(
+                child: Text(
+                  textAlign: TextAlign.center,
+                  (index + 1).toString() + "\n\n" + getTimeBySection(index + 1),
+                  style: TextStyle(fontSize: 10),
                 ),
-                /*decoration: BoxDecoration(
+              ),
+              /*decoration: BoxDecoration(
                   color: Color(0xff5ff5),
                   // border: Border.all(color: Colors.black12, width: 0.5),
                   border: Border(
                     bottom: BorderSide(color: Colors.black12, width: 0.5),
                     right: BorderSide(color: Colors.black12, width: 0.5),
                   ),
-                )*/),
+                )*/
+            ),
           )
       ],
     );

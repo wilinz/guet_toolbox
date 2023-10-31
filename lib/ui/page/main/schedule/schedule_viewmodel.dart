@@ -111,27 +111,39 @@ class ScheduleViewModel extends GetxController {
   }
 
   updateData(DateTime dateTime, {Term? term, bool isFlush = false}) async {
-    getWeekday(dateTime);
-    Term currentTerm;
-    if (term == null) {
-      if (this.currentTerm.value == null) {
-        final terms = await getTerms();
-        this.currentTerm.value =
-            CourseRepository.get().getCurrentTerm(terms, true);
-      }
-      if (this.currentTerm.value == null) throw Exception("");
-      currentTerm = this.currentTerm.value!;
-    } else {
-      currentTerm = term;
-    }
+    try {
+      Term currentTerm;
+      if (term == null) {
+            if (this.currentTerm.value == null) {
+              final terms = await getTerms();
+              this.currentTerm.value =
+                  CourseRepository.get().getCurrentTerm(terms, true);
+            }
+            if (this.currentTerm.value == null) throw Exception("");
+            currentTerm = this.currentTerm.value!;
+          } else {
+            currentTerm = term;
+          }
 
-    final week = CourseRepository.get().getWeek(currentTerm, dateTime);
-    scheduleDatetime.value = ScheduleDatetime(
-        term: currentTerm,
-        dateTime: dateTime,
-        week: week,
-        weekDay: getWeekday1(DateTime.now()));
-    await getCourseList(currentTerm.term, week, isFlush: isFlush);
+      final week = CourseRepository.get().getWeek(currentTerm, dateTime);
+      final scheduleDatetime = ScheduleDatetime(
+              term: currentTerm,
+              dateTime: dateTime,
+              week: week,
+              weekDay: getWeekday1(DateTime.now()));
+      await getCourseList(currentTerm.term, week, isFlush: isFlush);
+      this.scheduleDatetime.value = scheduleDatetime;
+      getWeekday(dateTime);
+
+      if (isFlush) {
+        Get.snackbar("成功", "同步成功", duration: Duration(milliseconds: 1000));
+      }
+    } catch (e) {
+      print(e);
+      if (isFlush) {
+        Get.snackbar("失败", "同步失败：${e}", duration: Duration(milliseconds: 1500));
+      }
+    }
   }
 
   int getWeekday1(DateTime dateTime) {
@@ -189,9 +201,6 @@ class ScheduleViewModel extends GetxController {
           if (colors.isEmpty) colors = colorsBackup;
         }
       }
-    }
-    if (isFlush) {
-      Get.snackbar("成功", "同步成功");
     }
   }
 }

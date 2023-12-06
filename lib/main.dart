@@ -102,8 +102,7 @@ class _MyAppState extends State<MyApp> with WindowListener {
         defaultTransition: Transition.cupertino,
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
         supportedLocales: [
-          // if(Get.locale != null) Get.locale!
-          Locale("zh", "CN"),
+          settings.locale.value ?? Get.deviceLocale ?? Locale("zh", "CN"),
         ],
         locale: settings.locale.value ?? Get.deviceLocale,
         theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),

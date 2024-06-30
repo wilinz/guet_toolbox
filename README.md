@@ -1,6 +1,5 @@
 # Guet-Toolbox 一个使用 Flutter 开发的全平台 GUET 工具箱（课程表），此项目正在开发中...
 
-## 目前未适配新系统（2024.3.27）
 支持 Windows Linux MacOS Android IOS ，IOS 未上架  
 
 下载地址 [https://github.com/wilinz/guet_toolbox/actions](https://github.com/wilinz/guet_toolbox/actions)

@@ -32,6 +32,8 @@ class LoginViewModel extends GetxController {
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  final agreeToTerms = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -64,6 +66,11 @@ class LoginViewModel extends GetxController {
     if (!formKey.validate()) {
       toastFailure(
           message: "请检查输入", gravity: ToastGravity.TOP); // 使用你原来的 toast 函数
+      return;
+    }
+
+    if (!agreeToTerms.value) {
+      toast("请先同意用户协议和隐私政策", gravity: ToastGravity.TOP);
       return;
     }
 

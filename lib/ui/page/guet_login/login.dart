@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -37,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
           TextButton(
               onPressed: () async {
                 final User? user =
-                    await Get.toNamed<dynamic>(AppRoute.userListPage);
+                await Get.toNamed<dynamic>(AppRoute.userListPage);
                 if (user != null) {
                   c.usernameController.text = user.username;
                   c.passwordController.text = user.password;
@@ -84,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                           prefixIcon: Icon(Icons.person),
                           border: const OutlineInputBorder(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(16))),
+                              BorderRadius.all(Radius.circular(16))),
                         ),
                         validator: (v) {
                           return v!.trim().length > 0 ? null : "账号不能为空";
@@ -92,40 +93,39 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       SizedBox(height: 16),
                       Obx(() => TextFormField(
-                            controller: c.passwordController,
-                            obscureText: !c.passwordVisible.value,
-                            autofocus: false,
-                            decoration: InputDecoration(
-                              labelText: "智慧校园密码",
-                              hintText: "初始为 Guet@身份证后六位",
-                              prefixIcon: Icon(Icons.lock),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  c.passwordVisible.value
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    c.passwordVisible.toggle();
-                                  });
-                                },
-                              ),
-                              border: const OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(16))),
+                        controller: c.passwordController,
+                        obscureText: !c.passwordVisible.value,
+                        autofocus: false,
+                        decoration: InputDecoration(
+                          labelText: "智慧校园密码",
+                          hintText: "初始为 Guet@身份证后六位",
+                          prefixIcon: Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              c.passwordVisible.value
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                             ),
-                            validator: (v) {
-                              return v!.trim().length > 0 ? null : "密码不能为空";
+                            onPressed: () {
+                              setState(() {
+                                c.passwordVisible.toggle();
+                              });
                             },
-                          )),
+                          ),
+                          border: const OutlineInputBorder(
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(16))),
+                        ),
+                        validator: (v) {
+                          return v!.trim().length > 0 ? null : "密码不能为空";
+                        },
+                      )),
                       SizedBox(height: 16),
                       StreamBuilder(
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return Text(
-                                (snapshot.data! ? "当前处于校园网" : "当前处于非校园网") +
-                                    "，目前建议使用数据流量登录，使用校园网可能存在无法访问的BUG",
+                                (snapshot.data! ? "当前处于校园网" : "当前处于非校园网"),
                                 textAlign: TextAlign.center,
                               );
                             }
@@ -134,19 +134,67 @@ class _LoginPageState extends State<LoginPage> {
                           stream: c.isCampusNetworkState,
                           initialData: null),
                       SizedBox(height: 16),
+                      // 添加用户协议和隐私政策同意条款
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Obx(
+                                () => Checkbox(
+                              value: c.agreeToTerms.value,
+                              onChanged: (value) {
+                                c.agreeToTerms.value = value ?? false;
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            child: RichText(
+                              text: TextSpan(
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                children: [
+                                  TextSpan(text: '我已阅读并同意 '),
+                                  TextSpan(
+                                    text: '《用户协议》',
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Get.toNamed(AppRoute.userAgreementPage);
+                                      },
+                                  ),
+                                  TextSpan(text: ' 和 '),
+                                  TextSpan(
+                                    text: '《隐私政策》',
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Get.toNamed(AppRoute.privacyPolicyPage);
+                                      },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 16),
                       Obx(() => ElevatedButton(
-                            onPressed: c.isLoading.value
-                                ? null
-                                : () => c.login(
-                                    context,
-                                    c.formKey.currentState as FormState,
-                                    widget.args.popUpAfterSuccess),
-                            style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(double.infinity, 50)),
-                            child: c.isLoading.value
-                                ? Text("正在登录...")
-                                : Text("登录"),
-                          )),
+                        onPressed: c.isLoading.value
+                            ? null
+                            : () => c.login(
+                            context,
+                            c.formKey.currentState as FormState,
+                            widget.args.popUpAfterSuccess),
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(double.infinity, 50)),
+                        child: c.isLoading.value
+                            ? Text("正在登录...")
+                            : Text("登录"),
+                      )),
                       SizedBox(height: 8),
                       Row(
                         children: [
@@ -196,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
                                   width: 24.0,
                                   child: Obx(() => Checkbox(
                                       materialTapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
+                                      MaterialTapTargetSize.shrinkWrap,
                                       value: c.isUpgradedUndergrad.value,
                                       onChanged: (v) {
                                         c.isUpgradedUndergrad.value = v!;

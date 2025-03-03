@@ -7,6 +7,7 @@ import 'package:guethub/package_info.dart';
 import 'package:guethub/ui/route.dart';
 import 'package:guethub/ui/util/toast.dart';
 import 'package:logger/logger.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../data/get_storage.dart';
 import 'settings_controller.dart';
 
@@ -77,6 +78,14 @@ class SettingsPage extends StatelessWidget {
                 },
                 leading: Icon(Icons.account_circle_outlined),
                 title: Text("开发者"),
+                trailing: Icon(Icons.arrow_forward_ios_outlined),
+              ),
+              ListTile(
+                onTap: () async {
+                  launchUrl(Uri.parse("https://github.com/wilinz/guet_toolbox"), mode: LaunchMode.externalApplication);
+                },
+                leading: Icon(Icons.account_circle_outlined),
+                title: Text("开源地址：https://github.com/wilinz/guet_toolbox"),
                 trailing: Icon(Icons.arrow_forward_ios_outlined),
               ),
               ListTile(

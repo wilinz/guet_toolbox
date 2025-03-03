@@ -1,0 +1,51 @@
+name: Release Windows
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install OpenSSL and InnoSetup and zip
+        run: |
+          choco install openssl --no-progress
+          choco install innosetup --no-progress
+          choco install zip --no-progress
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
+          architecture: x64 # optional, x64 or arm64
+      - run: flutter --version
+
+      - name: Build for Windows
+        run: flutter build windows --release
+
+      - name: Package as exe
+        run: iscc innosetup/setup.iss
+
+      - name: Upload to artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: guet-toolbox.exe
+          path: innosetup/output/release/guet-toolbox.exe
+
+      - name: Package as zip
+        run: |
+          cd build/windows/runner/Release
+          zip -q -r ../guet-toolbox-windows.zip ./*
+          cd ../../../../
+
+      - name: Upload to artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: guet-toolbox-windows.zip
+          path: build/windows/runner/guet-toolbox-windows.zip

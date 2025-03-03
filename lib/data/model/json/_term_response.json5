@@ -1,0 +1,61 @@
+// comm/getlabarrangeterm?vpn-12-o2-bkjw.guet.edu.cn&_dc=1672584971821&page=1&start=0&limit=25
+{
+  "success": true,
+  "total": 0,
+  "data": [
+    {
+      "term": "2022-2023_3",
+      "startdate": "2023/7/5 0:00:00",
+      "enddate": "2023/7/30 0:00:00",
+      "weeknum": "4",
+      "termname": "2022-2023三学期",
+      "schoolyear": "2022",
+      "comm": null
+    },
+    {
+      "term": "2022-2023_2",
+      "startdate": "2023/2/13 0:00:00",
+      "enddate": "2023/7/5 0:00:00",
+      "weeknum": "18",
+      "termname": "2022-2023下学期",
+      "schoolyear": "2022",
+      "comm": null
+    },
+    {
+      "term": "2022-2023_1",
+      "startdate": "2022/9/5 0:00:00",
+      "enddate": "2023/1/8 0:00:00",
+      "weeknum": "18",
+      "termname": "2022-2023上学期",
+      "schoolyear": "2022",
+      "comm": null
+    },
+    {
+      "term": "2021-2022_3",
+      "startdate": "2022/2/21 0:00:00",
+      "enddate": "2022/7/30 0:00:00",
+      "weeknum": "4",
+      "termname": "2021-2022三学期",
+      "schoolyear": "2021",
+      "comm": null
+    },
+    {
+      "term": "2021-2022_2",
+      "startdate": "2022/2/21 0:00:00",
+      "enddate": "2022/7/30 0:00:00",
+      "weeknum": "22",
+      "termname": "2021-2022下学期",
+      "schoolyear": "2021",
+      "comm": null
+    },
+    {
+      "term": "2021-2022_1",
+      "startdate": "2021/9/6 0:00:00",
+      "enddate": "2022/1/9 0:00:00",
+      "weeknum": "18",
+      "termname": "2021-2022上学期",
+      "schoolyear": "2021",
+      "comm": null
+    }
+  ]
+}

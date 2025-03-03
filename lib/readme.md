@@ -1,0 +1,302 @@
+- 📂 __lib__
+   - 📄 [check\_update.dart ](check_update.dart)// 检查更新
+   - 📂 __common__
+     - 📂 __encrypt__ // GUET 加密相关工具
+       - 📄 [cas.dart](common/encrypt/cas.dart)
+       - 📄 [cas\_new.dart](common/encrypt/cas_new.dart)
+       - 📄 [webvpn.dart](common/encrypt/webvpn.dart)
+     - 📄 [json.dart](common/json.dart)
+     - 📄 [key.dart](common/key.dart)
+     - 📄 [list.dart](common/list.dart)
+   - 📂 __data__ // 数据操作
+     - 📂 __catch__ // 抓包存档
+       - 📄 [new\-course\-table.har](data/catch/new-course-table.har)
+     - 📂 __dao__ // 数据库操作对象
+       - 📄 [campus\_network\_user.dart](data/dao/campus_network_user.dart) // 校园网用户DAO
+       - 📄 [exam\_scores\_new.dart ](data/dao/exam_scores_new.dart)// 新版考试成绩DAO
+       - 📄 [schedule.dart](data/dao/schedule.dart) // 学期DAO
+       - 📄 [semester.dart ](data/dao/semester.dart)// 课表DAO
+       - 📄 [student.dart](data/dao/student.dart) // 学生信息DAO
+       - 📄 [term.dart ](data/dao/term.dart)// 旧版学期DAO
+       - 📄 [user.dart ](data/dao/user.dart)// 用户DAO
+     - 📂 __database__
+       - 📄 [database.dart ](data/database/database.dart)// 数据库
+       - 📄 [database.g.dart](data/database/database.g.dart)
+       - 📄 [datetime\_converter.dart](data/database/datetime_converter.dart) // 日期时间数据库适配器
+       - 📄 [listconverter.dart](data/database/listconverter.dart) // list 数据库适配器
+       - 📂 __migration__ // 数据库迁移文件
+         - 📄 [migration1to2.dart](data/database/migration/migration1to2.dart)
+         - 📄 [migration2to3.dart](data/database/migration/migration2to3.dart)
+         - 📄 [migration3to4.dart](data/database/migration/migration3to4.dart)
+         - 📄 [migration4to5.dart](data/database/migration/migration4to5.dart)
+     - 📄 [get\_storage.dart](data/get_storage.dart) // 通用 Getx Storage , 存储 k-v
+     - 📂 __html__ // html 抓包存档
+       - 📄 [empty\_classroom.html](data/html/empty_classroom.html)
+       - 📄 [exam\_plan.html](data/html/exam_plan.html)
+       - 📄 [req.txt](data/html/req.txt)
+     - 📂 __json__ // json 生成 dart model 存档，如果你需要新增 json to dart model , 只需将 json文件放到本目录下，并命好名（小写下划线格式），运行 `flutter pub run json5_model --src=lib/data/json  --dist=lib/data/model`，非必要的话不需要建子文件夹了，子文件夹是历史遗留问题
+       - 📄 [\_current\_semesters.json5](data/json/_current_semesters.json5)
+       - 📄 [\_current\_term\_new.json5](data/json/_current_term_new.json5)
+       - 📄 [\_empty\_classroom.json5](data/json/_empty_classroom.json5)
+       - 📄 [\_exam\_schedule.json5](data/json/_exam_schedule.json5)
+       - 📄 [\_exam\_scores\_new.json5](data/json/_exam_scores_new.json5)
+       - 📄 [\_exam\_scores\_new\_raw.json5](data/json/_exam_scores_new_raw.json5)
+       - 📄 [\_exam\_scores\_sort.json5](data/json/_exam_scores_sort.json5)
+       - 📄 [\_new\_schedule.json5](data/json/_new_schedule.json5)
+       - 📄 [\_new\_schedule\_simplify.json5](data/json/_new_schedule_simplify.json5)
+       - 📄 [\_semesters.json](data/json/_semesters.json)
+       - 📄 [\_term\_new.json5](data/json/_term_new.json5)
+       - 📂 __campus\_network__
+         - 📄 [\_campus\_network\_auth\_online\_list.json5](data/json/campus_network/_campus_network_auth_online_list.json5)
+         - 📄 [\_campus\_network\_auth\_response\_common.json5](data/json/campus_network/_campus_network_auth_response_common.json5)
+         - 📄 [\_campus\_network\_auth\_response\_fail.json5](data/json/campus_network/_campus_network_auth_response_fail.json5)
+         - 📄 [\_campus\_network\_auth\_response\_success.json5](data/json/campus_network/_campus_network_auth_response_success.json5)
+       - 📂 __dynamic\_code__
+         - 📄 [\_dynamic\_code.json5](data/json/dynamic_code/_dynamic_code.json5)
+         - 📄 [\_reauth.json5](data/json/dynamic_code/_reauth.json5)
+       - 📂 __exam\_scheduling__
+       - 📂 __exam\_scores__
+         - 📄 [\_exam\_scores.json5](data/json/exam_scores/_exam_scores.json5)
+       - 📂 __plan\_course__
+         - 📄 [\_plan\_course.json5](data/json/plan_course/_plan_course.json5)
+       - 📂 __selected\_course__
+         - 📄 [\_selected\_course.json5](data/json/selected_course/_selected_course.json5)
+     - 📂 __model__ // 此目录是 json 生成的实体类，如果要自定义实体类，也可以放到本目录
+       - 📂 __academy__
+         - 📄 [academy\_response.dart](data/model/academy/academy_response.dart)
+         - 📄 [academy\_response.g.dart](data/model/academy/academy_response.g.dart)
+       - 📂 __api__
+         - 📄 [pedagogical\_evaluation\_save.http](data/model/api/pedagogical_evaluation_save.http)
+       - 📂 __app__
+         - 📂 __app\_version__
+           - 📄 [app\_version.dart](data/model/app/app_version/app_version.dart)
+           - 📄 [app\_version.g.dart](data/model/app/app_version/app_version.g.dart)
+       - 📂 __campus\_network__
+         - 📄 [campus\_network\_auth\_online\_list.dart](data/model/campus_network/campus_network_auth_online_list.dart)
+         - 📄 [campus\_network\_auth\_online\_list.g.dart](data/model/campus_network/campus_network_auth_online_list.g.dart)
+         - 📄 [campus\_network\_auth\_response\_common.dart](data/model/campus_network/campus_network_auth_response_common.dart)
+         - 📄 [campus\_network\_auth\_response\_common.g.dart](data/model/campus_network/campus_network_auth_response_common.g.dart)
+         - 📄 [campus\_network\_auth\_response\_fail.dart](data/model/campus_network/campus_network_auth_response_fail.dart)
+         - 📄 [campus\_network\_auth\_response\_fail.g.dart](data/model/campus_network/campus_network_auth_response_fail.g.dart)
+         - 📄 [campus\_network\_auth\_response\_success.dart](data/model/campus_network/campus_network_auth_response_success.dart)
+         - 📄 [campus\_network\_auth\_response\_success.g.dart](data/model/campus_network/campus_network_auth_response_success.g.dart)
+       - 📂 __common__
+         - 📄 [common\_response.dart](data/model/common/common_response.dart)
+         - 📄 [common\_response.g.dart](data/model/common/common_response.g.dart)
+       - 📂 __course__
+         - 📄 [course\_lab\_response.dart](data/model/course/course_lab_response.dart)
+         - 📄 [course\_lab\_response.g.dart](data/model/course/course_lab_response.g.dart)
+         - 📄 [course\_response.dart](data/model/course/course_response.dart)
+         - 📄 [course\_response.g.dart](data/model/course/course_response.g.dart)
+         - 📄 [semester\_schedule.dart](data/model/course/semester_schedule.dart)
+         - 📄 [semester\_schedule.g.dart](data/model/course/semester_schedule.g.dart)
+       - 📂 __current\_semesters__
+         - 📄 [current\_semesters.dart](data/model/current_semesters/current_semesters.dart)
+         - 📄 [current\_semesters.g.dart](data/model/current_semesters/current_semesters.g.dart)
+       - 📂 __current\_term\_new__
+         - 📄 [current\_term\_new.dart](data/model/current_term_new/current_term_new.dart)
+         - 📄 [current\_term\_new.g.dart](data/model/current_term_new/current_term_new.g.dart)
+       - 📂 __db__
+         - 📄 [base.dart](data/model/db/base.dart)
+       - 📂 __dynamic\_code__
+         - 📄 [dynamic\_code.dart](data/model/dynamic_code/dynamic_code.dart)
+         - 📄 [dynamic\_code.g.dart](data/model/dynamic_code/dynamic_code.g.dart)
+         - 📄 [reauth.dart](data/model/dynamic_code/reauth.dart)
+         - 📄 [reauth.g.dart](data/model/dynamic_code/reauth.g.dart)
+       - 📂 __empty\_classroom__
+         - 📄 [empty\_classroom.dart](data/model/empty_classroom/empty_classroom.dart)
+         - 📄 [empty\_classroom.g.dart](data/model/empty_classroom/empty_classroom.g.dart)
+       - 📂 __exam\_schedule__
+         - 📄 [exam\_schedule.dart](data/model/exam_schedule/exam_schedule.dart)
+         - 📄 [exam\_schedule.g.dart](data/model/exam_schedule/exam_schedule.g.dart)
+       - 📂 __exam\_scheduling__
+         - 📄 [exam\_schedule.dart](data/model/exam_scheduling/exam_schedule.dart)
+         - 📄 [exam\_schedule.g.dart](data/model/exam_scheduling/exam_schedule.g.dart)
+       - 📂 __exam\_scores__
+         - 📄 [exam\_scores.dart](data/model/exam_scores/exam_scores.dart)
+         - 📄 [exam\_scores.g.dart](data/model/exam_scores/exam_scores.g.dart)
+       - 📂 __exam\_scores\_new__
+         - 📄 [exam\_scores\_new.dart](data/model/exam_scores_new/exam_scores_new.dart)
+         - 📄 [exam\_scores\_new.g.dart](data/model/exam_scores_new/exam_scores_new.g.dart)
+       - 📂 __exam\_scores\_sort__
+         - 📄 [exam\_scores\_sort.dart](data/model/exam_scores_sort/exam_scores_sort.dart)
+         - 📄 [exam\_scores\_sort.g.dart](data/model/exam_scores_sort/exam_scores_sort.g.dart)
+       - 📂 __html__
+         - 📄 [class\_schedule.html](data/model/html/class_schedule.html)
+         - 📄 [course\_selection.html](data/model/html/course_selection.html)
+       - 📂 __json__
+         - 📄 [\_\_get\_evaluated\_data.json5](data/model/json/__get_evaluated_data.json5)
+         - 📄 [\_academy\_response.json5](data/model/json/_academy_response.json5)
+         - 📄 [\_common\_response.json5](data/model/json/_common_response.json5)
+         - 📄 [\_course\_lab\_response.json5](data/model/json/_course_lab_response.json5)
+         - 📄 [\_course\_response.json5](data/model/json/_course_response.json5)
+         - 📄 [\_current\_term\_response.json5](data/model/json/_current_term_response.json5)
+         - 📄 [\_login\_cas\_response.json](data/model/json/_login_cas_response.json)
+         - 📄 [\_majors\_response.json5](data/model/json/_majors_response.json5)
+         - 📄 [\_plan\_course\_detail\_response.json5](data/model/json/_plan_course_detail_response.json5)
+         - 📄 [\_plan\_course\_response.json5](data/model/json/_plan_course_response.json5)
+         - 📄 [\_student\_info.json5](data/model/json/_student_info.json5)
+         - 📄 [\_term\_response.json5](data/model/json/_term_response.json5)
+         - 📂 __pedagogical\_evaluation__
+           - 📄 [\_pedagogical\_evaluation\_data.json5](data/model/json/pedagogical_evaluation/_pedagogical_evaluation_data.json5)
+           - 📄 [\_pedagogical\_evaluation\_questions\_response.json5](data/model/json/pedagogical_evaluation/_pedagogical_evaluation_questions_response.json5)
+           - 📄 [\_pedagogical\_evaluation\_questions\_save\_request.json5](data/model/json/pedagogical_evaluation/_pedagogical_evaluation_questions_save_request.json5)
+           - 📄 [\_pedagogical\_evaluation\_response.json5](data/model/json/pedagogical_evaluation/_pedagogical_evaluation_response.json5)
+       - 📂 __login__
+         - 📄 [login\_cas\_response.dart](data/model/login/login_cas_response.dart)
+         - 📄 [login\_cas\_response.g.dart](data/model/login/login_cas_response.g.dart)
+       - 📂 __majors__
+         - 📄 [majors\_response.dart](data/model/majors/majors_response.dart)
+         - 📄 [majors\_response.g.dart](data/model/majors/majors_response.g.dart)
+       - 📂 __new\_schedule__
+         - 📄 [new\_schedule.dart](data/model/new_schedule/new_schedule.dart)
+         - 📄 [new\_schedule.g.dart](data/model/new_schedule/new_schedule.g.dart)
+       - 📂 __pedagogical\_evaluation__
+         - 📄 [pedagogical\_evaluation\_data.dart](data/model/pedagogical_evaluation/pedagogical_evaluation_data.dart)
+         - 📄 [pedagogical\_evaluation\_data.g.dart](data/model/pedagogical_evaluation/pedagogical_evaluation_data.g.dart)
+         - 📄 [pedagogical\_evaluation\_options.dart](data/model/pedagogical_evaluation/pedagogical_evaluation_options.dart)
+         - 📄 [pedagogical\_evaluation\_questions\_response.dart](data/model/pedagogical_evaluation/pedagogical_evaluation_questions_response.dart)
+         - 📄 [pedagogical\_evaluation\_questions\_response.g.dart](data/model/pedagogical_evaluation/pedagogical_evaluation_questions_response.g.dart)
+         - 📄 [pedagogical\_evaluation\_questions\_save\_request.dart](data/model/pedagogical_evaluation/pedagogical_evaluation_questions_save_request.dart)
+         - 📄 [pedagogical\_evaluation\_questions\_save\_request.g.dart](data/model/pedagogical_evaluation/pedagogical_evaluation_questions_save_request.g.dart)
+         - 📄 [pedagogical\_evaluation\_response.dart](data/model/pedagogical_evaluation/pedagogical_evaluation_response.dart)
+         - 📄 [pedagogical\_evaluation\_response.g.dart](data/model/pedagogical_evaluation/pedagogical_evaluation_response.g.dart)
+       - 📂 __plan\_course__
+         - 📄 [plan\_course.dart](data/model/plan_course/plan_course.dart)
+         - 📄 [plan\_course.g.dart](data/model/plan_course/plan_course.g.dart)
+         - 📄 [plan\_course\_detail\_response.dart](data/model/plan_course/plan_course_detail_response.dart)
+         - 📄 [plan\_course\_detail\_response.g.dart](data/model/plan_course/plan_course_detail_response.g.dart)
+         - 📄 [plan\_course\_response.dart](data/model/plan_course/plan_course_response.dart)
+         - 📄 [plan\_course\_response.g.dart](data/model/plan_course/plan_course_response.g.dart)
+       - 📂 __schedule\_datetime__
+         - 📄 [schedule\_datetime.dart](data/model/schedule_datetime/schedule_datetime.dart)
+       - 📂 __selected\_course__
+         - 📄 [selected\_course.dart](data/model/selected_course/selected_course.dart)
+         - 📄 [selected\_course.g.dart](data/model/selected_course/selected_course.g.dart)
+       - 📂 __semesters__
+         - 📄 [semesters.dart](data/model/semesters/semesters.dart)
+         - 📄 [semesters.g.dart](data/model/semesters/semesters.g.dart)
+       - 📂 __student__
+         - 📄 [student\_info.dart](data/model/student/student_info.dart)
+         - 📄 [student\_info.g.dart](data/model/student/student_info.g.dart)
+       - 📄 [template.dart](data/model/template.dart)
+       - 📂 __term__
+         - 📄 [term.dart](data/model/term/term.dart)
+         - 📄 [term.g.dart](data/model/term/term.g.dart)
+       - 📂 __term\_new__
+         - 📄 [term\_new.dart](data/model/term_new/term_new.dart)
+         - 📄 [term\_new.g.dart](data/model/term_new/term_new.g.dart)
+       - 📂 __user__
+         - 📄 [campus\_network\_user.dart](data/model/user/campus_network_user.dart)
+         - 📄 [user.dart](data/model/user/user.dart)
+     - 📄 [network.dart](data/network.dart) // App 全局网络配置
+     - 📄 [redirect\_interceptor.dart](data/redirect_interceptor.dart) // 重定向拦截器
+     - 📂 __repository__ // 仓库层，处理数据获取存储等问题
+       - 📄 [academy.dart](data/repository/academy.dart)
+       - 📄 [app\_version.dart](data/repository/app_version.dart)
+       - 📄 [campus\_network.dart](data/repository/campus_network.dart)
+       - 📄 [campus\_network\_user.dart](data/repository/campus_network_user.dart)
+       - 📄 [common.dart](data/repository/common.dart)
+       - 📄 [course.dart](data/repository/course.dart)
+       - 📄 [exam\_schedule\_repository.dart](data/repository/exam_schedule_repository.dart)
+       - 📄 [exam\_scores.dart](data/repository/exam_scores.dart)
+       - 📄 [login.dart](data/repository/login.dart)
+       - 📄 [majors.dart](data/repository/majors.dart)
+       - 📄 [network\_detection.dart](data/repository/network_detection.dart)
+       - 📄 [pedagogical\_evaluation.dart](data/repository/pedagogical_evaluation.dart)
+       - 📄 [student\_info.dart](data/repository/student_info.dart)
+       - 📄 [user.dart](data/repository/user.dart)
+     - 📂 __service__ // api service 层，处理网络请求，暴露简单接口给 仓库层
+       - 📄 [academy.dart](data/service/academy.dart)
+       - 📄 [campus\_network\_auth.dart](data/service/campus_network_auth.dart)
+       - 📄 [course.dart](data/service/course.dart)
+       - 📄 [empty\_classroom.dart](data/service/empty_classroom.dart)
+       - 📄 [exam\_schedule.dart](data/service/exam_schedule.dart)
+       - 📄 [exam\_scores.dart](data/service/exam_scores.dart)
+       - 📄 [login.dart](data/service/login.dart)
+       - 📄 [majors.dart](data/service/majors.dart)
+       - 📄 [network\_detection.dart](data/service/network_detection.dart)
+       - 📄 [new\_course\_schedule.dart](data/service/new_course_schedule.dart)
+       - 📄 [pedagogical\_evaluation.dart](data/service/pedagogical_evaluation.dart)
+       - 📄 [student\_info.dart](data/service/student_info.dart)
+       - 📄 [term.dart](data/service/term.dart)
+   - 📂 __generated__ // 自动生成的本地化文件
+     - 📄 [locales.g.dart](generated/locales.g.dart)
+   - 📄 [logger.dart](logger.dart) // 全局日志记录器
+   - 📄 [main.dart](main.dart) // 程序入口
+   - 📄 [package\_info.dart](package_info.dart) // 全局软件包信息，如版本信息
+   - 📄 [path.dart](path.dart) // 全局内部路径初始化
+   - 📄 [readme.md](readme.md) // 本文档
+   - 📂 __ui__ //  UI 层
+     - 📄 [color\_schemes.g.dart](ui/color_schemes.g.dart) // 自动生成，好像已经废弃
+     - 📂 __login__ // 登录验证码对话框
+       - 📄 [captcha\_dialog.dart](ui/login/captcha_dialog.dart)
+       - 📄 [verification\_code\_dialog.dart](ui/login/verification_code_dialog.dart)
+     - 📂 __page__ // 各个页面
+       - 📂 __campus\_network__ // 校园网认证页面
+         - 📄 [campus\_network.dart](ui/page/campus_network/campus_network.dart)
+         - 📄 [campus\_network\_vm.dart](ui/page/campus_network/campus_network_vm.dart)
+         - 📄 [online\_user\_info.dart](ui/page/campus_network/online_user_info.dart)
+       - 📂 __course\_detail__ // 课表详情页
+         - 📄 [course\_detail.dart](ui/page/course_detail/course_detail.dart)
+         - 📄 [course\_detail\_vm.dart](ui/page/course_detail/add_course_vm.dart)
+       - 📂 __course\_selection__ // 选课页面，旧版，已废弃
+         - 📄 [course\_selection.dart](ui/page/course_selection/course_selection.dart)
+         - 📄 [course\_selection\_vm.dart](ui/page/course_selection/course_selection_vm.dart)
+       - 📂 __empty\_classroom__ // 旧版空教室查询，已废弃
+         - 📄 [empty\_classroom.dart](ui/page/empty_classroom/empty_classroom.dart)
+       - 📂 __exam\_schedule__ // 考试安排页面
+         - 📄 [exam\_schedule\_controller.dart](ui/page/exam_schedule/exam_schedule_controller.dart)
+         - 📄 [exam\_schedule\_page.dart](ui/page/exam_schedule/exam_schedule_page.dart)
+       - 📂 __exam\_scores__ // 考试成绩页面
+         - 📄 [exam\_scores\_controller.dart](ui/page/exam_scores/exam_scores_controller.dart)
+         - 📄 [exam\_scores\_page.dart](ui/page/exam_scores/exam_scores_page.dart)
+       - 📂 __feedback__ // 反馈页面
+         - 📄 [feedback\_controller.dart](ui/page/feedback/feedback_controller.dart)
+         - 📄 [feedback\_page.dart](ui/page/feedback/feedback_page.dart)
+       - 📂 __login__ // CAS 登录页面
+         - 📄 [login.dart](ui/page/guet_login/login.dart)
+         - 📄 [login\_viewmodel.dart](ui/page/guet_login/login_viewmodel.dart)
+       - 📂 __main__ 主页面
+         - 📂 __home__ // 主页面“主页”
+           - 📄 [home.dart](ui/page/main/home/home.dart)
+         - 📄 [main.dart](ui/page/main/main.dart) // 主页面
+         - 📂 __profile__ // 主页面“我的”
+           - 📄 [profile.dart](ui/page/main/profile/profile.dart)
+           - 📄 [profile\_vm.dart](ui/page/main/profile/profile_vm.dart)
+         - 📂 __schedule__ // 主页面“课表”
+           - 📄 [schedule.dart](ui/page/main/schedule/schedule.dart)
+           - 📄 [schedule\_viewmodel.dart](ui/page/main/schedule/schedule_viewmodel.dart)
+       - 📂 __pedagogical\_evaluation__ // 旧版评教，已废弃
+         - 📄 [pedagogical\_evaluation.dart](ui/page/pedagogical_evaluation/pedagogical_evaluation.dart)
+         - 📄 [pedagogical\_evaluation\_edit.dart](ui/page/pedagogical_evaluation/pedagogical_evaluation_edit.dart)
+         - 📄 [pedagogical\_evaluation\_edit\_vm.dart](ui/page/pedagogical_evaluation/pedagogical_evaluation_edit_vm.dart)
+         - 📄 [pedagogical\_evaluation\_vm.dart](ui/page/pedagogical_evaluation/pedagogical_evaluation_vm.dart)
+       - 📂 __splash__ //启动闪屏页面
+         - 📄 [splash.dart](ui/page/splash/splash.dart)
+       - 📂 __theme__ // 主题配置页面
+         - 📄 [theme\_changer\_controller.dart](ui/page/theme/theme_changer_controller.dart)
+         - 📄 [theme\_changer\_page.dart](ui/page/theme/theme_changer_page.dart)
+     - 📄 [route.dart](ui/route.dart) // Getx 路由定义文件
+     - 📂 __settings__ // 设置页面
+       - 📄 [settings\_controller.dart](ui/settings/settings_controller.dart)
+       - 📄 [settings\_page.dart](ui/settings/settings_page.dart)
+     - 📂 __util__ // 工具，UI 相关
+       - 📄 [toast.dart](ui/util/toast.dart)
+     - 📂 __widget__ // 一些通用UI组件
+       - 📄 [selection\_transformer.dart](ui/widget/selection_transformer.dart)
+       - 📄 [window\_caption.dart](ui/widget/window_caption.dart)
+     - 📄 [widget.dart ](ui/widget.dart)// 一些通用UI组件
+   - 📂 __util__ // 工具，UI 无关
+     - 📄 [encrypt.dart](util/encrypt.dart)
+     - 📄 [encrypt\_list.dart](util/encrypt_list.dart)
+     - 📄 [ext.dart](util/ext.dart)
+     - 📄 [js.dart](util/js.dart)
+     - 📄 [list.dart](util/list.dart)
+     - 📄 [platform.dart](util/platform.dart)
+     - 📄 [random.dart](util/random.dart)
+     - 📄 [string\_ext.dart](util/string_ext.dart)
+
+  
+除此之外，assets 放到最顶层的 assets 目录，包含国际化字符串文件
+增加一个页面步骤：ui/page 下新增一个文件夹，添加 xxx_page.dart 与 xxx_controller.dart，ui/route.dart 注册路由，data/repository 新建 xxx_repository.dart , 如果需要网络，在 data/service 下新增文件，如果需要数据库操作，在 data/dao 新增文件，并修改 data/database 注册数据库表 , 实体类放在 data/model , 可以手动编写，也可以由 json 生成，注意 dart 命名规范 [https://dart.cn/guides/language/effective-dart/style](https://dart.cn/guides/language/effective-dart/style)

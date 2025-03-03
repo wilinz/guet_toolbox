@@ -1,0 +1,11 @@
+{
+  "meta" : {
+    "success" : true,
+    "statusCode" : 200,
+    "message" : "ok"
+  },
+  "data" : {
+    "code" : "PASSERROR",
+    "data" : "7,1"
+  }
+}

@@ -1,0 +1,139 @@
+///student/getpjcno?vpn-12-o2-bkjw.guet.edu.cn&_dc=1673171400176&term=2022-2023_1&page=1&start=0&limit=25
+{
+  "success": true,
+  "total": 0,
+  "data": [
+    {
+      "term": "2022-2023_1",
+      "stid": "2200000000",
+      "courseid": "BG0000178X0",
+      "teacherno": "教师工号",
+      "courseno": "2210227",
+      "cname": "形势与政策1",
+      "name": "教师姓名",
+      "lb": 1,
+      "chk": 0,
+      "can": true
+    },
+    {
+      "term": "2022-2023_1",
+      "stid": "2200000000",
+      "courseid": "BJ000001510",
+      "teacherno": "",
+      "courseno": "2210374",
+      "cname": "高等数学A1",
+      "name": "",
+      "lb": 1,
+      "chk": 0,
+      "can": true
+    },
+    {
+      "term": "2022-2023_1",
+      "stid": "2200000000",
+      "courseid": "BG3301001X0",
+      "teacherno": "",
+      "courseno": "2210771",
+      "cname": "英语听说",
+      "name": "",
+      "lb": 1,
+      "chk": 0,
+      "can": true
+    },
+    {
+      "term": "2022-2023_1",
+      "stid": "2200000000",
+      "courseid": "BG0000041X0",
+      "teacherno": "",
+      "courseno": "2210870",
+      "cname": "中国近现代史纲要",
+      "name": "",
+      "lb": 1,
+      "chk": 0,
+      "can": true
+    },
+    {
+      "term": "2022-2023_1",
+      "stid": "2200000000",
+      "courseid": "BG0000028X0",
+      "teacherno": "",
+      "courseno": "2212367",
+      "cname": "体育1",
+      "name": "",
+      "lb": 1,
+      "chk": 0,
+      "can": true
+    },
+    {
+      "term": "2022-2023_1",
+      "stid": "2200000000",
+      "courseid": "BJ3301002X0",
+      "teacherno": "",
+      "courseno": "2213542",
+      "cname": "专业导论（双语教学）",
+      "name": "",
+      "lb": 1,
+      "chk": 0,
+      "can": true
+    },
+    {
+      "term": "2022-2023_1",
+      "stid": "2200000000",
+      "courseid": "BJ3301003X0",
+      "teacherno": "",
+      "courseno": "2213543",
+      "cname": "人工智能数学基础（双语教学）",
+      "name": "",
+      "lb": 1,
+      "chk": 0,
+      "can": true
+    },
+    {
+      "term": "2022-2023_1",
+      "stid": "2200000000",
+      "courseid": "BT3301004X0",
+      "teacherno": "",
+      "courseno": "2213545",
+      "cname": "程序设计与问题求解（双语教学）",
+      "name": "",
+      "lb": 1,
+      "chk": 0,
+      "can": true
+    },
+    {
+      "term": "2022-2023_1",
+      "stid": "2200000000",
+      "courseid": "BJ3301002X0",
+      "teacherno": "",
+      "courseno": "2022142142",
+      "cname": "专业导论（双语教学）",
+      "name": "",
+      "lb": 2,
+      "chk": 0,
+      "can": true
+    },
+    {
+      "term": "2022-2023_1",
+      "stid": "2200000000",
+      "courseid": "BT3301004X0",
+      "teacherno": "",
+      "courseno": "2022142146",
+      "cname": "程序设计与问题求解（双语教学）",
+      "name": "",
+      "lb": 2,
+      "chk": 0,
+      "can": true
+    },
+    {
+      "term": "2022-2023_1",
+      "stid": "2200000000",
+      "courseid": "BS0000614X0",
+      "teacherno": "",
+      "courseno": "2213870",
+      "cname": "新生入学教育",
+      "name": "",
+      "lb": 2,
+      "chk": 0,
+      "can": true
+    }
+  ]
+}

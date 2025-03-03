@@ -1,0 +1,161 @@
+PODS:
+  - connectivity_plus (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - device_info_plus (0.0.1):
+    - FlutterMacOS
+  - emoji_picker_flutter (0.0.1):
+    - FlutterMacOS
+  - file_selector_macos (0.0.1):
+    - FlutterMacOS
+  - flutter_image_compress_macos (1.0.0):
+    - FlutterMacOS
+  - flutter_inappwebview_macos (0.0.1):
+    - FlutterMacOS
+    - OrderedSet (~> 6.0.3)
+  - flutter_localization (0.0.1):
+    - FlutterMacOS
+  - FlutterMacOS (1.0.0)
+  - image_editor_common (1.0.0):
+    - Flutter
+    - FlutterMacOS
+  - OrderedSet (6.0.3)
+  - package_info_plus (0.0.1):
+    - FlutterMacOS
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - rscrypto (0.0.1):
+    - FlutterMacOS
+  - screen_retriever (0.0.1):
+    - FlutterMacOS
+  - share_plus (0.0.1):
+    - FlutterMacOS
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - sqflite (0.0.3):
+    - Flutter
+    - FlutterMacOS
+  - sqlite3 (3.49.0):
+    - sqlite3/common (= 3.49.0)
+  - sqlite3/common (3.49.0)
+  - sqlite3/dbstatvtab (3.49.0):
+    - sqlite3/common
+  - sqlite3/fts5 (3.49.0):
+    - sqlite3/common
+  - sqlite3/perf-threadsafe (3.49.0):
+    - sqlite3/common
+  - sqlite3/rtree (3.49.0):
+    - sqlite3/common
+  - sqlite3_flutter_libs (0.0.1):
+    - Flutter
+    - FlutterMacOS
+    - sqlite3 (~> 3.49.0)
+    - sqlite3/dbstatvtab
+    - sqlite3/fts5
+    - sqlite3/perf-threadsafe
+    - sqlite3/rtree
+  - url_launcher_macos (0.0.1):
+    - FlutterMacOS
+  - window_manager (0.2.0):
+    - FlutterMacOS
+  - window_size (0.0.2):
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - connectivity_plus (from `Flutter/ephemeral/.symlinks/plugins/connectivity_plus/darwin`)
+  - device_info_plus (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos`)
+  - emoji_picker_flutter (from `Flutter/ephemeral/.symlinks/plugins/emoji_picker_flutter/macos`)
+  - file_selector_macos (from `Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos`)
+  - flutter_image_compress_macos (from `Flutter/ephemeral/.symlinks/plugins/flutter_image_compress_macos/macos`)
+  - flutter_inappwebview_macos (from `Flutter/ephemeral/.symlinks/plugins/flutter_inappwebview_macos/macos`)
+  - flutter_localization (from `Flutter/ephemeral/.symlinks/plugins/flutter_localization/macos`)
+  - FlutterMacOS (from `Flutter/ephemeral`)
+  - image_editor_common (from `Flutter/ephemeral/.symlinks/plugins/image_editor_common/macos`)
+  - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
+  - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
+  - rscrypto (from `Flutter/ephemeral/.symlinks/plugins/rscrypto/macos`)
+  - screen_retriever (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever/macos`)
+  - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
+  - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - sqflite (from `Flutter/ephemeral/.symlinks/plugins/sqflite/darwin`)
+  - sqlite3_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/darwin`)
+  - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
+  - window_manager (from `Flutter/ephemeral/.symlinks/plugins/window_manager/macos`)
+  - window_size (from `Flutter/ephemeral/.symlinks/plugins/window_size/macos`)
+
+SPEC REPOS:
+  trunk:
+    - OrderedSet
+    - sqlite3
+
+EXTERNAL SOURCES:
+  connectivity_plus:
+    :path: Flutter/ephemeral/.symlinks/plugins/connectivity_plus/darwin
+  device_info_plus:
+    :path: Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos
+  emoji_picker_flutter:
+    :path: Flutter/ephemeral/.symlinks/plugins/emoji_picker_flutter/macos
+  file_selector_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos
+  flutter_image_compress_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/flutter_image_compress_macos/macos
+  flutter_inappwebview_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/flutter_inappwebview_macos/macos
+  flutter_localization:
+    :path: Flutter/ephemeral/.symlinks/plugins/flutter_localization/macos
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+  image_editor_common:
+    :path: Flutter/ephemeral/.symlinks/plugins/image_editor_common/macos
+  package_info_plus:
+    :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
+  path_provider_foundation:
+    :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
+  rscrypto:
+    :path: Flutter/ephemeral/.symlinks/plugins/rscrypto/macos
+  screen_retriever:
+    :path: Flutter/ephemeral/.symlinks/plugins/screen_retriever/macos
+  share_plus:
+    :path: Flutter/ephemeral/.symlinks/plugins/share_plus/macos
+  shared_preferences_foundation:
+    :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin
+  sqflite:
+    :path: Flutter/ephemeral/.symlinks/plugins/sqflite/darwin
+  sqlite3_flutter_libs:
+    :path: Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/darwin
+  url_launcher_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
+  window_manager:
+    :path: Flutter/ephemeral/.symlinks/plugins/window_manager/macos
+  window_size:
+    :path: Flutter/ephemeral/.symlinks/plugins/window_size/macos
+
+SPEC CHECKSUMS:
+  connectivity_plus: 9f24994ac7615d6c2607a885253fc67ffadab2e6
+  device_info_plus: a1b54f3a24a166cc230088be996beab3d7bca6ea
+  emoji_picker_flutter: 44435ce55952e0b3c6dcb8f4805d4a1502458c28
+  file_selector_macos: 9e9e068e90ebee155097d00e89ae91edb2374db7
+  flutter_image_compress_macos: e68daf54bb4bf2144c580fd4d151c949cbf492f0
+  flutter_inappwebview_macos: 13a1fb94e7d1a878fb5d7b02089a64697ca54a2b
+  flutter_localization: bb750484a0aeb749855b2e298cf877e8684836b9
+  FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+  image_editor_common: f480572b5f23a5e15007b2aa86571675e1e8d16a
+  OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
+  package_info_plus: 3cd42cc91bb869fbaa3641332eda9914de8fe6c1
+  path_provider_foundation: 350e9d261268127abe93a19f892e46d0141d43a5
+  rscrypto: ecc7cef643f5641dd3714fbc7dea36263ab6259b
+  screen_retriever: dce2684e475a7e5aada582121e18ba76551bc912
+  share_plus: e36d02b62cbda47c70f779710768a498b099aa10
+  shared_preferences_foundation: dedf7da3dec79fa06dc58b4fa3d96365de0fb1f2
+  sqflite: 9c8f66e1d32f9daa9a510820fb9956e201bb9167
+  sqlite3: 4922312598b67e1825c6a6c821296dcbf6783046
+  sqlite3_flutter_libs: 14928660d3e3b88b8bed7190765755a30c6c409d
+  url_launcher_macos: f87a979182d112f911de6820aefddaf56ee9fbfd
+  window_manager: 9c2d1ea05be3c801282c5800fe8c410e2b9ea7bd
+  window_size: fbba2896d132526fcdf8fe0b96235c50e0c9a8ff
+
+PODFILE CHECKSUM: 0d3963a09fc94f580682bd88480486da345dc3f0
+
+COCOAPODS: 1.16.2

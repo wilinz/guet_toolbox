@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+
+<html lang="zh" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>课表</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta content="width=1300, initial-scale=1,initial-scale=1.0,user-scalable=yes" name="viewport" />
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <!--<title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE" th:text="#{system.title}">教务系统</title>-->
+
+    <link rel="icon" href="/student/static/favicon.png" />
+    <script>
+        // 设置 context path, js会需要用
+        window.CONTEXT_PATH = '/student';
+        window.CDN_PATH = '';
+        window.LOCALE = 'zh';
+        window.SUPER_DOG_ENABLE = false;
+        window.i18nMsg = {
+          THEORY: '\u7406\u8BBA',
+          EXPERIMENT: '\u5B9E\u9A8C',
+          PRACTICE: '\u5B9E\u8DF5',
+          TEST: '\u62D3\u5C55',
+          MACHINE: '\u4E0A\u673A',
+          DESIGN: '\u8BBE\u8BA1',
+          EXTRA: '\u5B9E\u8BAD',
+
+          theory: '\u7406\u8BBA',
+          experiment: '\u5B9E\u9A8C',
+          practice: '\u5B9E\u8DF5',
+          test: '\u62D3\u5C55',
+          machine: '\u4E0A\u673A',
+          design: '\u8BBE\u8BA1',
+          extra: '\u5B9E\u8BAD',
+
+          'theory.course': '\u7406\u8BBA\u8BFE',
+          'experiment.course': '\u5B9E\u9A8C\u8BFE',
+          'practice.course': '\u5B9E\u8DF5\u8BFE',
+          'test.course': '\u62D3\u5C55\u8BFE',
+          'machine.course': '\u4E0A\u673A\u8BFE',
+          'design.course': '\u8BBE\u8BA1\u8BFE',
+          'extra.course': '\u5B9E\u8BAD\u8BFE',
+
+          'course.theory': '\u662F\u5426\u542B\u7406\u8BBA',
+          'course.experiment': '\u662F\u5426\u542B\u5B9E\u9A8C',
+          'course.practice': '\u662F\u5426\u542B\u5B9E\u8DF5',
+          'course.test': '\u662F\u5426\u542B\u62D3\u5C55',
+          'course.machine': '\u662F\u5426\u542B\u4E0A\u673A',
+          'course.design': '\u662F\u5426\u542B\u8BBE\u8BA1',
+          'course.extra': '\u662F\u5426\u542B\u5B9E\u8BAD',
+
+          'course.periodInfo.theory': '\u7406\u8BBA\u5B66\u65F6',
+          'course.periodInfo.practice': '\u5B9E\u8DF5\u5B66\u65F6',
+          'course.periodInfo.test': '\u62D3\u5C55\u5B66\u65F6',
+          'course.periodInfo.experiment': '\u5B9E\u9A8C\u5B66\u65F6',
+          'course.periodInfo.machine': '\u4E0A\u673A\u5B66\u65F6',
+          'course.periodInfo.design': '\u8BBE\u8BA1\u5B66\u65F6',
+          'course.periodInfo.extra': '\u5B9E\u8BAD\u5B66\u65F6',
+
+          'theory.total.period': '\u7406\u8BBA\u603B\u5B66\u65F6',
+          'practice.total.period': '\u5B9E\u8DF5\u603B\u5B66\u65F6',
+          'test.total.period': '\u62D3\u5C55\u603B\u5B66\u65F6',
+          'experiment.total.period': '\u5B9E\u9A8C\u603B\u5B66\u65F6',
+          'machine.total.period': '\u4E0A\u673A\u603B\u5B66\u65F6',
+          'design.total.period': '\u8BBE\u8BA1\u603B\u5B66\u65F6',
+          'extra.total.period': '\u5B9E\u8BAD\u603B\u5B66\u65F6',
+
+
+          'dispersePractice': '\u5206\u6563\u5B9E\u8DF5',
+          'focusPractice': '\u96C6\u4E2D\u5B9E\u8DF5',
+
+          'dispersePractice.period': '\u5206\u6563\u5B9E\u8DF5\u5B66\u65F6',
+          'focusPractice.period': '\u96C6\u4E2D\u5B9E\u8DF5\u5B66\u65F6',
+
+          'theory.period.unit': '\u7406\u8BBA\u5B66\u65F6\u5355\u4F4D',
+          'extra.period.unit': '\u5B9E\u8BAD\u5B66\u65F6\u5355\u4F4D',
+          'test.period.unit': '\u62D3\u5C55\u5B66\u65F6\u5355\u4F4D',
+          'design.period.unit': '\u8BBE\u8BA1\u5B66\u65F6\u5355\u4F4D',
+          'machine.period.unit': '\u4E0A\u673A\u5B66\u65F6\u5355\u4F4D',
+          'experiment.period.unit': '\u5B9E\u9A8C\u5B66\u65F6\u5355\u4F4D',
+          'focusPractice.unit': '\u96C6\u4E2D\u5B9E\u8DF5\u5B66\u65F6\u5355\u4F4D',
+        }
+    </script>
+
+
+    <link rel="stylesheet" href="/student/static/eams-ui/css/eams-ui.min.css?v=00012" />
+    <link rel="stylesheet" href="/student/static/eams-ui/css/eams-ui-plugin.min.css?v=00010" />
+    <link rel="stylesheet" href="/student/static/helper/css/info-page.css?v=00006" />
+    <link rel="stylesheet" href="/student/static/helper/css/generate-template.css?v=00002" />
+    <link rel="stylesheet" href="/student/static/eams-ui/css/default.css?v=00014" />
+    <link rel="stylesheet" href="/student/static/helper/css/scrollbar.css" />
+    <link rel="stylesheet" href="/student/static/helper/css/page-header.css" />
+    <link rel="stylesheet" href="/student/static/eams-ui/css/iconfont.css" />
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="/student/static/eams-ui/js/html5shiv.min.js?v=00002"></script>
+    <script src="/student/static/eams-ui/js/respond.min.js?v=00002"></script>
+    <![endif]-->
+
+    <script src="/student/static/eams-ui/js/eams-ui.js?v=00017"></script>
+    <script src="/student/static/eams-ui/js/eams-ui.zh.min.js?v=00002"></script>
+    <script src="/student/static/eams-ui/js/iconfont.js"></script>
+    <script src="/student/static/eams-ui/js/global-iconfont.js?v=00000"></script>
+
+
+    <script type="text/javascript" src="/student/static/eams-ui/js/DOMPurify/purify.min.js?v=02"></script>
+    <script type="text/javascript" src="/student/static/helper/purify-helper.js?v=02"></script>
+    <script type="text/javascript" src="/student/static/system/global-variable.js?v=00002"></script>
+    <script type="text/javascript" src="/student/static/helper/search-page-helper1.js?v=00003"></script>
+    <script type="text/javascript" src="/student/static/helper/notIndex-page-helper.js?v=00003"></script>
+    <script type="text/javascript" src="/student/static/helper/info-page.js?v=00005"></script>
+    <script type="text/javascript" src="/student/static/helper/student-selectize.js?v=00004"></script>
+    <script type="text/javascript" src="/student/static/helper/datatable-column-tools.js?v=00005"></script>
+    <script type="text/javascript" src="/student/static/thymeleaf-component/common.js?v=00005"></script>
+    <script type="text/javascript" src="/student/static/helper/page-header.js?v=00005"></script>
+    <script type="text/javascript" src="/student/static/file-param/fileParam.js?v=1009"></script>
+
+    <script>
+        /*<![CDATA[*/
+        $(function () {
+          $("body").show(); //chrome中iframe白屏的hack处理
+
+          $.ajaxSetup({
+            statusCode: {
+              200: function (res) {
+                const loginTitle = '\u767B\u5165\u9875\u9762';
+                if (res !=null && res.includes && res.includes(`<title>${loginTitle}</title>`)) {
+                  window.location.href = window.CONTEXT_PATH + '/login'
+                  return false
+                }
+              }
+            }
+          });
+
+          $.validator.defaults.unhighlight = function (element) {
+            $(element).closest('.form-group').removeClass('has-error');
+          }
+
+          $("input").attr("autocomplete", "off");
+
+          var infoMessages = null;
+          var infoMessagesTip = '\u6D88\u606F';
+
+          if (!infoMessages) {
+            infoMessages = [];
+          }
+          $.each(infoMessages, function (index, message) {
+            new PNotify({
+              title: infoMessagesTip,
+              text: message,
+              type: 'info',
+              delay: 1000
+            });
+          });
+
+          var successMessages = null;
+          var successMessagesTip = '\u6210\u529F';
+          if (!successMessages) {
+            successMessages = [];
+          }
+
+          $.each(successMessages, function (index, message) {
+            new PNotify({
+              title: successMessagesTip,
+              text: message,
+              type: 'success',
+              delay: 1000
+            });
+          });
+
+          var errorMessages = null;
+          var errorMessagesTip = '\u9519\u8BEF';
+
+          if (!errorMessages) {
+            errorMessages = [];
+          }
+          $.each(errorMessages, function (index, message) {
+            new PNotify({
+              title: errorMessagesTip,
+              text: message,
+              type: 'error',
+              delay: 5000
+            });
+          });
+
+          var noticeMessages = null;
+          var noticeMessagesTip = '\u63D0\u793A';
+
+          if (!noticeMessages) {
+            noticeMessages = [];
+          }
+          $.each(noticeMessages, function (index, message) {
+            new PNotify({
+              title: noticeMessagesTip,
+              text: message,
+              type: 'notice',
+              delay: 5000
+            });
+          });
+
+          var alertMessages = null;
+          if (!alertMessages) {
+            alertMessages = [];
+          }
+          $.each(alertMessages, function (index, message) {
+            bootbox.alert(message);
+          });
+
+          $(document).ajaxError(function (event, request) {
+
+            if (request.responseText && request.status == 200 && request.statusText == "parsererror") {
+              window.location.href = self.location.href;
+            }
+
+            if (!request.responseJSON) {
+              return;
+            }
+
+            var data = {};
+            var message = request.responseJSON.message;
+            if (request.responseJSON.errors && request.responseJSON.errors.length > 0) {
+              message = request.responseJSON.errors[0].defaultMessage;
+            }
+            data['errError'] = request.responseJSON.error;
+            data['errException'] = request.responseJSON.exception;
+            data['errMessage'] = message;
+            data['errPath'] = request.responseJSON.path;
+            data['errStatus'] = request.responseJSON.status;
+            data['errTimestamp'] = request.responseJSON.timestamp;
+            data['errTrace'] = request.responseJSON.trace;
+
+            new PNotify({
+              text: request.responseJSON.prompt,
+              type: 'error',
+              delay: 50000,
+              icon: false,
+              width: '350px',
+              min_height: '82px',
+              confirm: {
+                confirm: true,
+                align: 'right',
+                buttons: [
+                  {
+                    text: '报告错误',
+                    addClass: "btn-sm",
+                    click: function () {
+                      $.post({
+                        url: window.CONTEXT_PATH + '/sys-error-msg/save',
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        data: JSON.stringify(data),
+                        success: function (response) {
+                          if ($(".bootbox-alert").length == 0) {
+                            bootbox.alert(response.content);
+                          }
+                        }
+                      })
+                    }
+                  }, {addClass: 'hide'}
+                ]
+              }
+            });
+
+          });
+
+          window.preventFromSubmitTwice($('#save-form'));
+
+          var hasSpecialLogDomain = $("#has_special_log_domain").val() != undefined && $("#has_special_log_domain").val() != ""
+          /**
+           * has_special_log_domain 页面定义的一个 input 隐藏域 特殊的跳节点业务逻辑标识
+           * log-domain 审核流 日志标识
+           * 不存在特殊的跳节点 -- 采用通用的获取 待审核节点数据
+           * 若存在特殊的业务逻辑的跳节点， 则根据业务需求重写下面的逻辑
+           */
+          if (!hasSpecialLogDomain) {
+            //通用审核流程获取待审核节点
+            var $logDomains = $(".log-domain");
+
+            if ($logDomains && $logDomains.length > 0) {
+              $.each($($logDomains), function () {
+
+                var $logDomain = this;
+                if ($($logDomain).text() != "") {
+                  var nameZh = $($logDomain).parent().parent().find(".log-await-audit").text();
+                  $.ajax({
+                    url: window.CONTEXT_PATH + '/ws/common-audit-service/wait-audit-nodes',
+                    type: 'get',
+                    async: false,
+                    data: {
+                      domain: $($logDomain).text(),
+                      nameZh: nameZh
+                    },
+                    success: function (res) {
+                      if (res && res.waitAuditNodes.length > 0) {
+                        var waitAuditNodes = res.waitAuditNodes;
+                        var $logInfoTable = $($logDomain).parents('.log-info-table');
+                        $.each(waitAuditNodes, function (index, item) {
+                          var awaitObject = $($logInfoTable).find(".gray-point").last().clone();
+                          $($logInfoTable).find(".gray-point").last().find(".borderLeft").css('border-left', '1px dashed #787878');
+                          var nextAuditAccount = $($logInfoTable).find(".log-next-audit-account").last().text()
+                          awaitObject.find(".log-await-audit").text(item + (index == 0 ? (' ' + nextAuditAccount) : ''));
+                          $($logInfoTable).append(awaitObject);
+
+                          if ((index + 1) == waitAuditNodes.length) {
+                            var lastResultObject = $($logInfoTable).find(".gray-point").last().clone();
+                            $($logInfoTable).find(".gray-point").last().find(".borderLeft").css('border-left', '1px dashed #787878');
+                            lastResultObject.find(".log-await-audit").text('最终审核结果');
+                            lastResultObject.find(".log-await-audit-text").text('--');
+                            $($logInfoTable).append(lastResultObject);
+                          }
+
+                        })
+
+                        $($logInfoTable).find(".gray-point").first().remove();
+
+
+                        var nodes = res.nodes;
+                        var returnModificationOptions = [];
+                        var returnModificationOptionFinish = false;
+                        $.each(nodes, function (index, item) {
+                          if (nameZh != item && !returnModificationOptionFinish) {
+                            returnModificationOptions.push(item);
+                          } else {
+                            returnModificationOptionFinish = true;
+                          }
+                        });
+
+                        if ($("#return-modification-button") != undefined && returnModificationOptions.length > 0) {
+                          $("#return-modification-button").removeClass('return-modification');
+                          $("#return-modification-button").removeClass('submitForm');
+                          $("#return-modification-button").removeClass('returned');
+                          $("#return-modification-button").append('<i class="fa fa-caret-down"></i>');
+
+                          var returnModificationOptionHtml = '<li><a href="#" class="return-modification submitForm returned" data-type="returned" data-id="">' + '退回到申请人' + '</a></li>';
+                          $.each(returnModificationOptions, function (index, item) {
+                            returnModificationOptionHtml = returnModificationOptionHtml + '<li><a href="#" class="return-modification submitForm returned" data-type="returned" data-id="' + item + '">' + '退回到' + item + '</a></li>';
+                          });
+                          returnModificationOptionHtml = '<ul class="dropdown-menu" role="menu">' + returnModificationOptionHtml + '</ul>';
+
+                          $("#return-modification-button").parent().append(returnModificationOptionHtml);
+
+                        }
+                      }
+                    }
+                  });
+                }
+              })
+            }
+
+          }
+
+          // if($(".log-domain") != undefined && $(".log-domain").text() != ""){
+          //
+          // }
+
+        });
+
+        window.preventFromSubmitTwice = function ($form) {
+          $form.each(function () {
+            $(this).submit(function () {
+              let hasValidator = $(this).data('validator') !== undefined;
+              if (hasValidator && !$(this).valid()) {
+                return false;
+              }
+
+              $(this).find(":submit").button('loading');
+              $(this).submit(function () {
+                if ($(this).data('validator') && $(this).data('validator').formSubmitted) {
+                  //解决remote那种提交
+                  $(this).find(":submit").button('loading');
+                  return true;
+                }
+                return false;
+              });
+              return true;
+
+            })
+          })
+        };
+
+        window.semesterURIUtil = function (originalUri, insertBefore, semesterId) {
+          var semesterPattern = "/semester/";
+          if (originalUri.indexOf(semesterPattern) != -1) {
+            // remove semester pattern
+            var semesterPatternStartAt = originalUri.indexOf(semesterPattern);
+            var semesterPatternEndAt = semesterPatternStartAt +
+                originalUri.substring(semesterPatternStartAt, originalUri.length).indexOf("/", semesterPattern.length);
+            originalUri = originalUri.substring(0, semesterPatternStartAt) + originalUri.substring(semesterPatternEndAt, originalUri.length);
+          }
+          var appendIndex = originalUri.indexOf(insertBefore);
+          return originalUri.substring(0, appendIndex) + semesterPattern + semesterId + originalUri.substring(appendIndex, originalUri.length);
+        };
+        document.ondrop = function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+
+        $.validator.addMethod("mobile", function (value, element) {
+          if (/^(([0\+]\d{2,3}-)?(0\d{2,3})-)?(\d{7,8})(-(\d{3,}))?$/.test(value) || /^1[3456789][0-9]\d{8}$/.test(value)) {
+            return true;
+          }
+          return false;
+        }, "请输入正确的手机号");
+
+
+        $.validator.addMethod('noBlank', function (value, element, params) {
+          return !/\s+/g.test(value)
+        }, '不能有空格');
+
+        //    eamsUiUtil.cascadeScrollParentWindowToTop(window);
+        /*]]>*/
+    </script>
+    <link rel="stylesheet" href="/student/static/scheduletable/css/schedule-table.css?v=00001" />
+    <link rel="stylesheet" href="/student/static/scheduletable/css/schedule-icon.css?v=00002" />
+    <script src="/student/static/eams-ui/js/require.js"></script>
+    <script src="/student/static/scheduletable/js/main.js?v=00007"></script>
+    <style>
+        span.form-control-next {
+          display: inline-block;
+          padding: 6px 3px;
+        }
+        #toBigTablePrintPage {
+          font-size : 14px;
+          font-weight: normal;
+          padding-left: 10px;
+        }
+    </style>
+    <link rel="stylesheet" href="/student/static/coursetable/css/course-table-print.css" />
+    <link rel="stylesheet" href="/student/static/all-courses/all-courses.css?v=00001" />
+</head>
+<!-- thymeleaf自定义组件代码锚点 -->
+<script compo="true">
+    !function(manager, component) {
+        $(function() {
+
+        /**/
+        var methods = {
+        }
+        component.$register({
+            name: 'pageheader',
+            type: 'normal',
+            init() {
+                var self = this;
+                var propCss = {}
+                if(self.props.fontSize) {
+                    propCss['font-size'] = self.props.fontSize + 'px';
+                }
+                if(self.props.color) {
+                    propCss['color'] = self.props.color;
+                }
+                self.$refs.title.css(propCss);
+                if(self.props.hasBack === true) {
+                    self.$refs.pageBack.unbind('click').on('click',function(e){
+                        const _href = $(this).attr('href');
+                        if(!_href){
+                            e.preventDefault();
+                            pageBack(["REDIRECT_URL", "PARENT_URL"]);
+                        }
+                    });
+                }
+            },
+            methods: methods
+        });
+        /**/
+
+        })
+    }(eamsUI, eamsUI.$newComponent(
+        undefined, '7fffffd9', {'hasBack':false,'color':'#222','backUrl':'','namespace':'compo346254a41f274b7d9573b0efa35ec480','fontSize':16,'id':'compo346254a41f274b7d9573b0efa35ec480','title':'\u97E6\u7ACB\u8D5E()','parentId':null}
+    ));
+</script>
+<!-- thymeleaf自定义组件代码锚点 -->
+<body style="display:none;">
+<div style="padding:0 15px 15px;">
+
+    <div c-data="7fffffd9" root-ref="compo346254a41f274b7d9573b0efa35ec480" class="eams-page-header no-print">
+
+
+        <div c-data="7fffffd9" class="page-header-title" ref="compo346254a41f274b7d9573b0efa35ec480-title" style="flex: 0 auto;"></div>
+        <div c-data="7fffffd9" class="page-header-slot">
+
+        </div>
+    </div>
+
+
+    <ul class="nav nav-tabs" style="margin-bottom:10px;" role="tablist">
+        <li role="presentation" class="active">
+            <a href="#course-table" aria-controls="course-table" role="tab" data-toggle="tab">课表</a>
+        </li>
+        <li role="presentation">
+            <a href="#all-course" aria-controls="all-course" role="tab" data-toggle="tab">全部课程</a>
+        </li>
+    </ul>
+
+    <div class="tab-content" style="padding: 0 15px;">
+
+        <div role="tabpanel" class="tab-pane active" id="course-table">
+            <div style="padding-top: 15px;display: flex;justify-content: space-between">
+                <div style="display:flex;justify-content: flex-start">
+                    <div style="padding-left: 0px;min-width: 180px">
+                        <select class="form-control selectize" name="allSemesters" id="allSemesters">
+                            <option value="65">2023-2024下学期</option>
+                            <option value="64">2023-2024上学期</option>
+                        </select>
+                    </div>
+
+                    <div style="padding-left: 10px;width: 160px">
+                        <select class="form-control selectize" name="weeks" id="weeks">
+                        </select>
+                    </div>
+
+                    <div class="week-div-opea" style="padding-left: 10px">
+                        <button type="button" class="btn btn-primary week currWeek">本周</button>
+                        <button type="button" class="btn btn-primary week lastWeek">上一周</button>
+                        <button type="button" class="btn btn-primary week nextWeek">下一周</button>
+                    </div>
+                    <div style="line-height: 34px;height: 34px;padding-left: 10px">
+                        <span>学期起始日期: </span>&nbsp;<span id="startDate"></span>
+                    </div>
+                </div>
+                <div class="back">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" checked="checked" value="1" name="hasExperiment" id="hasExperiment" />
+                        <span>含实验</span>
+                    </label>
+                    <button class="btn btn-primary" type="button" id="toPrintPage">打印</button>
+                </div>
+            </div>
+            <div>
+                <div class="table-container"></div>
+            </div>
+
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="all-course">
+
+            <div class="row">
+                <div class="semester-box clearfix">
+
+                    <div class="col col-sm-3 semester-select">
+                        <select class="form-control selectize" name="semesters" id="semesters">
+                            <option value="all">全部学期</option>
+                            <option value="65">2023-2024下学期</option>
+                            <option value="64">2023-2024上学期</option>
+                        </select>
+                    </div>
+
+
+                    <div class="col-sm-3">
+                        <div class="search-box">
+                            <input class="form-control" id="search" placeholder="请输入课程名称或代码查询" />
+                            <div class="search-icon">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right pull-right" style="padding-right: 15px;">
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="table-content">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="progress-bar-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">初始化数据....</h4>
+            </div>
+            <div class="modal-body">
+                <span class="progress-title"></span>
+                <div id="pubProgressbar" class="progress text-center" style="height: 40px;">
+                    <div class="progress-bar" role="progressBar" style="width: 0%;line-height: 40px">
+                        <span>0/0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="gen-complete" class="btn btn-default" style="display: none">完成</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade schedules-modal" id="schedules-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="width: 80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">任务详情</h4>
+            </div>
+
+            <div class="modal-body">
+                <div id="info-content">
+                    <ul class="nav nav-tabs" style="margin-bottom:10px;" role="tablist">
+                        <li role="presentation" class="active">
+                            <a href="#base-info" aria-controls="base-info" role="tab" data-toggle="tab">基本信息</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#schedule-info" aria-controls="schedule-info" role="tab" data-toggle="tab">排课信息</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="base-info">
+                            <table class="table table-bordered base-info-table" id="base">
+
+                            </table>
+                        </div>
+
+                        <div role="tabpanel" class="tab-pane" id="schedule-info">
+                            <table class="table table-hover table-condensed" id="schedules">
+                                <thead>
+                                <tr>
+                                    <th width="14%">日期</th>
+                                    <th width="20%">教室</th>
+                                    <th width="20%">老师</th>
+                                    <th width="10%">星期几</th>
+                                    <th width="13%">开始时间</th>
+                                    <th width="13%">结束时间</th>
+                                    <th width="10%">学时信息</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="/student/static/coursetable/js/new-course-table-config.js?v=2"></script>
+<script type="text/javascript" src="/student/static/coursetable/js/new-course-table.js?v=10"></script>
+<script type="text/javascript" src="/student/static/all-courses/all-courses.js"></script>
+<script>
+    /*<![CDATA[*/
+    const bizTypeId = 2;
+    var baseURI = '/for-std/course-table';
+    var semesters = JSON.parse(
+        '[{\"nameZh\":\"2023-2024\u4E0B\u5B66\u671F\",\"nameEn\":\"2023-2024\u4E0B\u5B66\u671F\",\"id\":65,\"code\":\"2023-2024_2\",\"calendarAssoc\":1,\"schoolYear\":\"2023-2024\",\"startDate\":\"2024-02-26\",\"endDate\":\"2024-06-30\",\"weekStartOnSunday\":false,\"countInTerm\":true,\"season\":\"SPRING\",\"enabled\":true,\"fileInfoAssoc\":null,\"approvedYear\":\"2023\",\"lessonGenCode\":\"232\",\"includeMonths\":[2,3,4,5,6],\"transient\":false,\"name\":\"2023-2024\u4E0B\u5B66\u671F\"},{\"nameZh\":\"2023-2024\u4E0A\u5B66\u671F\",\"nameEn\":\"2023-2024\u4E0A\u5B66\u671F\",\"id\":64,\"code\":\"2023-2024_1\",\"calendarAssoc\":1,\"schoolYear\":\"2023-2024\",\"startDate\":\"2023-09-04\",\"endDate\":\"2024-01-05\",\"weekStartOnSunday\":false,\"countInTerm\":true,\"season\":\"AUTUMN\",\"enabled\":true,\"fileInfoAssoc\":null,\"approvedYear\":\"2023\",\"lessonGenCode\":\"231\",\"includeMonths\":[1,9,10,11,12],\"transient\":false,\"name\":\"2023-2024\u4E0A\u5B66\u671F\"}]'
+    );
+    var currentSemester = {'approvedYear':'2023','calendarAssoc':{'id':1},'code':'2023-2024_2','countInTerm':true,'enabled':true,'endDate':{'centuryOfEra':20,'chronology':{'zone':{'ID':'UTC','fixed':true}},'dayOfMonth':30,'dayOfWeek':7,'dayOfYear':182,'era':1,'fieldTypes':[{'durationType':{'name':'years'},'name':'year','rangeDurationType':null},{'durationType':{'name':'months'},'name':'monthOfYear','rangeDurationType':{'name':'years'}},{'durationType':{'name':'days'},'name':'dayOfMonth','rangeDurationType':{'name':'months'}}],'fields':[{'durationField':{'name':'years','precise':false,'supported':true,'type':{'name':'years'},'unitMillis':31556952000},'leapDurationField':{'name':'days','precise':true,'supported':true,'type':{'name':'days'},'unitMillis':86400000},'lenient':false,'maximumValue':292278993,'minimumValue':-292275054,'name':'year','rangeDurationField':null,'supported':true,'type':{'durationType':{'name':'years'},'name':'year','rangeDurationType':null}},{'durationField':{'name':'months','precise':false,'supported':true,'type':{'name':'months'},'unitMillis':2629746000},'leapDurationField':{'name':'days','precise':true,'supported':true,'type':{'name':'days'},'unitMillis':86400000},'lenient':false,'maximumValue':12,'minimumValue':1,'name':'monthOfYear','rangeDurationField':{'name':'years','precise':false,'supported':true,'type':{'name':'years'},'unitMillis':31556952000},'supported':true,'type':{'durationType':{'name':'months'},'name':'monthOfYear','rangeDurationType':{'name':'years'}}},{'durationField':{'name':'days','precise':true,'supported':true,'type':{'name':'days'},'unitMillis':86400000},'leapDurationField':null,'lenient':false,'maximumValue':31,'minimumValue':1,'name':'dayOfMonth','rangeDurationField':{'name':'months','precise':false,'supported':true,'type':{'name':'months'},'unitMillis':2629746000},'supported':true,'type':{'durationType':{'name':'days'},'name':'dayOfMonth','rangeDurationType':{'name':'months'}},'unitMillis':86400000}],'monthOfYear':6,'values':[2024,6,30],'weekOfWeekyear':26,'weekyear':2024,'year':2024,'yearOfCentury':24,'yearOfEra':2024},'fileInfoAssoc':null,'id':65,'includeMonths':[2,3,4,5,6],'lessonGenCode':'232','name':'2023-2024\u4E0B\u5B66\u671F','nameEn':'2023-2024\u4E0B\u5B66\u671F','nameZh':'2023-2024\u4E0B\u5B66\u671F','schoolYear':'2023-2024','season':{'$type':'Season','$name':'SPRING'},'startDate':{'centuryOfEra':20,'chronology':{'zone':{'ID':'UTC','fixed':true}},'dayOfMonth':26,'dayOfWeek':1,'dayOfYear':57,'era':1,'fieldTypes':[{'durationType':{'name':'years'},'name':'year','rangeDurationType':null},{'durationType':{'name':'months'},'name':'monthOfYear','rangeDurationType':{'name':'years'}},{'durationType':{'name':'days'},'name':'dayOfMonth','rangeDurationType':{'name':'months'}}],'fields':[{'durationField':{'name':'years','precise':false,'supported':true,'type':{'name':'years'},'unitMillis':31556952000},'leapDurationField':{'name':'days','precise':true,'supported':true,'type':{'name':'days'},'unitMillis':86400000},'lenient':false,'maximumValue':292278993,'minimumValue':-292275054,'name':'year','rangeDurationField':null,'supported':true,'type':{'durationType':{'name':'years'},'name':'year','rangeDurationType':null}},{'durationField':{'name':'months','precise':false,'supported':true,'type':{'name':'months'},'unitMillis':2629746000},'leapDurationField':{'name':'days','precise':true,'supported':true,'type':{'name':'days'},'unitMillis':86400000},'lenient':false,'maximumValue':12,'minimumValue':1,'name':'monthOfYear','rangeDurationField':{'name':'years','precise':false,'supported':true,'type':{'name':'years'},'unitMillis':31556952000},'supported':true,'type':{'durationType':{'name':'months'},'name':'monthOfYear','rangeDurationType':{'name':'years'}}},{'durationField':{'name':'days','precise':true,'supported':true,'type':{'name':'days'},'unitMillis':86400000},'leapDurationField':null,'lenient':false,'maximumValue':31,'minimumValue':1,'name':'dayOfMonth','rangeDurationField':{'name':'months','precise':false,'supported':true,'type':{'name':'months'},'unitMillis':2629746000},'supported':true,'type':{'durationType':{'name':'days'},'name':'dayOfMonth','rangeDurationType':{'name':'months'}},'unitMillis':86400000}],'monthOfYear':2,'values':[2024,2,26],'weekOfWeekyear':9,'weekyear':2024,'year':2024,'yearOfCentury':24,'yearOfEra':2024},'transient':false,'weekStartOnSunday':false};
+    var semesterId = currentSemester.id;
+    var personId = 103069;
+    var studentIds = [104676];
+    var oldValue;
+    $(function () {
+
+      var type = 'student';
+      var $allSemesters = $('#allSemesters');
+
+      $("#weeks").selectize({});
+      $allSemesters.selectize(getSelectizeOptionsNotDel({onItemAdd: function(value){
+          if(!value || value === oldValue){
+            return false;
+          }
+
+          $(".table-container").empty();
+          current = semesters.filter(res => {
+            return value == res.id;
+          })
+          $(".currWeek").attr('disabled', !compareTime(current[0].startDate, current[0].endDate))
+          $("#startDate").text(current[0].startDate);
+          var tagInfo = getDrawTableData(studentIds, bizTypeId, value, type, personId);
+          bindWeekEvents(type, tagInfo);
+        }}));
+
+      var localSemester = localStorage.getItem('sSemester');
+      var finalSemesterId = localSemester ? localSemester : semesterId;
+
+      if(!$allSemesters[0].selectize.options){
+        return false;
+      }else if(!$allSemesters[0].selectize.options[finalSemesterId]){
+        finalSemesterId =  $allSemesters[0].selectize.items[0];
+      }
+
+
+      $allSemesters[0].selectize.setValue(finalSemesterId);
+
+      var current = semesters.filter(res => {
+        return $allSemesters.val() == res.id;
+      });
+      $allSemesters.change((val)=>{
+        localStorage.setItem('sSemester',$allSemesters.val())
+      })
+
+      if (current && current.length) {
+        $(".currWeek").attr('disabled', !compareTime(current[0].startDate, current[0].endDate))
+        $("#startDate").text(current[0].startDate);
+      }
+
+      $("#totalCourses").click(function () {
+        var semesterVal = $("#allSemesters").val() || -1;
+        FormUtil.get({
+          url: window.CONTEXT_PATH + '/for-std/course-table/info/all-courses',
+          params: {
+            semesterId: semesterVal,
+            'REDIRECT_URL': baseURI + '?semesterId=' + semesterVal,
+          }
+        })
+      });
+
+      $("#toPrintPage").click(function () {
+        var semesterVal = $allSemesters.val();
+        FormUtil.get({
+          form: $("<form></form>"),
+          url: window.CONTEXT_PATH + '/for-std/course-table/semester/' + semesterVal + '/print',
+          params: {
+            "hasExperiment": $("input[name='hasExperiment']:checked").val() === '1',
+            'REDIRECT_URL': baseURI + '?semesterId=' + semesterVal,
+          }
+        });
+      });
+
+      $('#hasExperiment').click(function() {
+        oldValue = '';
+        var tempValue = $allSemesters[0].selectize.getValue();
+        $allSemesters[0].selectize.setValue(tempValue);
+      });
+
+      $("a[aria-controls='all-course']").click(()=>{
+        initAllCourse();
+      })
+      var studentId = null;
+      var lessons = [];
+      var $tableContent = $('#table-content');
+      var $semesters = $("#semesters");
+
+      function initAllCourse(){
+        let semesterId = $allSemesters[0].selectize.getValue() || -1;
+        $semesters.selectize({
+          onItemAdd: function(val){
+            if(val !== 'all') {
+              let semesterId = parseInt(val);
+              var data = {
+                bizTypeId: bizTypeId,
+                semesterId: semesterId,
+                dataId: studentId
+              }
+              var result = {};
+              $.ajax({
+                url: window.CONTEXT_PATH + baseURI + '/get-data',
+                type: 'get',
+                async: false,
+                data: data,
+                success: function (res) {
+                  result = res;
+                }
+              });
+              lessons = result.lessons;
+              var semesterName = {
+                nameZh: this.options[semesterId].text
+              }
+              $tableContent.empty();
+              var lessonTagData = {
+                lesson2CultivateTypeMap: result.lesson2CultivateTypeMap,
+                lessonId2Retake: result.lessonId2Retake,
+                notAttendLessonIds: result.notAttendLessonIds,
+                totalRetakeCredits: result.totalRetakeCredits
+              }
+              fillSemester($tableContent, semesterName, result.lessons, lessonTagData, type, false, false);
+            } else {
+              var options = this.options;
+              lessons = [];
+              $tableContent.empty();
+              $.each(semesters, function(index, semester) {
+                var semesterId = semester.id;
+
+                var data = {
+                  bizTypeId: bizTypeId,
+                  semesterId: semesterId,
+                  dataId: studentId
+                }
+
+                var semesterName = {
+                  nameZh: options[semesterId].text
+                }
+
+                var result = {};
+                $.ajax({
+                  url: window.CONTEXT_PATH + baseURI + '/get-data',
+                  type: 'get',
+                  async: false,
+                  data: data,
+                  success: function (res) {
+                    result = res;
+                  }
+                });
+                lessons = lessons.concat(result.lessons);
+                var lessonTagData = {
+                  lesson2CultivateTypeMap: result.lesson2CultivateTypeMap,
+                  lessonId2Retake: result.lessonId2Retake,
+                  notAttendLessonIds: result.notAttendLessonIds,
+                  totalRetakeCredits: result.totalRetakeCredits
+                }
+                fillSemester($tableContent, semesterName, result.lessons, lessonTagData, type, semesters.length > 1, true);
+              });
+            }
+
+            searchCourse($tableContent, $('#search').val());
+          }
+        });
+
+        $semesters[0].selectize.setValue(semesterId);
+
+        searchControl($('.search-box'), $tableContent);
+
+        $tableContent.on('click', '.title-box', function(){
+          var lesson = {};
+          var lessonId = Number($(this).attr('data-lessonId'));
+
+          lessons.forEach(function (item){
+            if(item.id === lessonId){
+              lesson = item;
+            }
+          });
+
+          showSchedules(lesson, {studentId: studentId, lessonIds: [lesson.id]});
+        });
+      }
+
+    })
+
+    /*]]>*/
+</script>
+</body>
+<script>
+    /*<![CDATA[*/
+    $(function () {
+      $.each($(".selectized"), function () {
+        var _self = this;
+        if ($(_self)[0].tagName == 'SELECT') {
+          $(_self)[0].selectize.on('focus', function () {
+            if ($(_self)[0].selectize.getValue() == '') {
+              $(_self)[0].selectize.clear(true);
+            }
+          });
+        }
+      });
+
+      // 设置学校名称
+      if ($('.school-name').length > 0) {
+        $.each($('.school-name'), function () {
+          $(this).text(globalVariable.schoolName)
+        })
+      }
+
+      function setThemeBg() {
+        let themeBg = {};
+        $.ajax({
+          async: false,
+          url: window.CONTEXT_PATH + '/theme-config/getThemeInfo',
+          type: 'get',
+          success: function (res) {
+            themeBg = {
+              LOGIN_BACKGROUND_THEME_ONE: res['LOGIN_BACKGROUND_THEME_ONE'] ? window.CONTEXT_PATH + '/theme-config/getTheme/' + res['LOGIN_BACKGROUND_THEME_ONE'] : window.CONTEXT_PATH + '/static/common-home/img/theme1.jpg',
+              LOGIN_BACKGROUND_THEME_TWO: res['LOGIN_BACKGROUND_THEME_TWO'] ? window.CONTEXT_PATH + '/theme-config/getTheme/' + res['LOGIN_BACKGROUND_THEME_TWO'] : window.CONTEXT_PATH + '/static/common-home/img/loginbg.jpg',
+              theme1: res['THEME_ONE'] ? window.CONTEXT_PATH + '/theme-config/getTheme/' + res['THEME_ONE'] : window.CONTEXT_PATH + '/static/common-home/img/theme1.jpg',
+              theme2: res['THEME_TWO'] ? window.CONTEXT_PATH + '/theme-config/getTheme/' + res['THEME_TWO'] : window.CONTEXT_PATH + '/static/common-home/img/theme2.jpg',
+              theme3: res['THEME_THREE'] ? window.CONTEXT_PATH + '/theme-config/getTheme/' + res['THEME_THREE'] : window.CONTEXT_PATH + '/static/common-home/img/theme3.jpg',
+              theme4: res['THEME_FOUR'] ? window.CONTEXT_PATH + '/theme-config/getTheme/' + res['THEME_FOUR'] : window.CONTEXT_PATH + '/static/common-home/img/theme4.jpg',
+              Logo: res['LOGO_THEME_ONE'] ? window.CONTEXT_PATH + '/theme-config/getTheme/' + res['LOGO_THEME_ONE'] : window.CONTEXT_PATH + '/static/common-home/img/logo.png',
+            }
+            localStorage.setItem("themeBg", JSON.stringify(themeBg));
+          }
+        })
+        return themeBg;
+      }
+
+      //更换主题
+      var changeTheme = function () {
+        function _replaceFiles(themeName) {
+          var href = window.CONTEXT_PATH + '/static/eams-ui/' + themeName;
+          var cssArray = ['eams-ui.min.css', 'eams-ui-home.min.css', 'eams-ui-plugin.min.css', 'eams-ui.css', 'eams-ui-home.css', 'eams-ui-plugin.css'];
+          $.each(cssArray, function (index, item) {
+            var $ele = $("link[href*='" + item + "']");
+            if (!$ele.length) {
+              return true;
+            }
+            var node = document.createElement("link");
+            node.rel = 'stylesheet';
+            node.href = href + '/' + item + '?v=' + Math.floor(Math.random() * 100000);
+            $ele.last().after(node);
+          });
+        }
+
+        function _replaceBgImg(themeName) {
+          $(".theme-bgimg").attr("data-theme", themeName);
+          let themeBg = JSON.parse(localStorage.getItem("themeBg")) || setThemeBg();
+          $(".home-logo").html(`<img src="${themeBg["Logo"]}" alt="logo"/>`);
+          $(".home-logo").parent().css('padding', '0px');
+          if (themeBg[themeName]) {
+            $(".theme-bgimg").css("background-image", `url('${themeBg[themeName]}')`);
+          }
+          $(".pure-li[data-theme=" + themeName + "]").addClass("active").siblings().removeClass("active");
+        }
+
+        var themeName = localStorage.getItem("theme") !== 'null' ? localStorage.getItem("theme") : localStorage.getItem("themeDefault");
+
+        var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+        var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; //判断是否IE<11浏览器
+        var isEdge = userAgent.indexOf("Edge") > -1 && !isIE; //判断是否IE的Edge浏览器
+        var isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf("rv:11.0") > -1;
+
+        if (themeName) {
+          var themeArr = ['theme1', 'theme2', 'theme3', 'theme4'];
+
+          if (themeArr.indexOf(themeName) === -1) {
+            let last = localStorage.getItem('themeIllegal') || '';
+            localStorage.setItem('themeIllegal', last + ';' + themeName + '::' + window.location.pathname);//记录不匹配的
+            themeName = themeArr[0]
+            localStorage.setItem('theme', themeName);
+          } else {
+            localStorage.setItem('theme', themeName);
+          }
+        } else {
+          let _s = localStorage.getItem('themeNull') || '';
+          localStorage.setItem('themeNull', _s + ';' + window.location.pathname)
+          themeName = 'theme1';
+          localStorage.setItem('theme', themeName);
+        }
+        if (!isIE && !isIE11) {
+          _replaceFiles(themeName);
+        }
+        _replaceBgImg(themeName);
+        $(".pure-li[data-theme='" + themeName + "']").length && $(".pure-li[data-theme='" + themeName + "']").addClass("active").siblings("li").removeClass("active");
+      };
+      changeTheme();
+
+      window.addEventListener('storage', function (e) {
+        if ('theme' === e.key) {
+          changeTheme();
+        }
+      });
+
+
+      +(function disableInputAutoComplete() {
+        var inputs = document.getElementsByTagName('input');
+        for (var i = 0; inputs[i]; i++) inputs[i].autocomplete = 'off';
+      })();
+
+      //STORY #19848 系统级调整：功能未开放实现方式
+      if (FormUtil) {
+        $(".switchCheckModel").modal({
+          backdrop: true,
+          show: false
+        });
+
+        FormUtil.get = new Proxy(FormUtil.get, {
+          apply: function (target, thisArg, args) {
+            if (args[0].checkSwitch && !FormUtil.checkOpenSwitch(args[0].url, 'GET')) {
+              return false;
+            }
+            return target.call(thisArg, ...args);
+          }
+        });
+
+        FormUtil.post = new Proxy(FormUtil.post, {
+          apply: function (target, thisArg, args) {
+            if (args[0].checkSwitch && !FormUtil.checkOpenSwitch(args[0].url, 'POST')) {
+              return false;
+            }
+            return target.call(thisArg, ...args);
+          }
+        });
+
+        FormUtil.isOpenSwitch = function (url, data) {
+          var checkOpen = true;
+          $.ajax({
+            url: url,
+            type: 'get',
+            async: false,
+            data: data,
+            success: function (res) {
+              if (!res.success) {
+                checkOpen = false;
+
+                $(".switchCheckModel .switchMessage").text('功能未开放');
+                if (res.openDate) {
+                  $(".switchCheckModel .openDate").text(res.openDate);
+                  $(".switchCheckModel .openDateMsg").show();
+                } else {
+                  $(".switchCheckModel .openDate").text('');
+                  $(".switchCheckModel .openDateMsg").hide();
+                }
+                if (res.bulletin) {
+                  //公告
+                }
+                $(".switchCheckModel").modal('show');
+              }
+            }
+          });
+
+          return checkOpen;
+        }
+  //开关未开放弹窗，如果开关数据在MODULE_SWITCH表中，使用（FormUtil.isOpenSwitchByModule），如果不在，就用 （switchAlterWindow（））
+        FormUtil.isOpenSwitchByModule = function (module, bizTypeId, semesterId) {
+          var checkOpen = true;
+          $.ajax({
+            url: window.CONTEXT_PATH + '/ws/switch/is-open',
+            type: 'get',
+            async: false,
+            data: {module: module, bizType: bizTypeId, semester: semesterId},
+            success: function (res) {
+              if (!res.success) {
+                checkOpen = false;
+
+                $(".switchCheckModel .switchMessage").text('功能未开放');
+                if (res.openDate) {
+                  $(".switchCheckModel .openDate").text(res.openDate);
+                  $(".switchCheckModel .openDateMsg").show();
+                } else {
+                  $(".switchCheckModel .openDate").text('');
+                  $(".switchCheckModel .openDateMsg").hide();
+                }
+                if (res.bulletin) {
+                  //公告
+                }
+                $(".switchCheckModel").modal('show');
+              }
+            }
+          });
+
+          return checkOpen;
+        }
+
+        FormUtil.checkOpenSwitch = function (targetUrl, targetMethod) {
+          var checkOpen = true;
+          $.ajax({
+            url: window.CONTEXT_PATH + '/ws/switch/check-open',
+            type: 'get',
+            async: false,
+            data: {targetUrl: targetUrl, targetMethod: targetMethod.toUpperCase()},
+            success: function (res) {
+              if (!res.success) {
+                checkOpen = false;
+
+                $(".switchCheckModel .switchMessage").text(res.message);
+                if (res.openDate) {
+                  $(".switchCheckModel .openDate").text(res.openDate);
+                  $(".switchCheckModel .openDateMsg").show();
+                } else {
+                  $(".switchCheckModel .openDate").text('');
+                  $(".switchCheckModel .openDateMsg").hide();
+                }
+                if (res.bulletin) {
+                  //公告
+                }
+                $(".switchCheckModel").modal('show');
+              }
+            }
+          });
+
+          return checkOpen;
+        }
+        FormUtil.showOpenSwitch = function (message, openDate, bulletin) {
+          $(".switchCheckModel .switchMessage").text(message);
+          if (openDate) {
+            $(".switchCheckModel .openDate").text(openDate);
+            $(".switchCheckModel .openDateMsg").show();
+          } else {
+            $(".switchCheckModel .openDate").text('');
+            $(".switchCheckModel .openDateMsg").hide();
+          }
+          if (bulletin) {
+            //公告
+          }
+          $(".switchCheckModel").modal('show');
+        }
+
+      }
+    });
+    /*]]>*/
+</script>
+</html>
+

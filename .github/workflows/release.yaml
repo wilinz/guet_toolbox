@@ -1,0 +1,117 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_mac_ios:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
+          architecture: x64 # optional, x64 or arm64
+      - run: flutter --version
+
+      - name: Check OpenSSL
+        run: |
+          if ! openssl version; then
+            echo "OpenSSL is not installed, installing it now..."
+            brew install openssl
+          fi
+          export OPENSSL_CONF=/path/to/openssl.cnf
+      - name: Build for macOS
+        run: flutter build macos --release
+      - name: Build for iOS
+        run: flutter build ios --release
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos-release.dmg
+          path: build/macos/Build/Products/Release/*.dmg
+      - name: Upload iOS artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ios-app.app
+          path: build/ios/iphoneos/Runner.app
+
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: stable
+      - name: Check OpenSSL
+        run: |
+          if ! openssl version; then
+          echo "OpenSSL is not installed, installing it now..."
+          winget install -e --id OpenSSL.Light
+          fi
+          export OPENSSL_CONF=/path/to/openssl.cnf
+      - name: Build for Windows
+        run: flutter build windows --release
+      - name: Package as MSIX
+        run: |
+          cd build/windows/runner/Release
+          makeappx pack /d . /p myapp.msix
+
+      - name: Upload MSIX artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: myapp.msix
+          path: build/windows/runner/Release/myapp.msix
+
+  build_linux_android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: stable
+
+      - name: Check OpenSSL
+        run: |
+          if ! openssl version; then
+            echo "OpenSSL is not installed, installing it now..."
+            apt update
+            apt install openssl
+          fi
+          export OPENSSL_CONF=/path/to/openssl.cnf
+
+      - name: Build Linux DEB package
+        run: flutter build linux
+        env:
+          FLUTTER_BUILD_MODE: release
+
+      - name: Build Android APK
+        run: flutter build apk --split-per-abi
+        env:
+          FLUTTER_BUILD_MODE: release
+
+      - name: Sign Android APK
+        uses: Tlaster/android-sign@v1
+        with:
+          apk_path: build/app/outputs/apk/release/app-release.apk
+          keystore_path: ${{ secrets.FLUTTER_KEYSTORE_PATH }}
+          keystore_password: ${{ secrets.FLUTTER_KEYSTORE_PASSWORD }}
+          key_alias: ${{ secrets.FLUTTER_KEY_ALIAS }}
+          key_password: ${{ secrets.FLUTTER_KEY_PASSWORD }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Release
+          path: build/linux/release/linux-x64.deb build/app/outputs/apk/release/app-release.apk

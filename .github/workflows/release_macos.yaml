@@ -1,0 +1,33 @@
+name: Release macOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:' # optional, change this to specify the cache path
+          architecture: x64 # optional, x64 or arm64
+      - run: flutter --version
+
+      - name: Build for macOS
+        run: flutter build macos --release
+
+      - name: Package as dmg
+        run: cd dmg && /bin/sh ./build.sh && cd ../
+
+      - name: Upload to artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: guet-toolbox.dmg
+          path: dmg/Guet-Toolbox.dmg

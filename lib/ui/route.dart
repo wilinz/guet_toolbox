@@ -23,11 +23,13 @@ import 'package:guethub/ui/page/main/forum/post_detail_page.dart';
 import 'package:guethub/ui/page/main/forum/send_post_page.dart';
 import 'package:guethub/ui/page/main/main.dart';
 import 'package:guethub/ui/page/pedagogical_evaluation/pedagogical_evaluation_edit.dart';
+import 'package:guethub/ui/page/privacy_policy/privacy_policy.dart';
 import 'package:guethub/ui/page/splash/splash.dart';
 import 'package:guethub/ui/page/teaching_evaluation/teaching_evaluation.dart';
 import 'package:guethub/ui/page/teaching_evaluation/content/teaching_evaluation_content.dart';
 import 'package:guethub/ui/page/theme/theme_changer_page.dart';
 import 'package:guethub/ui/page/toolbox/toolbox.dart';
+import 'package:guethub/ui/page/user_agreement/user_agreement.dart';
 import 'package:guethub/ui/page/userprofile/user_profile.dart';
 import 'package:guethub/ui/settings/settings_page.dart';
 import 'package:guethub/ui/widget/window_caption.dart';
@@ -123,11 +125,23 @@ class AppRoute {
   static const String emptyClassroomNewPage = "/EmptyClassroomNewPage";
 
   static const String webView = "/WebView";
+  
+  static const String userAgreementPage = "/userAgreementPage";
+
+  static const String privacyPolicyPage = "/privacyPolicyPage";
 
   static List<GetPage> routes = [
     GetPage(
       name: webView,
       page: () => WebView(args: Get.arguments),
+    ),   
+    GetPage(
+      name: userAgreementPage,
+      page: () => UserAgreementPage(),
+    ),
+    GetPage(
+      name: privacyPolicyPage,
+      page: () => PrivacyPolicyPage(),
     ),
     GetPage(
       name: emptyClassroomNewPage,

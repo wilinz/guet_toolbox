@@ -1,6 +1,9 @@
 # GUETHUB 一个使用 Flutter 开发的全平台 GUET 课程表，此项目正在开发中...
 **此项目使用 Dart 和 Rust 语言开发**
 
+用户协议：[user_agreement.md](user_agreement.md)
+隐私政策：[privacy_policy.md](privacy_policy.md)
+
 ## 目前未适配新系统（2024.3.27）
 支持 Android IOS 未上架，Windows Linux MacOS 可以使用，但未做发布
 

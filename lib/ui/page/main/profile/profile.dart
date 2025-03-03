@@ -294,6 +294,24 @@ class _ProfilePageState extends State<ProfilePage>
                             trailing: Icon(Icons.arrow_forward_ios_outlined),
                           ),
                           ListTile(
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed(AppRoute.userAgreementPage);
+                            },
+                            leading: Icon(Icons.article_outlined),
+                            title: Text("用户协议"),
+                            trailing: Icon(Icons.arrow_forward_ios_outlined),
+                          ),
+                          ListTile(
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed(AppRoute.privacyPolicyPage);
+                            },
+                            leading: Icon(Icons.lock_outline),
+                            title: Text("隐私政策"),
+                            trailing: Icon(Icons.arrow_forward_ios_outlined),
+                          ),
+                          ListTile(
                             onTap: () async {
                               if (kIsWeb) return;
                               await c.checkUpdate();

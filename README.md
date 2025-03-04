@@ -16,6 +16,4 @@
 <img src="./mdassets/README/image-20230423134438736.png" alt="image-20230423134438736" width="250"/><img src="./mdassets/README/20230423135058.png" alt="20230423135058" width="250" /><img src="./mdassets/README/image-20230423135235611.png" alt="image-20230423135235611" width="250" /><img src="./mdassets/README/image-20230423135311847.png" alt="image-20230423135311847" width="250" /><img src="./mdassets/README/image-20230423135511758.png" alt="image-20230423135511758" width="250"/><img src="./mdassets/README/image-20230423135552641.png" alt="image-20230423135552641" width="250" /><img src="./mdassets/README/image-20230423135611960.png" alt="image-20230423135611960" width="250"/><img src="./mdassets/README/image-20230423135656027.png" alt="image-20230423135656027" width="250" />
 
 ## 许可证：MPL2.0
-基于 Mozilla Public License Version 2.0 并附加以下条款：
-
-* **非商业性使用** — 不得将此项目及其衍生的项目的源代码和二进制产品用于任何商业和盈利用途
+Mozilla Public License Version 2.0
